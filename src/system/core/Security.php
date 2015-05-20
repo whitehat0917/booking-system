@@ -513,7 +513,7 @@ class CI_Security {
 			$str_compare = $str;
 
 			// Decode standard entities, avoiding false positives
-			if (preg_match_all('/\&[a-z]{2,}(?![a-z;])/i', $str, $matches))
+			if ($c = preg_match_all('/&[a-z]{2,}(?![a-z;])/i', $str, $matches))
 			{
 				if ( ! isset($_entities))
 				{
@@ -530,7 +530,7 @@ class CI_Security {
 					{
 						$_entities[':'] = '&colon;';
 						$_entities['('] = '&lpar;';
-						$_entities[')'] = '&rpar;';
+						$_entities[')'] = '&rpar';
 						$_entities["\n"] = '&newline;';
 						$_entities["\t"] = '&tab;';
 					}
@@ -538,11 +538,11 @@ class CI_Security {
 
 				$replace = array();
 				$matches = array_unique(array_map('strtolower', $matches[0]));
-				foreach ($matches as &$match)
+				for ($i = 0; $i < $c; $i++)
 				{
-					if (($char = array_search($match.';', $_entities, TRUE)) !== FALSE)
+					if (($char = array_search($matches[$i].';', $_entities, TRUE)) !== FALSE)
 					{
-						$replace[$match] = $char;
+						$replace[$matches[$i]] = $char;
 					}
 				}
 
@@ -644,7 +644,7 @@ class CI_Security {
 	protected function _remove_evil_attributes($str, $is_image)
 	{
 		// All javascript event handlers (e.g. onload, onclick, onmouseover), style, and xmlns
-		$evil_attributes = array('on\w*', 'style', 'xmlns', 'formaction', 'form', 'xlink:href', 'FSCommand', 'seekSegmentTime');
+		$evil_attributes = array('on\w*', 'style', 'xmlns', 'formaction', 'form', 'xlink:href');
 
 		if ($is_image === TRUE)
 		{
