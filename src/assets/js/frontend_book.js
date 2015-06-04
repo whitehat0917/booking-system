@@ -147,9 +147,9 @@ var FrontendBook = {
                 if ($('.selected-hour').length == 0) {
                     if ($('#select-hour-prompt').length == 0) {
                         $('#available-hours').append('<br><br>'
-                                + '<span id="select-hour-prompt" class="text-danger">'
+                                + '<strong id="select-hour-prompt" class="text-danger">'
                                 + EALang['appointment_hour_missing'] 
-                                + '</span>');
+                                + '</strong>');
                     }
                     return;
                 }
