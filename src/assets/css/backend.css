@@ -259,7 +259,6 @@ body .jspTrack {
 
 #calendar .fc-header .fc-button {
     margin-bottom: 8px;
-    background-image: none !important;
 }
 
 #calendar .fc-agenda-allday .fc-day-content {
@@ -271,18 +270,13 @@ body .jspTrack {
 }
 
 #calendar table thead .fc-first {
-    background: #F5F5F5;
+    background: #DFDFDF;
 }
 
 #calendar table thead .fc-first th {
     vertical-align: middle;
     padding: 2px 0;
     color: #555;
-}
-
-#calendar .fc-event {
-    border: 1px solid #4790CA;
-    background-color: #4790CA;
 }
 
 #existing-customers-list {
