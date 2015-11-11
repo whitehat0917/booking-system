@@ -5,6 +5,9 @@ Easy!Appointments
 
 ### Organize your business! Exploit human resources that can be used in other tasks more efficiently.
 
+> IMPORTANT NOTICE: THIS REPOSITORY HOSTS THE V1.1 DEV CODE WHICH IS NOT READY
+> FOR PRODUCTION USE. PLEASE DOWNLOAD V1.0 FROM THE OFFICIAL WEBSITE.
+
 **Easy!Appointments** is a highly customizable web application that allows your customers to book
 appointments with you via the web. Moreover, it provides the ability to sync your data with
 Google Calendar so you can use them with other services. It is an open source project and you
@@ -30,7 +33,7 @@ perform the following steps in order to install the system on your server:
 * Make sure that your server has Apache, PHP and MySQL installed.
 * Create a new database (or use an existing).
 * Copy the "easyappointments" source folder on your server.
-* Rename the "config-sample.php" file to "config.php" and set your server properties.
+* Edit the "configuration.php" file and set your server properties.
 * Open your browser on the Easy!Appointments URL and follow the installation guide.
 * That's it! You can now use Easy!Appointments at your will.
 

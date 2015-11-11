@@ -139,12 +139,6 @@ var FrontendBook = {
                 });
             });
 
-            // Add the "Any Provider" entry.
-            if ($('#select-provider option').length > 1) {
-                $('#select-provider').append(new Option(EALang['any_provider'] + ' *', 'any-provider'));
-            }
-
-
             FrontendBook.getAvailableHours($('#select-date').val());
             FrontendBook.updateConfirmFrame();
             FrontendBook.updateServiceDescription($('#select-service').val(), $('#service-description'));
