@@ -79,7 +79,7 @@
 
                 <button id="insert-unavailable" class="btn btn-default"
                         title="<?php echo $this->lang->line('unavailable_periods_hint'); ?>">
-                    <span class="glyphicon glyphicon-plus"></span>
+                    <span class="glyphicon glyphicon-plus"></i>
                     <?php echo $this->lang->line('unavailable'); ?>
                 </button>
             </div>
