@@ -256,8 +256,7 @@ body {
 
     #main {
         min-height: 100%;
-        display: block; /* reset display */
-        padding: 0;
+        padding: 0 5vw;
     }
 
     #main .wrapper {
@@ -301,8 +300,16 @@ body {
         width: 45%;
     }
 
+    #book-appointment-wizard .wizard-frame .command-buttons #button-next-2,
+    #book-appointment-wizard .wizard-frame .command-buttons #button-next-3 {
+        float: right;
+    }
+
     #book-appointment-wizard .wizard-frame .command-buttons #button-next-1 {
         width: 100%;
+        max-width: 300px;
+        margin: auto;
+        display: block;
     }
 
     #book-appointment-wizard .wizard-frame #select-date {
@@ -332,6 +339,7 @@ body {
 
     #book-appointment-wizard #book-appointment-form {
         width: 45%;
+        float: right;
     }
 
     #book-appointment-wizard #book-appointment-form  #book-appointment-submit{
@@ -352,7 +360,7 @@ body {
     #message-frame,
     #success-frame {
         text-align: center;
-        height: 100%;
+        height: auto;
         border: none;
         padding: 35px;
     }
@@ -368,6 +376,7 @@ body {
     #success-frame .btn {
         margin-bottom: 10px;
         width: 80%;
+        max-width: 250px;
     }
 
     /**
@@ -379,5 +388,38 @@ body {
 
     .ui-dialog .ui-dialog-title {
         font-size: 1.2em;
+    }
+}
+
+@media(max-width:480px) {
+    body {
+        background-color: #FAFAFA;
+    }
+
+    #main {
+        padding: 0;
+    }
+
+    #main .wrapper {
+        width: 100vw;
+        margin: 0;
+        display: block;
+    }
+
+    #book-appointment-wizard {
+        box-shadow: none;
+    }
+
+    #book-appointment-wizard .captcha-title {
+        margin: 7px 0 10px 0
+    }
+
+    #book-appointment-wizard .captcha-image {
+        float: left;
+    }
+
+    #message-frame,
+    #success-frame {
+        height: 100%;
     }
 }
