@@ -104,10 +104,10 @@ class Appointments extends CI_Controller {
             } else {
                 // The customer is going to book a new appointment so there is no
                 // need for the manage functionality to be initialized.
-                $manage_mode = FALSE;
-                $appointment = array();
-                $provider = array();
-                $customer = array();
+                $manage_mode        = FALSE;
+                $appointment   = array();
+                $provider      = array();
+                $customer      = array();
             }
 
             // Load the book appointment view.
@@ -174,8 +174,7 @@ class Appointments extends CI_Controller {
             // :: SYNC APPOINTMENT REMOVAL WITH GOOGLE CALENDAR
         	if ($appointment['id_google_calendar'] != NULL) {
                 try {
-                    $google_sync = filter_var($this->providers_model
-							->get_setting('google_sync',$appointment['id_users_provider']), FILTER_VALIDATE_BOOLEAN);
+                    $google_sync = $this->providers_model->get_setting('google_sync',$appointment['id_users_provider']);
 
                     if ($google_sync == TRUE) {
                         $google_token = json_decode($this->providers_model
@@ -193,8 +192,8 @@ class Appointments extends CI_Controller {
             try {
                 $this->load->library('Notifications');
 
-                $send_provider = filter_var($this->providers_model
-                            ->get_setting('notifications', $provider['id']), FILTER_VALIDATE_BOOLEAN);
+                $send_provider = $this->providers_model
+                            ->get_setting('notifications', $provider['id']);
 
                 if ($send_provider == TRUE) {
                     $this->notifications->send_delete_appointment($appointment, $provider,
@@ -202,10 +201,9 @@ class Appointments extends CI_Controller {
                             $_POST['cancel_reason']);
                 }
 
-				$send_customer = filter_var($this->settings_model->get_setting('customer_notifications'),
-						FILTER_VALIDATE_BOOLEAN);
+				$send_customer = $this->settings_model->get_setting('customer_notifications');
 
-				if ($send_customer === TRUE) {
+				if ((bool)$send_customer === TRUE) {
 					$this->notifications->send_delete_appointment($appointment, $provider,
 							$service, $customer, $company_settings, $customer['email'],
 							$_POST['cancel_reason']);
@@ -312,7 +310,7 @@ class Appointments extends CI_Controller {
 					$_POST['selected_date'], $exclude_appointments);
 
             $available_hours = $this->calculate_available_hours($empty_periods, $_POST['selected_date'],
-					$_POST['service_duration'], filter_var($_POST['manage_mode'], FILTER_VALIDATE_BOOLEAN));
+					$_POST['service_duration'], (bool)$_POST['manage_mode']);
 
             echo json_encode($available_hours);
 
@@ -331,7 +329,6 @@ class Appointments extends CI_Controller {
     public function ajax_register_appointment() {
         try {
             $post_data = $_POST['post_data']; // alias
-			$post_data['manage_mode'] = filter_var($post_data['manage_mode'], FILTER_VALIDATE_BOOLEAN);
 
 			$this->load->model('appointments_model');
             $this->load->model('providers_model');
@@ -380,8 +377,8 @@ class Appointments extends CI_Controller {
             // The provider must have previously granted access to his google calendar account
             // in order to sync the appointment.
             try {
-                $google_sync = filter_var($this->providers_model->get_setting('google_sync',
-                        $appointment['id_users_provider']), FILTER_VALIDATE_BOOLEAN);
+                $google_sync = $this->providers_model->get_setting('google_sync',
+                        $appointment['id_users_provider']);
 
                 if ($google_sync == TRUE) {
                     $google_token = json_decode($this->providers_model
@@ -414,7 +411,10 @@ class Appointments extends CI_Controller {
             try {
                 $this->load->library('Notifications');
 
-                if ($post_data['manage_mode'] == FALSE) {
+                $send_provider = $this->providers_model
+                        ->get_setting('notifications', $provider['id']);
+
+                if (!$post_data['manage_mode']) {
                     $customer_title = $this->lang->line('appointment_booked');
                     $customer_message = $this->lang->line('thank_you_for_appointment');
                     $customer_link = $this->config->item('base_url') . '/index.php/appointments/index/'
@@ -436,17 +436,13 @@ class Appointments extends CI_Controller {
                             . $appointment['hash'];
                 }
 
-				$send_customer = filter_var($this->settings_model->get_setting('customer_notifications'),
-						FILTER_VALIDATE_BOOLEAN);
+				$send_customer = $this->settings_model->get_setting('customer_notifications');
 
-				if ($send_customer == TRUE) {
+				if ((bool)$send_customer === TRUE) {
 					$this->notifications->send_appointment_details($appointment, $provider,
 							$service, $customer,$company_settings, $customer_title,
 							$customer_message, $customer_link, $customer['email']);
 				}
-
-				$send_provider = filter_var($this->providers_model ->get_setting('notifications', $provider['id']),
-						FILTER_VALIDATE_BOOLEAN);
 
                 if ($send_provider == TRUE) {
                     $this->notifications->send_appointment_details($appointment, $provider,
@@ -543,7 +539,7 @@ class Appointments extends CI_Controller {
 	    $this->load->model('providers_model');
 
 	    // Get the provider's working plan and reserved appointments.
-	    $working_plan = json_decode($this->providers_model->get_setting('working_plan', $provider_id), TRUE);
+	    $working_plan = json_decode($this->providers_model->get_setting('working_plan', $provider_id), true);
 
 	    $where_clause = array(
 	        'id_users_provider' => $provider_id
@@ -760,7 +756,11 @@ class Appointments extends CI_Controller {
 		// booking that is set in the backoffice the system. Normally we might want the customer to book
 		// an appointment that is at least half or one hour from now. The setting is stored in minutes.
 		if (date('m/d/Y', strtotime($selected_date)) === date('m/d/Y')) {
-			$book_advance_timeout = $this->settings_model->get_setting('book_advance_timeout');
+			if ($manage_mode) {
+				$book_advance_timeout = 0;
+			} else {
+				$book_advance_timeout = $this->settings_model->get_setting('book_advance_timeout');
+			}
 
 			foreach($available_hours as $index => $value) {
 				$available_hour = strtotime($value);
