@@ -9,36 +9,33 @@
  * @since       v1.0.0
  * ---------------------------------------------------------------------------- */
 
-window.GeneralFunctions = window.GeneralFunctions || {};
-
 /**
- * General Functions Module
+ * This file contains the General Functions javascript namespace.
+ * It contains functions that apply both on the front and back
+ * end of the application.
  *
- * It contains functions that apply both on the front and back end of the application.
- *
- * @module GeneralFunctions
+ * @namespace GeneralFunctions
  */
-(function(exports) {
-
-    'use strict';
-
+var GeneralFunctions = {
     /**
      * General Functions Constants
      */
-    exports.EXCEPTIONS_TITLE = EALang['unexpected_issues'];
-    exports.EXCEPTIONS_MESSAGE = EALang['unexpected_issues_message'];
-    exports.WARNINGS_TITLE = EALang['unexpected_warnings'];
-    exports.WARNINGS_MESSAGE = EALang['unexpected_warnings_message'];
+    EXCEPTIONS_TITLE: EALang['unexpected_issues'],
+    EXCEPTIONS_MESSAGE: EALang['unexpected_issues_message'],
+    WARNINGS_TITLE: EALang['unexpected_warnings'],
+    WARNINGS_MESSAGE: EALang['unexpected_warnings_message'],
 
     /**
-     * This functions displays a message box in the admin array. It is usefull when user
+     * This functions displays a message box in
+     * the admin array. It is usefull when user
      * decisions or verifications are needed.
      *
      * @param {string} title The title of the message box.
      * @param {string} message The message of the dialog.
-     * @param {array} messageButtons Contains the dialog buttons along with their functions.
+     * @param {array} messageButtons Contains the dialog
+     * buttons along with their functions.
      */
-    exports.displayMessageBox = function(title, message, messageButtons) {
+    displayMessageBox: function(title, message, messageButtons) {
         // Check arguments integrity.
         if (title == undefined || title == '') {
             title = '<No Title Given>';
@@ -80,14 +77,16 @@ window.GeneralFunctions = window.GeneralFunctions || {};
         $('#message_box').dialog('open');
         $('.ui-dialog .ui-dialog-buttonset button').addClass('btn btn-default');
         $('#message_box .ui-dialog-titlebar-close').hide();
-    };
+    },
 
     /**
-     * This method centers a DOM element vertically and horizontally on the page.
+     * This method centers a DOM element vertically and horizontally
+     * on the page.
      *
-     * @param {object} elementHandle The object that is going to be centered.
+     * @param {object} elementHandle The object that is going to be
+     * centered.
      */
-    exports.centerElementOnPage = function(elementHandle) {
+    centerElementOnPage: function(elementHandle) {
         // Center main frame vertical middle
         $(window).resize(function() {
             var elementLeft = ($(window).width() - elementHandle.outerWidth()) / 2;
@@ -101,7 +100,7 @@ window.GeneralFunctions = window.GeneralFunctions || {};
             });
         });
         $(window).resize();
-    };
+    },
 
     /**
      * This function retrieves a parameter from a "GET" formed url.
@@ -110,26 +109,24 @@ window.GeneralFunctions = window.GeneralFunctions || {};
      *
      * @param {string} url The selected url.
      * @param {string} name The parameter name.
-
-     * @return {string} Returns the parameter value.
+     * @returns {String} Returns the parameter value.
      */
-    exports.getUrlParameter = function(url, parameterName) {
+    getUrlParameter: function(url, parameterName) {
         parameterName = parameterName.replace(/[\[]/,'\\\[').replace(/[\]]/,'\\\]');
         var regexS = '[\\#&]' + parameterName + '=([^&#]*)',
             regex = new RegExp(regexS),
             results = regex.exec(url);
         return (results == null) ? '' : results[1];
-    };
+    },
 
     /**
-     * This function creates a RFC 3339 date string. This string is needed by the Google Calendar API
-     in order to pass dates as parameters.
+     * This function creates a RFC 3339 date string. This string is needed
+     * by the Google Calendar API in order to pass dates as parameters.
      *
-     * @param {date} dt The given date that will be transformed.
-
-     * @return {String} Returns the transformed string.
+     * @param {date} dt The given date that will be transformed
+     * @returns {String} Returns the transformed string.
      */
-    exports.ISODateString = function(dt) {
+    ISODateString: function(dt) {
         function pad(n) {
             return n<10 ? '0'+n : n;
         }
@@ -140,21 +137,19 @@ window.GeneralFunctions = window.GeneralFunctions || {};
              + pad(dt.getUTCHours())+':'
              + pad(dt.getUTCMinutes())+':'
              + pad(dt.getUTCSeconds())+'Z';
-    };
+    },
 
     /**
      * This method creates and returns an exact copy of the provided object.
-
      * It is very usefull whenever changes need to be made to an object without
      * modyfing the original data.
      *
      * @link http://stackoverflow.com/questions/728360/most-elegant-way-to-clone-a-javascript-object
      *
      * @param {object} originalObject Object to be copied.
-
-     * @return {object} Returns an exact copy of the provided element.
+     * @returns {object} Returns an exact copy of the provided element.
      */
-    exports.clone = function(originalObject) {
+    clone: function(originalObject) {
         // Handle the 3 simple types, and null or undefined
         if (null == originalObject || 'object' != typeof originalObject)
             return originalObject;
@@ -186,7 +181,7 @@ window.GeneralFunctions = window.GeneralFunctions || {};
         }
 
         throw new Error('Unable to copy obj! Its type isn\'t supported.');
-    };
+    },
 
     /**
      * This method validates an email address. If the address is not on the proper
@@ -195,25 +190,22 @@ window.GeneralFunctions = window.GeneralFunctions || {};
      * @link http://badsyntax.co/post/javascript-email-validation-rfc822
      *
      * @param {string} email The email address to be checked.
-
-     * @return {bool} Returns the validation result.
+     * @returns {bool} Returns the validation result.
      */
-    exports.validateEmail = function (email) {
+    validateEmail: function (email) {
         var re = /^([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22))*\x40([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d))*$/;
         return re.test(email);
-    };
+    },
 
     /**
-     * This method returns the exception HTML display for javascript ajax calls.
-
+     * This method returns the exception html display for javascript ajax calls.
      * It uses the Bootstrap collapse module to show exception messages when the
      * user opens the "Details" collapse component.
      *
      * @param {array} exceptions Contains the exceptions to be displayed.
-     *
-     * @return {string} Returns the html markup for the exceptions.
+     * @returns {string} Returns the html markup for the exceptions.
      */
-    exports.exceptionsToHtml = function(exceptions) {
+    exceptionsToHtml: function(exceptions) {
         var html =
                 '<div class="accordion" id="error-accordion">' +
                     '<div class="accordion-group">' +
@@ -236,7 +228,7 @@ window.GeneralFunctions = window.GeneralFunctions || {};
         html += '</div></div>';
 
         return html;
-    };
+    },
 
     /**
      * This method parse the json encoded strings that are fetched by ajax calls.
@@ -244,7 +236,7 @@ window.GeneralFunctions = window.GeneralFunctions || {};
      * @param {array} exceptions Exception array returned by an ajax call.
      * @returns {array} Returns the parsed js objects.
      */
-    exports.parseExceptions = function(exceptions) {
+    parseExceptions: function(exceptions) {
         var parsedExceptions = new Array();
 
         $.each(exceptions, function(index, exception) {
@@ -252,7 +244,7 @@ window.GeneralFunctions = window.GeneralFunctions || {};
         });
 
         return parsedExceptions;
-    };
+    },
 
     /**
      * Makes the first letter of the string upper case.
@@ -260,21 +252,20 @@ window.GeneralFunctions = window.GeneralFunctions || {};
      * @param {string} str The string to be converted.
      * @returns {string} Returns the capitalized string.
      */
-    exports.ucaseFirstLetter = function(str){
+    ucaseFirstLetter: function(str){
         return str.charAt(0).toUpperCase() + str.slice(1);
-    };
+    },
 
     /**
      * All backend js code has the same way of dislaying exceptions that are raised on the
      * server during an ajax call.
      *
      * @param {object} response Contains the server response. If exceptions or warnings are
-     * found, user friendly messages are going to be displayed to the user.4
-     *
-     * @return {bool} Returns whether the the ajax callback should continue the execution or
+     * found, user friendly messages are going to be displayed to the user.
+     * @returns {bool} Returns whether the the ajax callback should continue the execution or
      * stop, due to critical server exceptions.
      */
-    exports.handleAjaxExceptions = function(response) {
+    handleAjaxExceptions: function(response) {
         if (response.exceptions) {
             response.exceptions = GeneralFunctions.parseExceptions(response.exceptions);
             GeneralFunctions.displayMessageBox(GeneralFunctions.EXCEPTIONS_TITLE, GeneralFunctions.EXCEPTIONS_MESSAGE);
@@ -289,7 +280,7 @@ window.GeneralFunctions = window.GeneralFunctions || {};
         }
 
         return true;
-    };
+    },
 
     /**
      * Enables the language selection functionality. Must be called on every page has a
@@ -298,7 +289,7 @@ window.GeneralFunctions = window.GeneralFunctions || {};
      *
      * @param {object} $element Selected element button for the language selection.
      */
-    exports.enableLanguageSelection = function($element) {
+    enableLanguageSelection: function($element) {
     	// Select Language
         var html = '<ul id="language-list">';
         $.each(availableLanguages, function() {
@@ -339,7 +330,7 @@ window.GeneralFunctions = window.GeneralFunctions || {};
 
         	}, 'json').fail(GeneralFunctions.ajaxFailureHandler);
         });
-    };
+    },
 
     /**
      * Use this method for common error handling between
@@ -348,7 +339,7 @@ window.GeneralFunctions = window.GeneralFunctions || {};
      * @param {string} textStatus
      * @param {object} errorThrown
      */
-    exports.ajaxFailureHandler = function(jqxhr, textStatus, errorThrown) {
+    ajaxFailureHandler: function(jqxhr, textStatus, errorThrown) {
         var exceptions = [
             {
                 message: 'AJAX Error: ' + errorThrown
@@ -357,7 +348,7 @@ window.GeneralFunctions = window.GeneralFunctions || {};
         GeneralFunctions.displayMessageBox(GeneralFunctions.EXCEPTIONS_TITLE,
             GeneralFunctions.EXCEPTIONS_MESSAGE);
         $('#message_box').append(GeneralFunctions.exceptionsToHtml(exceptions));
-    };
+    },
 
     /**
      * Escape JS HTML string values for XSS prevention.
@@ -365,9 +356,9 @@ window.GeneralFunctions = window.GeneralFunctions || {};
      * @param {string} str String to be escaped.
      * @returns {string} Returns the escaped string.
      */
-    exports.escapeHtml = function(str) {
+    escapeHtml: function(str) {
         return $('<div/>').text(str).html();
-    };
+    },
 
     /**
      * Format a given date according to the date format setting.
@@ -376,10 +367,9 @@ window.GeneralFunctions = window.GeneralFunctions || {};
      * @param {string} dateFormatSetting The setting provided by PHP must be one of
      * the "DMY", "MDY" or "YMD".
      * @param {bool} addHours (optional) Whether to add hours to the result.
-
-     * @return {string} Returns the formatted date string.
+     * @returns {string} Returns the formatted date string.
      */
-    exports.formatDate = function(date, dateFormatSetting, addHours) {
+    formatDate: function(date, dateFormatSetting, addHours) {
         var format, result,
             hours = addHours ? ' HH:mm' : '';
 
@@ -398,6 +388,5 @@ window.GeneralFunctions = window.GeneralFunctions || {};
         }
 
         return result;
-    };
-
-})(window.GeneralFunctions);
+    }
+};

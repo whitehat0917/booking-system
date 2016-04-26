@@ -10,11 +10,9 @@
  * ---------------------------------------------------------------------------- */
 
 $(document).ready(function() {
-    'use strict';
-
-    var MIN_PASSWORD_LENGTH = 7,
-        AJAX_SUCCESS = 'SUCCESS',
-        AJAX_FAILURE = 'FAILURE';
+    var MIN_PASSWORD_LENGTH = 7;
+    var AJAX_SUCCESS = 'SUCCESS';
+    var AJAX_FAILURE = 'FAILURE';
 
     $(document).ajaxStart(function() {
         $('#loading').show();
@@ -28,16 +26,14 @@ $(document).ready(function() {
      * Event: Install Easy!Appointments Button "Click"
      */
     $('#install').click(function() {
-        if (!validate()) {
-            return;
-        }
+        if (!validate()) return;
 
-        var postUrl = GlobalVariables.baseUrl + '/index.php/installation/ajax_install',
-            postData = {
-                csrfToken: GlobalVariables.csrfToken,
-                admin: JSON.stringify(getAdminData()),
-                company: JSON.stringify(getCompanyData())
-            };
+        var postUrl = GlobalVariables.baseUrl + '/index.php/installation/ajax_install';
+        var postData = {
+            'csrfToken': GlobalVariables.csrfToken,
+            'admin': JSON.stringify(getAdminData()),
+            'company': JSON.stringify(getCompanyData())
+        };
 
         $.ajax({
             url: postUrl,
@@ -45,9 +41,11 @@ $(document).ready(function() {
             data: postData,
             datatype: 'json',
             success: function(response) {
-                if (!GeneralFunctions.handleAjaxExceptions(response)) {
-                    return;
-                }
+                //////////////////////////////////////////////////////
+                console.log('Ajax Install E!A Response:', response);
+                //////////////////////////////////////////////////////
+
+                if (!GeneralFunctions.handleAjaxExceptions(response)) return;
 
                 $('.alert').text('Easy!Appointments has been successfully installed!');
                 $('.alert').addClass('alert-success');
@@ -92,9 +90,8 @@ $(document).ready(function() {
                 }
             });
 
-            if (missingRequired) {
+            if (missingRequired)
                 throw 'All the page fields are required.';
-            }
 
             // Validate Passwords
             if ($('#password').val() != $('#retype-password').val()) {
@@ -135,12 +132,12 @@ $(document).ready(function() {
      */
     function getAdminData() {
         var admin = {
-            first_name: $('#first-name').val(),
-            last_name: $('#last-name').val(),
-            email: $('#email').val(),
-            phone_number: $('#phone-number').val(),
-            username: $('#username').val(),
-            password: $('#password').val()
+            'first_name': $('#first-name').val(),
+            'last_name': $('#last-name').val(),
+            'email': $('#email').val(),
+            'phone_number': $('#phone-number').val(),
+            'username': $('#username').val(),
+            'password': $('#password').val()
         };
 
         return admin;
@@ -153,9 +150,9 @@ $(document).ready(function() {
      */
     function getCompanyData() {
         var company = {
-            company_name: $('#company-name').val(),
-            company_email: $('#company-email').val(),
-            company_link: $('#company-link').val()
+            'company_name': $('#company-name').val(),
+            'company_email': $('#company-email').val(),
+            'company_link': $('#company-link').val()
         };
 
         return company;
