@@ -19,14 +19,8 @@
  * @package Controllers
  */
 class Backend_api extends CI_Controller {
-    /**
-     * @var array
-     */
-    protected $privileges;
+    private $privileges;
 
-    /**
-     * Class Constructor
-     */
     public function __construct() {
         parent::__construct();
 
@@ -214,17 +208,25 @@ class Backend_api extends CI_Controller {
                 if (!$manage_mode) {
                     $customer_title = $this->lang->line('appointment_booked');
                     $customer_message = $this->lang->line('thank_you_for_appointment');
+                    $customer_link = $this->config->item('base_url') . '/index.php/appointments/index/'
+                            . $appointment['hash'];
+
                     $provider_title = $this->lang->line('appointment_added_to_your_plan');
                     $provider_message = $this->lang->line('appointment_link_description');
+                    $provider_link = $this->config->item('base_url') . '/index.php/backend/index/'
+                            . $appointment['hash'];
                 } else {
                     $customer_title = $this->lang->line('appointment_changes_saved');
                     $customer_message = '';
+                    $customer_link = $this->config->item('base_url') . '/index.php/appointments/index/'
+                            . $appointment['hash'];
+
                     $provider_title = $this->lang->line('appointment_details_changed');
                     $provider_message = '';
+                    $provider_link = $this->config->item('base_url') . '/index.php/backend/index/'
+                            . $appointment['hash'];
                 }
 
-                $customer_link = site_url('appointments/index/' . $appointment['hash']);
-                $provider_link = site_url('backend/index/' . $appointment['hash']);
 
                 $send_customer = $this->settings_model->get_setting('customer_notifications');
 
@@ -408,17 +410,15 @@ class Backend_api extends CI_Controller {
 	    	$this->load->model('customers_model');
 
 	    	$key = $this->db->escape_str($_POST['key']);
-            $key = strtoupper($key);
 
 	    	$where_clause =
-	    			'(first_name LIKE upper("%' . $key . '%") OR ' .
-	    			'last_name  LIKE upper("%' . $key . '%") OR ' .
-	    			'email LIKE upper("%' . $key . '%") OR ' .
-	    			'phone_number LIKE upper("%' . $key . '%") OR ' .
-	    			'address LIKE upper("%' . $key . '%") OR ' .
-	    			'city LIKE upper("%' . $key . '%") OR ' .
-	    			'zip_code LIKE upper("%' . $key . '%") OR ' .
-                    'notes LIKE upper("%' . $key . '%"))';
+	    			'(first_name LIKE "%' . $key . '%" OR ' .
+	    			'last_name LIKE "%' . $key . '%" OR ' .
+	    			'email LIKE "%' . $key . '%" OR ' .
+	    			'phone_number LIKE "%' . $key . '%" OR ' .
+	    			'address LIKE "%' . $key . '%" OR ' .
+	    			'city LIKE "%' . $key . '%" OR ' .
+	    			'zip_code LIKE "%' . $key . '%")';
 
             $customers = $this->customers_model->get_batch($where_clause);
 
@@ -448,7 +448,8 @@ class Backend_api extends CI_Controller {
     /**
      * [AJAX] Insert of update unavailable time period to database.
      *
-     * @param array $_POST['unavailable'] JSON encoded array that contains the unavailable period data.
+     * @param array $_POST['unavailable'] JSON encoded array that contains the unavailable
+     * period data.
      */
     public function ajax_save_unavailable() {
         try {

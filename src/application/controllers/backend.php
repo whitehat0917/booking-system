@@ -17,9 +17,6 @@
  * @package Controllers
  */
 class Backend extends CI_Controller {
-    /**
-     * Class Constructor
-     */
     public function __construct() {
         parent::__construct();
         $this->load->library('session');
@@ -45,8 +42,8 @@ class Backend extends CI_Controller {
      * appear when the page loads.
      */
     public function index($appointment_hash = '') {
-        $this->session->set_userdata('dest_url', site_url('backend'));
-        if (!$this->_has_privileges(PRIV_APPOINTMENTS)) return;
+        $this->session->set_userdata('dest_url', $this->config->item('base_url') . '/index.php/backend');
+        if (!$this->has_privileges(PRIV_APPOINTMENTS)) return;
 
         $this->load->model('appointments_model');
         $this->load->model('providers_model');
@@ -95,8 +92,8 @@ class Backend extends CI_Controller {
      * In this page the user can manage all the customer records of the system.
      */
     public function customers() {
-        $this->session->set_userdata('dest_url', site_url('backend/customers'));
-    	if (!$this->_has_privileges(PRIV_CUSTOMERS)) return;
+        $this->session->set_userdata('dest_url', $this->config->item('base_url') . '/index.php/backend/customers');
+    	if (!$this->has_privileges(PRIV_CUSTOMERS)) return;
 
         $this->load->model('providers_model');
         $this->load->model('customers_model');
@@ -129,8 +126,8 @@ class Backend extends CI_Controller {
      * from the backend services page.
      */
     public function services() {
-        $this->session->set_userdata('dest_url', site_url('backend/services'));
-        if (!$this->_has_privileges(PRIV_SERVICES)) return;
+        $this->session->set_userdata('dest_url', $this->config->item('base_url') . '/index.php/backend/services');
+        if (!$this->has_privileges(PRIV_SERVICES)) return;
 
         $this->load->model('customers_model');
         $this->load->model('services_model');
@@ -159,8 +156,8 @@ class Backend extends CI_Controller {
      * the page where the admin defines which service can each provider provide.
      */
     public function users() {
-        $this->session->set_userdata('dest_url', site_url('backend/users'));
-        if (!$this->_has_privileges(PRIV_USERS)) return;
+        $this->session->set_userdata('dest_url', $this->config->item('base_url') . '/index.php/backend/users');
+        if (!$this->has_privileges(PRIV_USERS)) return;
 
         $this->load->model('providers_model');
         $this->load->model('secretaries_model');
@@ -194,9 +191,9 @@ class Backend extends CI_Controller {
      * installation (core settings like company name, book timeout etc).
      */
     public function settings() {
-        $this->session->set_userdata('dest_url', site_url('backend/settings'));
-        if (!$this->_has_privileges(PRIV_SYSTEM_SETTINGS, FALSE)
-                && !$this->_has_privileges(PRIV_USER_SETTINGS)) return;
+        $this->session->set_userdata('dest_url', $this->config->item('base_url') . '/index.php/backend/settings');
+        if (!$this->has_privileges(PRIV_SYSTEM_SETTINGS, FALSE)
+                && !$this->has_privileges(PRIV_USER_SETTINGS)) return;
 
         $this->load->model('settings_model');
         $this->load->model('user_model');
@@ -239,12 +236,12 @@ class Backend extends CI_Controller {
      * not. If the user is not logged in then he will be prompted to log in. If he hasn't the
      * required privileges then an info message will be displayed.
      */
-    protected function _has_privileges($page, $redirect = TRUE) {
+    private function has_privileges($page, $redirect = TRUE) {
         // Check if user is logged in.
         $user_id = $this->session->userdata('user_id');
         if ($user_id == FALSE) { // User not logged in, display the login view.
             if ($redirect) {
-                header('Location: ' . site_url('user/login'));
+                header('Location: ' . $this->config->item('base_url') . '/index.php/user/login');
             }
             return FALSE;
         }
@@ -254,7 +251,7 @@ class Backend extends CI_Controller {
         $role_priv = $this->db->get_where('ea_roles', array('slug' => $role_slug))->row_array();
         if ($role_priv[$page] < PRIV_VIEW) { // User does not have the permission to view the page.
              if ($redirect) {
-                header('Location: ' . site_url('user/no_privileges'));
+                header('Location: ' . $this->config->item('base_url') . '/index.php/user/no_privileges');
             }
             return FALSE;
         }
@@ -273,7 +270,7 @@ class Backend extends CI_Controller {
      */
     public function update() {
         try {
-            if (!$this->_has_privileges(PRIV_SYSTEM_SETTINGS, TRUE))
+            if (!$this->has_privileges(PRIV_SYSTEM_SETTINGS, TRUE))
                 throw new Exception('You do not have the required privileges for this task!');
 
             $this->load->library('migration');
@@ -295,7 +292,7 @@ class Backend extends CI_Controller {
      *
      * @param array $view Contains the view data.
      */
-    protected function set_user_data(&$view) {
+    private function set_user_data(&$view) {
         $this->load->model('roles_model');
 
         // Get privileges

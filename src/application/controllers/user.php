@@ -39,7 +39,7 @@ class User extends CI_Controller {
      * The default method will redirect the browser to the user/login URL.
      */
     public function index() {
-        header('Location: ' . site_url('user/login'));
+        header('Location: ' . $this->config->item('base_url') . '/index.php/user/login');
     }
 
     /**
@@ -52,7 +52,7 @@ class User extends CI_Controller {
         $view['dest_url'] = $this->session->userdata('dest_url');
 
         if (!$view['dest_url']) {
-            $view['dest_url'] = site_url('backend');
+            $view['dest_url'] = $view['base_url'] . '/index.php/backend';
         }
 
         $view['company_name'] = $this->settings_model->get_setting('company_name');
@@ -77,7 +77,7 @@ class User extends CI_Controller {
     }
 
     /**
-     * Display the "forgot password" page.
+     * Display the forgot password page.
      */
     public function forgot_password() {
         $this->load->model('settings_model');
@@ -86,9 +86,6 @@ class User extends CI_Controller {
         $this->load->view('user/forgot_password', $view);
     }
 
-    /**
-     * Display the "not authorized" page.
-     */
     public function no_privileges() {
         $this->load->model('settings_model');
         $view['base_url'] = $this->config->item('base_url');

@@ -9,48 +9,37 @@
  * @since       v1.0.0
  * ---------------------------------------------------------------------------- */
 
-window.BackendUsers = window.BackendUsers || {};
-
 /**
- * Backend Users
- *
- * This module handles the js functionality of the users backend page. It uses three other
+ * This namespace handles the js functionality of the users backend page. It uses three other
  * classes (defined below) in order to handle the admin, provider and secretary record types.
  *
- * @module BackendUsers
+ * @namespace BackendUsers
  */
-(function(exports){
-
-    'use strict';
-
-    /**
-     * Minimum Password Length
-     *
-     * @type {Number}
-     */
-    exports.MIN_PASSWORD_LENGTH = 7;
+var BackendUsers = {
+    MIN_PASSWORD_LENGTH: 7,
 
     /**
      * Contains the current tab record methods for the page.
      *
-     * @type {AdminsHelper|ProvidersHelper|SecretariesHelper}
+     * @type AdminsHelper|ProvidersHelper|SecretariesHelper
      */
-    var helper = {};
+    helper: {},
 
     /**
      * Use this class instance for performing actions on the working plan.
      *
-     * @type {WorkingPlan}
+     * @type {object}
      */
-    exports.wp = {};
+    wp: {},
 
     /**
      * Initialize the backend users page.
      *
-     * @param {Boolean} defaultEventHandlers (OPTIONAL) Whether to bind the default event handlers.
+     * @param {bool} defaultEventHandlers (OPTIONAL) Whether to bind the default event handlers
+     * (default: true).
      */
-    exports.initialize = function(defaultEventHandlers) {
-        defaultEventHandlers = defaultEventHandlers || true;
+    initialize: function(defaultEventHandlers) {
+        if (defaultEventHandlers == undefined) defaultEventHandlers = true;
 
         // Initialize jScrollPane Scrollbars
         $('#filter-admins .results').jScrollPane();
@@ -58,13 +47,12 @@ window.BackendUsers = window.BackendUsers || {};
         $('#filter-secretaries .results').jScrollPane();
 
         // Instanciate default helper object (admin).
-        helper = new AdminsHelper();
-        helper.resetForm();
-        helper.filter('');
-        helper.bindEventHandlers();
+        BackendUsers.helper = new AdminsHelper();
+        BackendUsers.helper.resetForm();
+        BackendUsers.helper.filter('');
 
-        exports.wp = new WorkingPlan();
-        exports.wp.bindEventHandlers();
+        BackendUsers.wp = new WorkingPlan();
+        BackendUsers.wp.bindEventHandlers();
 
         // Fill the services and providers list boxes.
         var html = '<div class="col-md-12">';
@@ -82,7 +70,7 @@ window.BackendUsers = window.BackendUsers || {};
         $('#provider-services').html(html);
         $('#provider-services').jScrollPane({ mouseWheelSpeed: 70 });
 
-        html = '<div class="col-md-12">';
+        var html = '<div class="col-md-12">';
         $.each(GlobalVariables.providers, function(index, provider) {
            html +=
                 '<div class="checkbox">' +
@@ -108,16 +96,14 @@ window.BackendUsers = window.BackendUsers || {};
         });
 
         // Bind event handlers.
-        if (defaultEventHandlers) {
-            _bindEventHandlers();
-        }
-    };
+        if (defaultEventHandlers) BackendUsers.bindEventHandlers();
+    },
 
     /**
      * Binds the defauly backend users event handlers. Do not use this method on a different
      * page because it needs the backend users page DOM.
      */
-    function _bindEventHandlers() {
+    bindEventHandlers: function() {
         /**
          * Event: Page Tab Button "Click"
          *
@@ -127,30 +113,31 @@ window.BackendUsers = window.BackendUsers || {};
             $(this).parent().find('.active').removeClass('active');
             $(this).addClass('active');
             $('.tab-content').hide();
-            $('#admins, #providers, #secretaries').off();
 
             if ($(this).hasClass('admins-tab')) { // display admins tab
                 $('#admins').show();
-                helper = new AdminsHelper();
+                BackendUsers.helper = new AdminsHelper();
             } else if ($(this).hasClass('providers-tab')) { // display providers tab
                 $('#providers').show();
                 $('#provider-services').data('jsp').destroy();
                 $('#provider-services').jScrollPane({ mouseWheelSpeed: 70 });
-                helper = new ProvidersHelper();
+                BackendUsers.helper = new ProvidersHelper();
             } else if ($(this).hasClass('secretaries-tab')) { // display secretaries tab
                 $('#secretaries').show();
-                helper = new SecretariesHelper();
+                BackendUsers.helper = new SecretariesHelper();
 
                 // Update the list with the all the available providers.
-                var postUrl = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_filter_providers',
-                    postData = {
-                        csrfToken: GlobalVariables.csrfToken,
-                        key: ''
-                    };
+                var postUrl = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_filter_providers';
+                var postData = {
+                    'csrfToken': GlobalVariables.csrfToken,
+                    'key': ''
+                };
                 $.post(postUrl, postData, function(response) {
-                    if (!GeneralFunctions.handleAjaxExceptions(response)) {
-                        return;
-                    }
+                    //////////////////////////////////////////////////////////
+                    //console.log('Get all db providers response:', response);
+                    //////////////////////////////////////////////////////////
+
+                    if (!GeneralFunctions.handleAjaxExceptions(response)) return;
 
                     GlobalVariables.providers = response;
 
@@ -175,9 +162,8 @@ window.BackendUsers = window.BackendUsers || {};
                 }, 'json').fail(GeneralFunctions.ajaxFailureHandler);
             }
 
-            helper.resetForm();
-            helper.filter('');
-            helper.bindEventHandlers();
+            BackendUsers.helper.resetForm();
+            BackendUsers.helper.filter('');
             $('.filter-key').val('');
         });
 
@@ -200,18 +186,18 @@ window.BackendUsers = window.BackendUsers || {};
                 return;
             }
 
-            var postUrl = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_validate_username',
-                postData = {
-                    csrfToken: GlobalVariables.csrfToken,
-                    username: $input.val(),
-                    user_id: userId
-                };
+            var postUrl = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_validate_username';
+            var postData = {
+                'csrfToken': GlobalVariables.csrfToken,
+                'username': $input.val(),
+                'user_id': userId
+            };
 
             $.post(postUrl, postData, function(response) {
-                if (!GeneralFunctions.handleAjaxExceptions(response)) {
-                    return;
-                }
-
+                ///////////////////////////////////////////////////////
+                console.log('Validate Username Response:', response);
+                ///////////////////////////////////////////////////////
+                if (!GeneralFunctions.handleAjaxExceptions(response)) return;
                 if (response == false) {
                     $input.css('border', '2px solid red');
                     $input.attr('already-exists', 'true');
@@ -226,6 +212,19 @@ window.BackendUsers = window.BackendUsers || {};
                 }
             }, 'json').fail(GeneralFunctions.ajaxFailureHandler);
         });
-    };
 
-})(window.BackendUsers);
+        // ------------------------------------------------------------------------
+
+        AdminsHelper.prototype.bindEventHandlers();
+
+        // ------------------------------------------------------------------------
+
+        ProvidersHelper.prototype.bindEventHandlers();
+
+        // ------------------------------------------------------------------------
+
+        SecretariesHelper.prototype.bindEventHandlers();
+
+        // ------------------------------------------------------------------------
+    }
+};

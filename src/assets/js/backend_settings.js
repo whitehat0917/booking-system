@@ -9,45 +9,39 @@
  * @since       v1.0.0
  * ---------------------------------------------------------------------------- */
 
-window.BackendSettings = window.BackendSettings || {};
-
 /**
- * Backend Settings
+ * Contains the functionality of the backend settings page. Can either work for
+ * system or user settings, but the actions allowed to the user are restricted to
+ * his role (only admin has full privileges).
  *
- * Contains the functionality of the backend settings page. Can either work for system or user settings,
- * but the actions allowed to the user are restricted to his role (only admin has full privileges).
- *
- * @module BackendSettings
+ * @namespace BackendSettings
  */
-(function(exports) {
-
-    'use strict';
-
-    // Constants
-    exports.SETTINGS_SYSTEM = 'SETTINGS_SYSTEM';
-    exports.SETTINGS_USER = 'SETTINGS_USER';
+var BackendSettings = {
+    SETTINGS_SYSTEM: 'SETTINGS_SYSTEM',
+    SETTINGS_USER: 'SETTINGS_USER',
 
     /**
-     * Use this WorkingPlan class instance to perform actions on the page's working plan tables.
-     *
-     * @type {WorkingPlan}
+     * Use this WorkingPlan class instance to perform actions on the page's working plan
+     * tables.
      */
-    exports.wp = {};
+    wp: {},
 
     /**
      * Tab settings object.
      *
-     * @type {Object}
+     * @type {object}
      */
-    var settings = {};
+    settings: {},
 
     /**
      * Initialize Page
      *
-     * @param {bool} bindEventHandlers Optional (true), determines whether to bind the default event handlers.
+     * @param {bool} bindEventHandlers (OPTIONAL)Determines whether to bind the default event
+     * handlers (default = true).
+     * @returns {undefined}
      */
-    exports.initialize = function(bindEventHandlers) {
-        bindEventHandlers = bindEventHandlers || true;
+    initialize: function(bindEventHandlers) {
+        if (bindEventHandlers == undefined) bindEventHandlers = true;
 
         // Apply setting values from database.
         $.each(GlobalVariables.settings.system, function(index, setting) {
@@ -70,9 +64,9 @@ window.BackendSettings = window.BackendSettings || {};
             }
         });
 
-        exports.wp = new WorkingPlan();
-        exports.wp.setup(workingPlan);
-        exports.wp.timepickers(false);
+        BackendSettings.wp = new WorkingPlan();
+        BackendSettings.wp.setup(workingPlan);
+        BackendSettings.wp.timepickers(false);
 
         // Book Advance Timeout Spinner
         $('#book-advance-timeout').spinner({
@@ -102,10 +96,10 @@ window.BackendSettings = window.BackendSettings || {};
         }
 
         // Set default settings helper.
-        settings = new SystemSettings();
+        BackendSettings.settings = new SystemSettings();
 
         if (bindEventHandlers) {
-            _bindEventHandlers();
+            BackendSettings.bindEventHandlers();
             $('#settings-page .nav li').first().addClass('active');
             $('#settings-page .nav li').first().find('a').trigger('click');
         }
@@ -122,15 +116,14 @@ window.BackendSettings = window.BackendSettings || {};
         }
 
         Backend.placeFooterToBottom();
-    };
+    },
 
     /**
-     * Bind the backend/settings default event handlers.
-     *
-     * This method depends on the backend/settings html, so do not use this method on a different page.
+     * Bind the backend/settings default event handlers. This method depends on the
+     * backend/settings html, so do not use this method on a different page.
      */
-    function _bindEventHandlers() {
-        exports.wp.bindEventHandlers();
+    bindEventHandlers: function() {
+        BackendSettings.wp.bindEventHandlers();
 
         /**
          * Event: Tab "Click"
@@ -149,14 +142,14 @@ window.BackendSettings = window.BackendSettings || {};
 
             if ($(this).hasClass('general-tab')) {
                 $('#general').show();
-                settings = new SystemSettings();
+                BackendSettings.settings = new SystemSettings();
             } else if ($(this).hasClass('business-logic-tab')) {
                 $('#business-logic').show();
-                settings = new SystemSettings();
+                BackendSettings.settings = new SystemSettings();
 
             } else if ($(this).hasClass('user-tab')) {
                 $('#user').show();
-                settings = new UserSettings();
+                BackendSettings.settings = new UserSettings();
 
                 // Apply toggle state to user notifications button.
                 if (areNotificationsActive) {
@@ -177,8 +170,11 @@ window.BackendSettings = window.BackendSettings || {};
          * Store the setting changes into the database.
          */
         $('.save-settings').click(function() {
-            var data = settings.get();
-            settings.save(data);
+            var settings = BackendSettings.settings.get();
+            BackendSettings.settings.save(settings);
+            //////////////////////////////////////////////
+            //console.log('Settings To Save: ', settings);
+            //////////////////////////////////////////////
         });
 
         /**
@@ -190,22 +186,20 @@ window.BackendSettings = window.BackendSettings || {};
         $('#username').focusout(function() {
             var $input = $(this);
 
-            if ($input.prop('readonly') == true || $input.val() == '') {
-                return;
-            }
+            if ($input.prop('readonly') == true || $input.val() == '') return;
 
-            var postUrl = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_validate_username',
-                postData = {
-                    csrfToken: GlobalVariables.csrfToken,
-                    username: $input.val(),
-                    user_id: $input.parents().eq(2).find('#user-id').val()
-                };
+            var postUrl = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_validate_username';
+            var postData = {
+                'csrfToken': GlobalVariables.csrfToken,
+                'username': $input.val(),
+                'user_id': $input.parents().eq(2).find('#user-id').val()
+            };
 
             $.post(postUrl, postData, function(response) {
-                if (!GeneralFunctions.handleAjaxExceptions(response)) {
-                    return;
-                }
-
+                ///////////////////////////////////////////////////////
+                //console.log('Validate Username Response:', response);
+                ///////////////////////////////////////////////////////
+                if (!GeneralFunctions.handleAjaxExceptions(response)) return;
                 if (response == false) {
                     $input.css('border', '2px solid red');
                     Backend.displayNotification(EALang['username_already_exists']);
@@ -217,5 +211,237 @@ window.BackendSettings = window.BackendSettings || {};
             }, 'json').fail(GeneralFunctions.ajaxFailureHandler);
         });
     }
+};
 
-})(window.BackendSettings);
+/**
+ * "System Settings" Tab Helper
+ * @class SystemSettings
+ */
+var SystemSettings = function() {};
+
+/**
+ * Save the system settings. This method is run after changes are detected on the
+ * tab input fields.
+ *
+ * @param {array} settings Contains the system settings data.
+ */
+SystemSettings.prototype.save = function(settings) {
+    var postUrl = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_save_settings';
+    var postData = {
+        'csrfToken': GlobalVariables.csrfToken,
+        'settings': JSON.stringify(settings),
+        'type': BackendSettings.SETTINGS_SYSTEM
+    };
+
+    $.post(postUrl, postData, function(response) {
+        ///////////////////////////////////////////////////////////
+        console.log('Save General Settings Response:', response);
+        ///////////////////////////////////////////////////////////
+
+        if (!GeneralFunctions.handleAjaxExceptions(response)) return;
+
+        Backend.displayNotification(EALang['settings_saved']);
+
+        // Update the logo title on the header.
+        $('#header-logo span').text($('#company-name').val());
+
+        // We need to refresh the working plan.
+        var workingPlan = BackendSettings.wp.get();
+        $('.breaks').empty();
+        BackendSettings.wp.setup(workingPlan);
+        BackendSettings.wp.timepickers(false);
+
+    }, 'json').fail(GeneralFunctions.ajaxFailureHandler);
+};
+
+/**
+ * Prepare the system settings array. This method uses the DOM elements of the
+ * backend/settings page, so it can't be used in another page.
+ *
+ * @returns {array} Returns the system settings array.
+ */
+SystemSettings.prototype.get = function() {
+    var settings = [];
+
+    // General Settings Tab
+    $('#general').find('input, select').each(function() {
+        settings.push({
+            'name': $(this).attr('data-field'),
+            'value': $(this).val()
+        });
+    });
+
+    settings.push({
+        'name': 'customer_notifications',
+        'value': $('#customer-notifications').hasClass('active') === true ? '1' : '0'
+    });
+
+    settings.push({
+        'name': 'require_captcha',
+        'value': $('#require-captcha').hasClass('active') === true ? '1' : '0'
+    });
+
+    // Business Logic Tab
+    settings.push({
+        'name': 'company_working_plan',
+        'value': JSON.stringify(BackendSettings.wp.get())
+    });
+
+    settings.push({
+        'name': 'book_advance_timeout',
+        'value': $('#book-advance-timeout').val()
+    });
+
+    return settings;
+};
+
+/**
+ * Validate the settings data. If the validation fails then display a
+ * message to the user.
+ *
+ * @returns {bool} Returns the validation result.
+ */
+SystemSettings.prototype.validate = function() {
+    $('#general .required').css('border', '');
+
+    try {
+        // Validate required fields.
+        var missingRequired = false;
+        $('#general .required').each(function() {
+            if ($(this).val() == '' || $(this).val() == undefined) {
+                $(this).css('border', '2px solid red');
+                missingRequired = true;
+            }
+        });
+        if (missingRequired) {
+            throw EALang['fields_are_required'];
+        }
+
+        // Validate company email address.
+        if (!GeneralFunctions.validateEmail($('#company-email').val())) {
+            $('#company-email').css('border', '2px solid red');
+            throw EALang['invalid_email'];
+        }
+
+        return true;
+    } catch(exc) {
+        Backend.displayNotification(exc);
+        return false;
+    }
+};
+
+/**
+ * "User Settings" Tab Helper
+ * @class UserSettings
+ */
+var UserSettings = function() {};
+
+/**
+ * Get the settings data for the user settings.
+ *
+ * @returns {object} Returns the user settings array.
+ */
+UserSettings.prototype.get = function() {
+    var user = {
+        'id': $('#user-id').val(),
+        'first_name': $('#first-name').val(),
+        'last_name': $('#last-name').val(),
+        'email': $('#email').val(),
+        'mobile_number': $('#mobile-number').val(),
+        'phone_number': $('#phone-number').val(),
+        'address': $('#address').val(),
+        'city': $('#city').val(),
+        'state': $('#state').val(),
+        'zip_code': $('#zip-code').val(),
+        'notes': $('#notes').val(),
+        'settings': {
+            'username': $('#username').val(),
+            'notifications': $('#user-notifications').hasClass('active')
+        }
+    };
+
+    if ($('#password').val() != '') {
+        user.settings.password = $('#password').val();
+    }
+
+    return user;
+};
+
+/**
+ * Store the user settings into the database.
+ *
+ * @param {array} settings Contains the user settings.
+ */
+UserSettings.prototype.save = function(settings) {
+    if (!BackendSettings.settings.validate(settings)) {
+        Backend.displayNotification(EALang['user_settings_are_invalid']);
+        return; // Validation failed, do not procceed.
+    }
+
+    var postUrl = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_save_settings';
+    var postData = {
+        'csrfToken': GlobalVariables.csrfToken,
+        'type': BackendSettings.SETTINGS_USER,
+        'settings': JSON.stringify(settings)
+    };
+
+    $.post(postUrl, postData, function(response) {
+        //////////////////////////////////////////////////////////
+        console.log('Save User Settings Response: ', response);
+        //////////////////////////////////////////////////////////
+
+        if (!GeneralFunctions.handleAjaxExceptions(response)) return;
+        Backend.displayNotification(EALang['settings_saved']);
+
+        // Update footer greetings.
+        $('#footer-user-display-name').text('Hello, ' + $('#first-name').val() + ' ' + $('#last-name').val() + '!');
+
+    }, 'json').fail(GeneralFunctions.ajaxFailureHandler);
+};
+
+/**
+ * Validate the settings data. If the validation fails then display a
+ * message to the user.
+ *
+ * @returns {bool} Returns the validation result.
+ */
+UserSettings.prototype.validate = function() {
+    $('#user .required').css('border', '');
+    $('#user').find('#password, #retype-password').css('border', '');
+
+    try {
+        // Validate required fields.
+        var missingRequired = false;
+        $('#user .required').each(function() {
+            if ($(this).val() == '' || $(this).val() == undefined) {
+                $(this).css('border', '2px solid red');
+                missingRequired = true;
+            }
+        });
+        if (missingRequired) {
+            throw EALang['fields_are_required'];
+        }
+
+        // Validate passwords (if provided).
+        if ($('#password').val() != $('#retype-password').val()) {
+            $('#password, #retype-password').css('border', '2px solid red');
+            throw EALang['passwords_mismatch'];
+        }
+
+        // Validate user email.
+        if (!GeneralFunctions.validateEmail($('#email').val())) {
+            $('#email').css('border', '2px solid red');
+            throw EALang['invalid_email'];
+        }
+
+        if ($('#username').attr('already-exists') === 'true') {
+            $('#username').css('border', '2px solid red');
+            throw EALang['username_already_exists'];
+        }
+
+        return true;
+    } catch(exc) {
+        Backend.displayNotification(exc);
+        return false;
+    }
+};

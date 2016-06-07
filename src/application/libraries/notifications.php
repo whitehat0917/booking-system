@@ -21,12 +21,7 @@
  * @package Libraries
  */
 class Notifications {
-    /**
-     * CodeIgniter Instance
-     *
-     * @var CodeIgniter
-     */
-    protected $ci;
+    private $ci;
 
     /**
      * Class Constructor
@@ -45,11 +40,10 @@ class Notifications {
      * @param array $replace_array Array that contains the variables
      * to be replaced.
      * @param string $email_html The email template hmtl.
-     *
      * @return string Returns the new email html that contain the
      * variables of the $replace_array.
      */
-    protected function _replace_template_variables($replace_array, $email_html) {
+    private function replace_template_variables($replace_array, $email_html) {
         foreach($replace_array as $var=>$value) {
             $email_html = str_replace($var, $value, $email_html);
         }
@@ -75,7 +69,6 @@ class Notifications {
      * @param string $appointment_link This link is going to enable the receiver to make changes
      * to the appointment record.
      * @param string $receiver_address The receiver email address.
-     *
      * @return bool Returns the operation result.
      */
     public function send_appointment_details($appointment_data, $provider_data, $service_data,
@@ -117,7 +110,7 @@ class Notifications {
 
         $email_html = file_get_contents(dirname(dirname(__FILE__))
                 . '/views/emails/appointment_details.php');
-        $email_html = $this->_replace_template_variables($replace_array, $email_html);
+        $email_html = $this->replace_template_variables($replace_array, $email_html);
 
         // :: INSTANTIATE EMAIL OBJECT AND SEND EMAIL
         $mail = new PHPMailer();
@@ -190,7 +183,7 @@ class Notifications {
 
         $email_html = file_get_contents(dirname(dirname(__FILE__))
                     . '/views/emails/delete_appointment.php');
-        $email_html = $this->_replace_template_variables($replace_array, $email_html);
+        $email_html = $this->replace_template_variables($replace_array, $email_html);
 
         // :: SETUP EMAIL OBJECT AND SEND NOTIFICATION
         $mail = new PHPMailer();
@@ -228,7 +221,7 @@ class Notifications {
 
         $email_html = file_get_contents(dirname(dirname(__FILE__))
                     . '/views/emails/new_password.php');
-        $email_html = $this->_replace_template_variables($replace_array, $email_html);
+        $email_html = $this->replace_template_variables($replace_array, $email_html);
 
         // :: SETUP EMAIL OBJECT AND SEND NOTIFICATION
         $mail = new PHPMailer();

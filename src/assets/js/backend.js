@@ -9,76 +9,70 @@
  * @since       v1.0.0
  * ---------------------------------------------------------------------------- */
 
-window.Backend = window.Backend || {};
+/**
+ * Main javascript code for the backend of Easy!Appointments.
+ */
+$(document).ready(function() {
+    if (window.console === undefined) {
+        window.console = function() {} // IE compatibility
+    }
 
- /**
-  * Backend
-  *
-  * This module contains functions that are used in the backend section of the application.
-  *
-  * @module Backend
-  */
-(function(exports) {
+    $(window).resize(function() {
+        Backend.placeFooterToBottom();
+    }).trigger('resize');
 
-    'use strict';
-
-    /**
-     * Main javascript code for the backend of Easy!Appointments.
-     */
-    $(document).ready(function() {
-        window.console = window.console || function() {}; // IE compatibility
-
-        $(window)
-            .resize(function() {
-                Backend.placeFooterToBottom();
-            })
-            .trigger('resize');
-
-        $(document).ajaxStart(function() {
-            $('#loading').show();
-        });
-
-        $(document).ajaxStop(function() {
-            $('#loading').hide();
-        });
-
-        $('.menu-item').qtip({
-            position: {
-                my: 'top center',
-                at: 'bottom center'
-            },
-            style: {
-                classes: 'qtip-green qtip-shadow custom-qtip'
-            }
-        });
-
-        GeneralFunctions.enableLanguageSelection($('#select-language'));
+    $(document).ajaxStart(function() {
+        $('#loading').show();
     });
 
+    $(document).ajaxStop(function() {
+        $('#loading').hide();
+    });
+
+    $('.menu-item').qtip({
+        position: {
+            my: 'top center',
+            at: 'bottom center'
+        },
+        style: {
+            classes: 'qtip-green qtip-shadow custom-qtip'
+        }
+    });
+
+    GeneralFunctions.enableLanguageSelection($('#select-language'));
+});
+
+/**
+ * This namespace contains functions that are used in the backend section of
+ * the applications.
+ *
+ * @namespace Backend
+ */
+var Backend = {
     /**
      * Backend Constants
      */
-    exports.DB_SLUG_ADMIN = 'admin';
-    exports.DB_SLUG_PROVIDER = 'provider';
-    exports.DB_SLUG_SECRETARY = 'secretary';
-    exports.DB_SLUG_CUSTOMER = 'customer';
+    DB_SLUG_ADMIN: 'admin',
+    DB_SLUG_PROVIDER: 'provider',
+    DB_SLUG_SECRETARY: 'secretary',
+    DB_SLUG_CUSTOMER: 'customer',
 
-    exports.PRIV_VIEW = 1;
-    exports.PRIV_ADD = 2;
-    exports.PRIV_EDIT = 4;
-    exports.PRIV_DELETE = 8;
+    PRIV_VIEW: 1,
+    PRIV_ADD: 2,
+    PRIV_EDIT: 4,
+    PRIV_DELETE: 8,
 
-    exports.PRIV_APPOINTMENTS = 'appointments';
-    exports.PRIV_CUSTOMERS = 'customers';
-    exports.PRIV_SERVICES = 'services';
-    exports.PRIV_USERS = 'users';
-    exports.PRIV_SYSTEM_SETTINGS = 'system_settings';
-    exports.PRIV_USER_SETTINGS = 'user_settings';
+    PRIV_APPOINTMENTS: 'appointments',
+    PRIV_CUSTOMERS: 'customers',
+    PRIV_SERVICES: 'services',
+    PRIV_USERS: 'users',
+    PRIV_SYSTEM_SETTINGS: 'system_settings',
+    PRIV_USER_SETTINGS: 'user_settings',
 
     /**
      * Place the backend footer always on the bottom of the page.
      */
-    exports.placeFooterToBottom = function() {
+    placeFooterToBottom: function() {
         var $footer = $('#footer');
 
         if (window.innerHeight > $('body').height()) {
@@ -92,22 +86,26 @@ window.Backend = window.Backend || {};
                 'position': 'static'
             });
         }
-    };
+    },
 
     /**
      * Display backend notifications to user.
      *
-     * Using this method you can display notifications to the use with custom messages. If the
-     * 'actions' array is provided then an action link will be displayed too.
+     * Using this method you can display notifications to the use with custom
+     * messages. If the 'actions' array is provided then an action link will
+     * be displayed too.
      *
-     * @param {String} message Notification message
-     * @param {Array} actions An array with custom actions that will be available to the user. Every
-     * array item is an object that contains the 'label' and 'function' key values.
+     * @param {string} message Notification message
+     * @param {array} actions An array with custom actions that will be available
+     * to the user. Every array item is an object that contains the 'label' and
+     * 'function' key values.
      */
-    exports.displayNotification = function(message, actions) {
-        message = message || 'NO MESSAGE PROVIDED FOR THIS NOTIFICATION';
+    displayNotification: function(message, actions) {
+        if (message == undefined) {
+            message = 'NO MESSAGE PROVIDED FOR THIS NOTIFICATION';
+        }
 
-        if (actions === undefined) {
+        if (actions == undefined) {
             actions = [];
             setTimeout(function() {
                 $('#notification').slideUp('slow');
@@ -132,5 +130,4 @@ window.Backend = window.Backend || {};
         $('#notification').html(notificationHtml);
         $('#notification').show('blind');
     }
-
-})(window.Backend);
+};
