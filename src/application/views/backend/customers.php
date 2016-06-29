@@ -2,6 +2,9 @@
         src="<?php echo $base_url; ?>/assets/ext/jquery-ui/jquery-ui-timepicker-addon.js"></script>
 
 <script type="text/javascript"
+        src="<?php echo $base_url; ?>/assets/js/backend_customers_helper.js"></script>
+
+<script type="text/javascript"
         src="<?php echo $base_url; ?>/assets/js/backend_customers.js"></script>
 
 <script type="text/javascript">
@@ -25,7 +28,7 @@
     });
 </script>
 
-<div id="customers-page" class="container-fluid">
+<div id="customers-page" class="container-fluid backend-page">
     <div class="row">
     	<div id="filter-customers" class="filter-records column col-md-4">
     		<form class="input-append">
@@ -44,7 +47,7 @@
             <div class="results"></div>
     	</div>
 
-    	<div class="details col-md-7 row">
+    	<div class="record-details col-md-7 row">
             <div class="btn-toolbar">
                 <div id="add-edit-delete-group" class="btn-group">
                     <?php if ($privileges[PRIV_CUSTOMERS]['add'] == TRUE) { ?>
