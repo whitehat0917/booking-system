@@ -49,10 +49,8 @@ window.BackendCalendarAppointmentsModal = window.BackendCalendarAppointmentsModa
             // ID must exist on the object in order for the model to update the record and not to perform
             // an insert operation.
 
-            var startDatetime = $dialog.find('#start-datetime')
-                    .datepicker('getDate').toString('yyyy-MM-dd HH:mm:ss');
-            var endDatetime = $dialog.find('#end-datetime')
-                    .datepicker('getDate').toString('yyyy-MM-dd HH:mm:ss');
+            var startDatetime = Date.parse($dialog.find('#start-datetime').val()).toString('yyyy-MM-dd HH:mm:ss');
+            var endDatetime = Date.parse($dialog.find('#end-datetime').val()).toString('yyyy-MM-dd HH:mm:ss');
 
             var appointment = {
                 id_services: $dialog.find('#select-service').val(),
@@ -290,7 +288,7 @@ window.BackendCalendarAppointmentsModal = window.BackendCalendarAppointmentsModa
             // Automatically update the service duration.
             $.each(GlobalVariables.availableServices, function(indexService, service) {
                 if (service.id == sid) {
-                    var start = $('#start-datetime').datepicker('getDate');
+                    var start = Date.parse($('#start-datetime').val());
                     $('#end-datetime').datepicker('setDate', new Date(start.getTime() + service.duration * 60000));
                     return false; // break loop
                 }
@@ -483,8 +481,8 @@ window.BackendCalendarAppointmentsModal = window.BackendCalendarAppointmentsModa
             }
 
             // Check appointment start and end time.
-            var start = $('#start-datetime').datepicker('getDate');
-            var end = $('#end-datetime').datepicker('getDate');
+            var start = Date.parse($('#start-datetime').val());
+            var end = Date.parse($('#end-datetime').val());
             if (start > end) {
                 $dialog.find('#start-datetime').parents('.form-group').addClass('has-error');
                 $dialog.find('#end-datetime').parents('.form-group').addClass('has-error');
