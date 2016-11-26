@@ -184,7 +184,7 @@
          *
          * Cancel add or edit of an secretary record.
          */
-        $('#secretaries').on('click', '#cancel-secretary', function() {
+        $('#secretaries').on('Click', '#cancel-secretary', function() {
             var id = $('#secretary-id').val();
             this.resetForm();
             if (id != '') {
