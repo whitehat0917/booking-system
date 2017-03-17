@@ -9,7 +9,7 @@
         }
     ],
     "config": {
-        "vendor-dir": "composer_modules"
+        "vendor-dir": "composer"
     },
     "require-dev": {
         "codeigniter/framework": "^3.0",
