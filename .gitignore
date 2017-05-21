@@ -1,10 +1,10 @@
 .idea/
 .tmp-package/
-vendor/
+composer_modules/
 *.zip
 node_modules/
 npm-debug.log
-src/storage/cache/*c
+src/storage/cache/*
 !src/storage/cache/.htaccess
 !src/storage/cache/index.html
 src/storage/logs/*
