@@ -1,6 +1,6 @@
 .idea/
 .tmp-package/
-composer_modules/
+composer/
 *.zip
 node_modules/
 npm-debug.log
