@@ -25,13 +25,13 @@ CREATE TABLE `ea_roles` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `name` varchar(256) DEFAULT NULL,
   `slug` varchar(256) DEFAULT NULL,
-  `is_admin` tinyint(4) DEFAULT NULL,
-  `appointments` int(4) DEFAULT NULL,
-  `customers` int(4) DEFAULT NULL,
-  `services` int(4) DEFAULT NULL,
-  `users` int(4) DEFAULT NULL,
-  `system_settings` int(4) DEFAULT NULL,
-  `user_settings` int(4) DEFAULT NULL
+  `is_admin` tinyint(4) DEFAULT NULL COMMENT,
+  `appointments` int(4) DEFAULT NULL COMMENT,
+  `customers` int(4) DEFAULT NULL COMMENT,
+  `services` int(4) DEFAULT NULL COMMENT,
+  `users` int(4) DEFAULT NULL COMMENT,
+  `system_settings` int(4) DEFAULT NULL COMMENT,
+  `user_settings` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `ea_secretaries_providers` (
@@ -136,17 +136,17 @@ ALTER TABLE `ea_user_settings`
 
 
 ALTER TABLE `ea_appointments`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
 ALTER TABLE `ea_roles`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 ALTER TABLE `ea_services`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 ALTER TABLE `ea_service_categories`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 ALTER TABLE `ea_settings`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 ALTER TABLE `ea_users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=88;
 
 ALTER TABLE `ea_appointments`
   ADD CONSTRAINT `ea_appointments_ibfk_2` FOREIGN KEY (`id_users_customer`) REFERENCES `ea_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
