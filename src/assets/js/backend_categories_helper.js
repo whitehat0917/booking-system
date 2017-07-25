@@ -3,7 +3,7 @@
  *
  * @package     EasyAppointments
  * @author      A.Tselegidis <alextselegidis@gmail.com>
- * @copyright   Copyright (c) 2013 - 2016, Alex Tselegidis
+ * @copyright   Copyright (c) 2013 - 2017, Alex Tselegidis
  * @license     http://opensource.org/licenses/GPL-3.0 - GPLv3
  * @link        http://easyappointments.org
  * @since       v1.0.0
@@ -23,7 +23,7 @@
      */
     function CategoriesHelper() {
         this.filterResults = {};
-    };
+    }
 
     /**
      * Binds the default event handlers of the categories tab.
@@ -107,17 +107,24 @@
         $('#delete-category').click(function() {
             var categoryId = $('#category-id').val();
 
-            var messageBtns = {};
-            messageBtns[EALang['delete']] = function() {
-                instance.delete(categoryId);
-                $('#message_box').dialog('close');
-            };
-            messageBtns[EALang['cancel']] = function() {
-                $('#message_box').dialog('close');
-            };
+            var buttons = [
+                {
+                    text: EALang['delete'],
+                    click: function() {
+                        instance.delete(categoryId);
+                        $('#message_box').dialog('close');
+                    }
+                },
+                {
+                    text: EALang['cancel'],
+                    click:  function() {
+                        $('#message_box').dialog('close');
+                    }
+                }
+            ];
 
             GeneralFunctions.displayMessageBox(EALang['delete_category'],
-                    EALang['delete_record_prompt'], messageBtns);
+                    EALang['delete_record_prompt'], buttons);
         });
 
         /**
@@ -327,7 +334,7 @@
         $('#filter-categories .selected').removeClass('selected');
 
         $('#filter-categories .category-row').each(function() {
-            if ($(this).attr('data-id') === id) {
+            if ($(this).attr('data-id') == id) {
                 $(this).addClass('selected');
                 return false;
             }
@@ -335,7 +342,7 @@
 
         if (display) {
             $.each(this.filterResults, function(index, category) {
-                if (category.id === id) {
+                if (category.id == id) {
                     this.display(category);
                     $('#edit-category, #delete-category').prop('disabled', false);
                     return false;
