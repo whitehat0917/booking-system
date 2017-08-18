@@ -3,7 +3,7 @@
  *
  * @package     EasyAppointments
  * @author      A.Tselegidis <alextselegidis@gmail.com>
- * @copyright   Copyright (c) 2013 - 2017, Alex Tselegidis
+ * @copyright   Copyright (c) 2013 - 2016, Alex Tselegidis
  * @license     http://opensource.org/licenses/GPL-3.0 - GPLv3
  * @link        http://easyappointments.org
  * @since       v1.0.0
@@ -114,7 +114,10 @@ window.FrontendBook = window.FrontendBook || {};
             var selectedServiceId = GeneralFunctions.getUrlParameter(location.href, 'service');
 
             if (selectedServiceId && $selectService.find('option[value="' + selectedServiceId + '"]').length > 0) {
-                $selectService.val(selectedServiceId);
+                $selectService
+                    .val(selectedServiceId)
+                    .prop('disabled', true)
+                    .css('opacity', '0.5');
             }
 
             $selectService.trigger('change'); // Load the available hours.
@@ -138,6 +141,8 @@ window.FrontendBook = window.FrontendBook || {};
             if (selectedProviderId && $selectProvider.find('option[value="' + selectedProviderId + '"]').length > 0) {
                 $selectProvider
                     .val(selectedProviderId)
+                    .prop('disabled', true)
+                    .css('opacity', '0.5')
                     .trigger('change');
             }
 

@@ -63,7 +63,7 @@
                 <label for="select-filter-item">
                     <?php echo $this->lang->line('display_calendar'); ?>
                 </label>
-                <select id="select-filter-item" class="form-control"
+                <select id="select-filter-item" class="form-control">
                         title="<?php echo $this->lang->line('select_filter_item_hint'); ?>">
                 </select>
             </div>
@@ -244,7 +244,7 @@
                                 </button>
                                 <input type="text" id="filter-existing-customers"
                                        placeholder="<?php echo $this->lang->line('type_to_filter_customers'); ?>"
-                                       style="display: none;" class="input-sm"/>
+                                       style="display: none;" class="input-medium span4"/>
                                 <div id="existing-customers-list" style="display: none;"></div>
                             </legend>
 

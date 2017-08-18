@@ -5,7 +5,7 @@
  *
  * @package     EasyAppointments
  * @author      A.Tselegidis <alextselegidis@gmail.com>
- * @copyright   Copyright (c) 2013 - 2017, Alex Tselegidis
+ * @copyright   Copyright (c) 2013 - 2016, Alex Tselegidis
  * @license     http://opensource.org/licenses/GPL-3.0 - GPLv3
  * @link        http://easyappointments.org
  * @since       v1.2.0
@@ -35,8 +35,7 @@ class API_V1_Controller extends CI_Controller {
      */
     public function __construct() {
         if (!isset($_SERVER['PHP_AUTH_USER'])) {
-            $this->_requestAuthentication();
-	        return;
+            return $this->_requestAuthentication();
         }
 
         parent::__construct();
@@ -92,3 +91,6 @@ class API_V1_Controller extends CI_Controller {
         throw new \EA\Engine\Api\V1\Exception('The requested record was not found!', 404,  'Not Found');
     }
 }
+
+/* End of file API_V1_Controller.php */
+/* Location: ./application/controllers/API_V1_Controller.php */

@@ -5,7 +5,7 @@
  * 
  * @package     EasyAppointments
  * @author      A.Tselegidis <alextselegidis@gmail.com>
- * @copyright   Copyright (c) 2013 - 2017, Alex Tselegidis
+ * @copyright   Copyright (c) 2013 - 2016, Alex Tselegidis
  * @license     http://opensource.org/licenses/GPL-3.0 - GPLv3 
  * @link        http://easyappointments.org
  * @since       v1.0.0
@@ -53,7 +53,7 @@ class Admins_Model extends CI_Model {
             $admin['id'] = $this->update($admin);
         }
         
-        return (int)$admin['id'];
+        return intval($admin['id']);
     }
     
     /**
@@ -101,7 +101,7 @@ class Admins_Model extends CI_Model {
             throw new Exception('Could not insert admin into the database.');
         }
         
-        $admin['id'] = (int)$this->db->insert_id();
+        $admin['id'] = intval($this->db->insert_id());
         $settings['id_users'] = $admin['id'];
         $settings['salt'] = generate_salt();
         $settings['password'] = hash_password($settings['salt'], $settings['password']);
@@ -146,7 +146,7 @@ class Admins_Model extends CI_Model {
             throw new Exception('Could not update admin settings.');
         }
         
-        return (int)$admin['id'];
+        return intval($admin['id']);
     }
     
     /**
@@ -174,7 +174,7 @@ class Admins_Model extends CI_Model {
             throw new Exception('Could not find admin record id.');
         }
         
-        return (int)$result->row()->id;
+        return intval($result->row()->id);
     }
     
     /**
@@ -381,7 +381,7 @@ class Admins_Model extends CI_Model {
      * @return int Returns the role record id. 
      */
     public function get_admin_role_id() {
-        return (int)$this->db->get_where('ea_roles', array('slug' => DB_SLUG_ADMIN))->row()->id;
+        return intval($this->db->get_where('ea_roles', array('slug' => DB_SLUG_ADMIN))->row()->id);
     }
     
     /**
@@ -397,3 +397,6 @@ class Admins_Model extends CI_Model {
         return ($num_rows > 0) ? FALSE : TRUE;
     }
 }
+
+/* End of file admins_model.php */
+/* Location: ./application/models/admins_model.php */

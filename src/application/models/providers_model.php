@@ -5,7 +5,7 @@
  *
  * @package     EasyAppointments
  * @author      A.Tselegidis <alextselegidis@gmail.com>
- * @copyright   Copyright (c) 2013 - 2017, Alex Tselegidis
+ * @copyright   Copyright (c) 2013 - 2016, Alex Tselegidis
  * @license     http://opensource.org/licenses/GPL-3.0 - GPLv3
  * @link        http://easyappointments.org
  * @since       v1.0.0
@@ -68,7 +68,7 @@ class Providers_Model extends CI_Model {
             $provider['id'] = $this->_update($provider);
         }
 
-        return (int)$provider['id'];
+        return intval($provider['id']);
     }
 
     /**
@@ -128,7 +128,7 @@ class Providers_Model extends CI_Model {
         $this->save_services($services, $provider['id']);
 
         // Return the new record id.
-        return (int)$provider['id'];
+        return intval($provider['id']);
     }
 
     /**
@@ -162,7 +162,7 @@ class Providers_Model extends CI_Model {
         $this->save_settings($settings, $provider['id']);
 
         // Return record id.
-        return (int)$provider['id'];
+        return intval($provider['id']);
     }
 
     /**
@@ -190,7 +190,7 @@ class Providers_Model extends CI_Model {
             throw new Exception('Could not find provider record id.');
         }
 
-        return (int)$result->row()->id;
+        return intval($result->row()->id);
     }
 
     /**
@@ -571,3 +571,6 @@ class Providers_Model extends CI_Model {
         return ($num_rows > 0) ? FALSE : TRUE;
     }
 }
+
+/* End of file providers_model.php */
+/* Location: ./application/models/providers_model.php */
