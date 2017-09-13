@@ -3,7 +3,7 @@
  *
  * @package     EasyAppointments
  * @author      A.Tselegidis <alextselegidis@gmail.com>
- * @copyright   Copyright (c) 2013 - 2017, Alex Tselegidis
+ * @copyright   Copyright (c) 2013 - 2016, Alex Tselegidis
  * @license     http://opensource.org/licenses/GPL-3.0 - GPLv3
  * @link        http://easyappointments.org
  * @since       v1.0.0
@@ -97,7 +97,7 @@ window.FrontendBookApi = window.FrontendBookApi || {};
                 FrontendBook.updateConfirmFrame();
 
             } else {
-                $('#available-hours').text(EALang.no_available_hours);
+                $('#available-hours').text(EALang['no_available_hours']);
             }
         }, 'json').fail(GeneralFunctions.ajaxFailureHandler);
     };
@@ -163,7 +163,7 @@ window.FrontendBookApi = window.FrontendBookApi || {};
 
                 if (response.captcha_verification === false) {
                     $('#captcha-hint')
-                        .text(EALang.captcha_is_wrong + '(' + response.expected_phrase + ')')
+                        .text(EALang['captcha_is_wrong'] + '(' + response.expected_phrase + ')')
                         .fadeTo(400, 1);
 
                     setTimeout(function() {
@@ -177,8 +177,8 @@ window.FrontendBookApi = window.FrontendBookApi || {};
                     return false;
                 }
 
-                window.location.href = GlobalVariables.baseUrl
-                    + '/index.php/appointments/book_success/' + response.appointment_id;
+                window.location.replace(GlobalVariables.baseUrl
+                    + '/index.php/appointments/book_success/' + response.appointment_id);
             })
             .fail(function(jqxhr, textStatus, errorThrown) {
                 $('.captcha-title small').trigger('click');
@@ -253,7 +253,7 @@ window.FrontendBookApi = window.FrontendBookApi || {};
 
         // If all the days are unavailable then hide the appointments hours.
         if (unavailableDates.length === numberOfDays) {
-            $('#available-hours').text(EALang.no_available_hours);
+            $('#available-hours').text(EALang['no_available_hours']);
         }
 
         // Grey out unavailable dates.

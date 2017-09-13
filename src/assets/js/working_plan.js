@@ -3,7 +3,7 @@
  *
  * @package     EasyAppointments
  * @author      A.Tselegidis <alextselegidis@gmail.com>
- * @copyright   Copyright (c) 2013 - 2017, Alex Tselegidis
+ * @copyright   Copyright (c) 2013 - 2016, Alex Tselegidis
  * @license     http://opensource.org/licenses/GPL-3.0 - GPLv3
  * @link        http://easyappointments.org
  * @since       v1.0.0
@@ -61,16 +61,16 @@
                                 '<td class="break-start editable">' + brk.start + '</td>' +
                                 '<td class="break-end editable">' + brk.end + '</td>' +
                                 '<td>' +
-                                    '<button type="button" class="btn btn-default btn-sm edit-break" title="' + EALang.edit + '">' +
+                                    '<button type="button" class="btn btn-default btn-sm edit-break" title="' + EALang['edit'] + '">' +
                                         '<span class="glyphicon glyphicon-pencil"></span>' +
                                     '</button>' +
-                                    '<button type="button" class="btn btn-default btn-sm delete-break" title="' + EALang.delete + '">' +
+                                    '<button type="button" class="btn btn-default btn-sm delete-break" title="' + EALang['delete'] + '">' +
                                         '<span class="glyphicon glyphicon-remove"></span>' +
                                     '</button>' +
-                                    '<button type="button" class="btn btn-default btn-sm save-break hidden" title="' + EALang.save + '">' +
+                                    '<button type="button" class="btn btn-default btn-sm save-break hidden" title="' + EALang['save'] + '">' +
                                         '<span class="glyphicon glyphicon-ok"></span>' +
                                     '</button>' +
-                                    '<button type="button" class="btn btn-default btn-sm cancel-break hidden" title="' + EALang.cancel + '">' +
+                                    '<button type="button" class="btn btn-default btn-sm cancel-break hidden" title="' + EALang['cancel'] + '">' +
                                         '<span class="glyphicon glyphicon-ban-circle"></span>' +
                                     '</button>' +
                                 '</td>' +
@@ -98,13 +98,13 @@
      */
     WorkingPlan.prototype.editableBreakDay = function($selector) {
         var weekDays = {};
-        weekDays[EALang.monday] = EALang.monday; //'Monday';
-        weekDays[EALang.tuesday] = EALang.tuesday; //'Tuesday';
-        weekDays[EALang.wednesday] = EALang.wednesday; //'Wednesday';
-        weekDays[EALang.thursday] = EALang.thursday; //'Thursday';
-        weekDays[EALang.friday] = EALang.friday; //'Friday';
-        weekDays[EALang.saturday] = EALang.saturday; //'Saturday';
-        weekDays[EALang.sunday] = EALang.sunday; //'Sunday';
+        weekDays[EALang['monday']] = EALang['monday']; //'Monday';
+        weekDays[EALang['tuesday']] = EALang['tuesday']; //'Tuesday';
+        weekDays[EALang['wednesday']] = EALang['wednesday']; //'Wednesday';
+        weekDays[EALang['thursday']] = EALang['thursday']; //'Thursday';
+        weekDays[EALang['friday']] = EALang['friday']; //'Friday';
+        weekDays[EALang['saturday']] = EALang['saturday']; //'Saturday';
+        weekDays[EALang['sunday']] = EALang['sunday']; //'Sunday';
 
         $selector.editable(function(value, settings) {
             return value;
@@ -189,20 +189,20 @@
         $('.add-break').click(function() {
             var tr =
                     '<tr>' +
-                        '<td class="break-day editable">' + EALang.monday + '</td>' +
+                        '<td class="break-day editable">' + EALang['monday'] + '</td>' +
                         '<td class="break-start editable">09:00</td>' +
                         '<td class="break-end editable">10:00</td>' +
                         '<td>' +
-                            '<button type="button" class="btn btn-default btn-sm edit-break" title="' + EALang.edit + '">' +
+                            '<button type="button" class="btn btn-default btn-sm edit-break" title="' + EALang['edit'] + '">' +
                                 '<span class="glyphicon glyphicon-pencil"></span>' +
                             '</button>' +
-                            '<button type="button" class="btn btn-default btn-sm delete-break" title="' + EALang.delete + '">' +
+                            '<button type="button" class="btn btn-default btn-sm delete-break" title="' + EALang['delete'] + '">' +
                                 '<span class="glyphicon glyphicon-remove"></span>' +
                             '</button>' +
-                            '<button type="button" class="btn btn-default btn-sm save-break hidden" title="' + EALang.save + '">' +
+                            '<button type="button" class="btn btn-default btn-sm save-break hidden" title="' + EALang['save'] + '">' +
                                 '<span class="glyphicon glyphicon-ok"></span>' +
                             '</button>' +
-                            '<button type="button" class="btn btn-default btn-sm cancel-break hidden" title="' + EALang.cancel + '">' +
+                            '<button type="button" class="btn btn-default btn-sm cancel-break hidden" title="' + EALang['cancel'] + '">' +
                                 '<span class="glyphicon glyphicon-ban-circle"></span>' +
                             '</button>' +
                         '</td>' +
@@ -234,12 +234,12 @@
             // Make all cells in current row editable.
             $(this).parent().parent().children().trigger('edit');
             $(this).parent().parent().find('.break-start input, .break-end input').timepicker({
-                currentText: EALang.now,
-                closeText: EALang.close,
-                timeOnlyTitle: EALang.select_time,
-                timeText: EALang.time,
-                hourText: EALang.hour,
-                minuteText: EALang.minutes
+                currentText: EALang['now'],
+                closeText: EALang['close'],
+                timeOnlyTitle: EALang['select_time'],
+                timeText: EALang['time'],
+                hourText: EALang['hour'],
+                minuteText: EALang['minutes']
             });
             $(this).parent().parent().find('.break-day select').focus();
 
@@ -324,12 +324,12 @@
                 $('.breaks tr').each(function(index, tr) {
                     var day = this.convertDayToValue($(tr).find('.break-day').text());
                     if (day == id) {
-                        var start = $(tr).find('.break-start').text();
-                        var end = $(tr).find('.break-end').text();
+                        var start = $(tr).find('.break-start').text(),
+                            end = $(tr).find('.break-end').text();
 
                         workingPlan[id].breaks.push({
-                            start: start,
-                            end: end
+                            'start': start,
+                            'end': end
                         });
                     }
 
@@ -359,12 +359,12 @@
             $('.working-plan input[type="text"]').timepicker({
                 timeFormat: 'HH:mm',
 
-                currentText: EALang.now,
-                closeText: EALang.close,
-                timeOnlyTitle: EALang.select_time,
-                timeText: EALang.time,
-                hourText: EALang.hour,
-                minuteText: EALang.minutes,
+                currentText: EALang['now'],
+                closeText: EALang['close'],
+                timeOnlyTitle: EALang['select_time'],
+                timeText: EALang['time'],
+                hourText: EALang['hour'],
+                minuteText: EALang['minutes'],
 
                 onSelect: function(datetime, inst) {
                     // Start time must be earlier than end time.
@@ -396,19 +396,26 @@
     WorkingPlan.prototype.convertValueToDay = function(value) {
         switch (value) {
             case 'monday':
-                return EALang.monday;
+                return EALang['monday'];
+                break;
             case 'tuesday':
-                return EALang.tuesday;
+                return EALang['tuesday'];
+                break;
             case 'wednesday':
-                return EALang.wednesday;
+                return EALang['wednesday'];
+                break;
             case 'thursday':
-                return EALang.thursday;
+                return EALang['thursday'];
+                break;
             case 'friday':
-                return EALang.friday;
+                return EALang['friday'];
+                break;
             case 'saturday':
-                return EALang.saturday;
+                return EALang['saturday'];
+                break;
             case 'sunday':
-                return EALang.sunday;
+                return EALang['sunday'];
+                break;
         }
     };
 
@@ -419,20 +426,27 @@
      */
     WorkingPlan.prototype.convertDayToValue = function(day) {
         switch (day) {
-            case EALang.monday:
+            case EALang['monday']:
                 return 'monday';
-            case EALang.tuesday:
+                break;
+            case EALang['tuesday']:
                 return 'tuesday';
-            case EALang.wednesday:
+                break;
+            case EALang['wednesday']:
                 return 'wednesday';
-            case EALang.thursday:
+                break;
+            case EALang['thursday']:
                 return 'thursday';
-            case EALang.friday:
+                break;
+            case EALang['friday']:
                 return 'friday';
-            case EALang.saturday:
+                break;
+            case EALang['saturday']:
                 return 'saturday';
-            case EALang.sunday:
+                break;
+            case EALang['sunday']:
                 return 'sunday';
+                break;
         }
     };
 

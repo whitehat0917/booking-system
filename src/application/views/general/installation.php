@@ -4,10 +4,17 @@
     <title>Easy!Appointments - Installation</title>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/ext/bootstrap/css/bootstrap.min.css'); ?>">
-    <link rel="icon" type="image/x-icon" href="<?php echo base_url('assets/img/favicon.ico'); ?>">
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url ('assets/ext/jquery-ui/jquery-ui.min.css')?>">
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/general.css'); ?>">
+    <link rel="stylesheet" type="text/css"
+        href="<?php echo $base_url; ?>/assets/ext/bootstrap/css/bootstrap.min.css">
+
+    <link rel="icon" type="image/x-icon"
+        href="<?php echo $base_url; ?>/assets/img/favicon.ico">
+
+    <link rel="stylesheet" type="text/css"
+        href="<?php echo $base_url ?>/assets/ext/jquery-ui/jquery-ui.min.css">
+
+    <link rel="stylesheet" type="text/css"
+        href="<?php echo $base_url; ?>/assets/css/general.css">
 
     <style>
         header {
@@ -49,13 +56,13 @@
 </head>
 <body>
     <div id="loading" class="hidden">
-        <img src="<?php echo base_url('assets/img/loading.gif'); ?>">
+        <img src="<?php echo $base_url; ?>/assets/img/loading.gif" />
     </div>
 
     <header>
         <a href="http://easyappointments.org" target="_blank">
-            <img src="<?php echo base_url('assets/img/installation-banner.png'); ?>"
-                 alt="Easy!Appointments Installation Banner">
+            <img src="<?php echo $base_url; ?>/assets/img/installation-banner.png"
+                alt="Easy!Appointents Installation Banner">
         </a>
     </header>
 
@@ -169,20 +176,37 @@
         Powered by <a href="http://easyappointments.org">Easy!Appointments</a>
     </footer>
 
-    <script>
+    <script type="text/javascript">
         var GlobalVariables = {
             'csrfToken': <?php echo json_encode($this->security->get_csrf_hash()); ?>,
-            'baseUrl': <?php echo json_encode(base_url()); ?>
+            'baseUrl': <?php echo '"' . $base_url . '"'; ?>
         };
 
         var EALang = <?php echo json_encode($this->lang->language); ?>;
     </script>
 
-    <script src="<?php echo base_url('assets/ext/jquery/jquery.min.js'); ?>"></script>
-    <script src="<?php echo base_url('assets/ext/jquery-ui/jquery-ui.min.js'); ?>"></script>
-    <script src="<?php echo base_url('assets/ext/bootstrap/js/bootstrap.min.js'); ?>"></script>
-    <script src="<?php echo base_url('assets/js/general_functions.js'); ?>"></script>
-    <script src="<?php echo base_url('assets/ext/datejs/date.js'); ?>"></script>
-    <script src="<?php echo base_url('assets/js/installation.js'); ?>"></script>
+    <script
+        type="text/javascript"
+        src="<?php echo $base_url; ?>/assets/ext/jquery/jquery.min.js"></script>
+
+    <script
+        type="text/javascript"
+        src="<?php echo $this->config->item('base_url'); ?>/assets/ext/jquery-ui/jquery-ui.min.js"></script>
+
+    <script
+        type="text/javascript"
+        src="<?php echo $base_url; ?>/assets/ext/bootstrap/js/bootstrap.min.js"></script>
+
+    <script
+        type="text/javascript"
+        src="<?php echo $base_url; ?>/assets/js/general_functions.js"></script>
+
+    <script
+        type="text/javascript"
+        src="<?php echo $base_url; ?>/assets/ext/datejs/date.js"></script>
+
+    <script
+        type="text/javascript"
+        src="<?php echo $base_url; ?>/assets/js/installation.js"></script>
 </body>
 </html>

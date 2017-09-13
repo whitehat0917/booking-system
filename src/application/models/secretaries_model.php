@@ -5,7 +5,7 @@
  *
  * @package     EasyAppointments
  * @author      A.Tselegidis <alextselegidis@gmail.com>
- * @copyright   Copyright (c) 2013 - 2017, Alex Tselegidis
+ * @copyright   Copyright (c) 2013 - 2016, Alex Tselegidis
  * @license     http://opensource.org/licenses/GPL-3.0 - GPLv3
  * @link        http://easyappointments.org
  * @since       v1.0.0
@@ -16,21 +16,20 @@
  *
  * Handles the db actions that have to do with secretaries.
  *
- * Data Structure:
- *
- *  'first_name'
- *  'last_name'
- *  'email'
- *  'mobile_number'
- *  'phone_number'
- *  'address'
- *  'city'
- *  'state'
- *  'zip_code'
- *  'notes'
- *  'id_roles'
- *  'providers' >> array with provider ids that the secretary handles
- *  'settings' >> array with the secretary settings
+ * Data Structure
+ *      'first_name'
+ *      'last_name'
+ *      'email'
+ *      'mobile_number'
+ *      'phone_number'
+ *      'address'
+ *      'city'
+ *      'state'
+ *      'zip_code'
+ *      'notes'
+ *      'id_roles'
+ *      'providers' >> array with provider ids that the secretary handles
+ *      'settings' >> array with the secretary settings
  *
  * @package Models
  */
@@ -39,9 +38,7 @@ class Secretaries_Model extends CI_Model {
      * Add (insert or update) a secretary user record into database.
      *
      * @param array $secretary Contains the secretary user data.
-     *
      * @return int Returns the record id.
-     *
      * @throws Exception When the secretary data are invalid (see validate() method).
      */
     public function add($secretary) {
@@ -57,16 +54,15 @@ class Secretaries_Model extends CI_Model {
             $secretary['id'] = $this->_update($secretary);
         }
 
-        return (int)$secretary['id'];
+        return intval($secretary['id']);
     }
 
     /**
      * Check whether a particular secretary record exists in the database.
      *
-     * @param array $secretary Contains the secretary data. The 'email' value is required to be present at the moment.
-     *
+     * @param array $secretary Contains the secretary data. The 'email' value is required to
+     * be present at the moment.
      * @return bool Returns whether the record exists or not.
-     *
      * @throws Exception When the 'email' value is not present on the $secretary argument.
      */
     public function exists($secretary) {
@@ -90,9 +86,7 @@ class Secretaries_Model extends CI_Model {
      * Insert a new secretary record into the database.
      *
      * @param array $secretary Contains the secretary data.
-      *
      * @return int Returns the new record id.
-      *
      * @throws Exception When the insert operation fails.
      */
     protected function _insert($secretary) {
@@ -109,7 +103,7 @@ class Secretaries_Model extends CI_Model {
             throw new Exception('Could not insert secretary into the database.');
         }
 
-        $secretary['id'] = (int)$this->db->insert_id();
+        $secretary['id'] = intval($this->db->insert_id());
         $settings['salt'] = generate_salt();
         $settings['password'] = hash_password($settings['salt'], $settings['password']);
 
@@ -123,9 +117,7 @@ class Secretaries_Model extends CI_Model {
      * Update an existing secretary record in the database.
      *
      * @param array $secretary Contains the secretary record data.
-     *
      * @return int Returns the record id.
-     *
      * @throws Exception When the update operation fails.
      */
     protected function _update($secretary) {
@@ -149,16 +141,15 @@ class Secretaries_Model extends CI_Model {
         $this->save_providers($providers, $secretary['id']);
         $this->save_settings($settings, $secretary['id']);
 
-        return (int)$secretary['id'];
+        return intval($secretary['id']);
     }
 
     /**
      * Find the database record id of a secretary.
      *
-     * @param array $secretary Contains the secretary data. The 'email' value is required in order to find the record id.
-     *
+     * @param array $secretary Contains the secretary data. The 'email' value is required
+     * in order to find the record id.
      * @return int Returns the record id
-     *
      * @throws Exception When the 'email' value is not present on the $secretary array.
      */
     public function find_record_id($secretary) {
@@ -178,17 +169,14 @@ class Secretaries_Model extends CI_Model {
             throw new Exception('Could not find secretary record id.');
         }
 
-        return (int)$result->row()->id;
+        return intval($result->row()->id);
     }
 
     /**
      * Validate secretary user data before add() operation is executed.
      *
      * @param array $secretary Contains the secretary user data.
-     *
      * @return bool Returns the validation result.
-     *
-     * @throws Exception If secretary validation fails.
      */
     public function validate($secretary) {
         $this->load->helper('data_validation');
@@ -267,11 +255,9 @@ class Secretaries_Model extends CI_Model {
     /**
      * Delete an existing secretary record from the database.
      *
-     * @param int $secretary_id The secretary record id to be deleted.
-     *
+     * @param numeric $secretary_id The secretary record id to be deleted.
      * @return bool Returns the delete operation result.
-     *
-     * @throws Exception When the $secretary_id is not a valid int value.
+     * @throws Exception When the $secretary_id is not a valid numeric value.
      */
     public function delete($secretary_id) {
         if (!is_numeric($secretary_id)) {
@@ -289,11 +275,9 @@ class Secretaries_Model extends CI_Model {
     /**
      * Get a specific secretary record from the database.
      *
-     * @param int $secretary_id The id of the record to be returned.
-     *
+     * @param numeric $secretary_id The id of the record to be returned.
      * @return array Returns an array with the secretary user data.
-     *
-     * @throws Exception When the $secretary_id is not a valid int value.
+     * @throws Exception When the $secretary_id is not a valid numeric value.
      * @throws Exception When given record id does not exist in the database.
      */
     public function get_row($secretary_id) {
@@ -326,12 +310,10 @@ class Secretaries_Model extends CI_Model {
      * Get a specific field value from the database.
      *
      * @param string $field_name The field name of the value to be returned.
-     * @param int $secretary_id Record id of the value to be returned.
-     *
+     * @param numeric $secretary_id Record id of the value to be returned.
      * @return string Returns the selected record value from the database.
-     *
      * @throws Exception When the $field_name argument is not a valid string.
-     * @throws Exception When the $secretary_id is not a valid int.
+     * @throws Exception When the $secretary_id is not a valid numeric.
      * @throws Exception When the secretary record does not exist in the database.
      * @throws Exception When the selected field value is not present on database.
      */
@@ -364,9 +346,8 @@ class Secretaries_Model extends CI_Model {
     /**
      * Get all, or specific secretary records from database.
      *
-     * @param string|array $where_clause (OPTIONAL) The WHERE clause of the query to be executed. Use this to get
-     * specific secretary records.
-     *
+     * @param string|array $where_clause (OPTIONAL) The WHERE clause of the query to be executed.
+     * Use this to get specific secretary records.
      * @return array Returns an array with secretary records.
      */
     public function get_batch($where_clause = '') {
@@ -403,16 +384,13 @@ class Secretaries_Model extends CI_Model {
      * @return int Returns the role record id.
      */
     public function get_secretary_role_id() {
-        return (int)$this->db->get_where('ea_roles', array('slug' => DB_SLUG_SECRETARY))->row()->id;
+        return intval($this->db->get_where('ea_roles', array('slug' => DB_SLUG_SECRETARY))->row()->id);
     }
 
     /**
      * Save a secretary handling users.
-     *
      * @param array $providers Contains the provider ids that are handled by the secretary.
-     * @param int $secretary_id The selected secretary record.
-     *
-     * @throws Exception If $providers argument is invalid.
+     * @param numeric $secretary_id The selected secretary record.
      */
     protected function save_providers($providers, $secretary_id) {
         if (!is_array($providers)) {
@@ -436,14 +414,11 @@ class Secretaries_Model extends CI_Model {
      * Save the secretary settings (used from insert or update operation).
      *
      * @param array $settings Contains the setting values.
-     * @param int $secretary_id Record id of the secretary.
-     *
-     * @throws Exception If $secretary_id argument is invalid.
-     * @throws Exception If $settings argument is invalid.
+     * @param numeric $secretary_id Record id of the secretary.
      */
     protected function save_settings($settings, $secretary_id) {
         if (!is_numeric($secretary_id)) {
-            throw new Exception('Invalid $secretary_id argument given:' . $secretary_id);
+            throw new Exception('Invalid $provider_id argument given:' . $secretary_id);
         }
 
         if (count($settings) == 0 || !is_array($settings)) {
@@ -467,7 +442,6 @@ class Secretaries_Model extends CI_Model {
      *
      * @param string $setting_name The setting name that is going to be returned.
      * @param int $secretary_id The selected provider id.
-     *
      * @return string Returns the value of the selected user setting.
      */
     public function get_setting($setting_name, $secretary_id) {
@@ -483,7 +457,7 @@ class Secretaries_Model extends CI_Model {
      *
      * @param string $setting_name The setting's name.
      * @param string $value The setting's value.
-     * @param int $secretary_id The selected provider id.
+     * @param numeric $secretary_id The selected provider id.
      */
     public function set_setting($setting_name, $value, $secretary_id) {
         $this->db->where(array('id_users' => $secretary_id));
@@ -494,8 +468,7 @@ class Secretaries_Model extends CI_Model {
      * Validate Records Username
      *
      * @param string $username The provider records username.
-     * @param int $user_id The user record id.
-     *
+     * @param numeric $user_id The user record id.
      * @return bool Returns the validation result.
      */
     public function validate_username($username, $user_id) {
@@ -504,3 +477,6 @@ class Secretaries_Model extends CI_Model {
         return ($num_rows > 0) ? FALSE : TRUE;
     }
 }
+
+/* End of file secretaries_model.php */
+/* Location: ./application/models/secretaries_model.php */

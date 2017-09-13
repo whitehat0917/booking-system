@@ -3,7 +3,7 @@
  *
  * @package     EasyAppointments
  * @author      A.Tselegidis <alextselegidis@gmail.com>
- * @copyright   Copyright (c) 2013 - 2017, Alex Tselegidis
+ * @copyright   Copyright (c) 2013 - 2016, Alex Tselegidis
  * @license     http://opensource.org/licenses/GPL-3.0 - GPLv3
  * @link        http://easyappointments.org
  * @since       v1.0.0
@@ -59,7 +59,7 @@
      */
     UserSettings.prototype.save = function(settings) {
         if (!this.validate(settings)) {
-            Backend.displayNotification(EALang.user_settings_are_invalid);
+            Backend.displayNotification(EALang['user_settings_are_invalid']);
             return; // Validation failed, do not proceed.
         }
 
@@ -75,7 +75,7 @@
                 return;
             }
 
-            Backend.displayNotification(EALang.settings_saved);
+            Backend.displayNotification(EALang['settings_saved']);
 
             // Update footer greetings.
             $('#footer-user-display-name').text('Hello, ' + $('#first-name').val() + ' ' + $('#last-name').val() + '!');
@@ -105,24 +105,24 @@
             });
 
             if (missingRequired) {
-                throw EALang.fields_are_required;
+                throw EALang['fields_are_required'];
             }
 
             // Validate passwords (if provided).
             if ($('#password').val() != $('#retype-password').val()) {
                 $('#password, #retype-password').css('border', '2px solid red');
-                throw EALang.passwords_mismatch;
+                throw EALang['passwords_mismatch'];
             }
 
             // Validate user email.
             if (!GeneralFunctions.validateEmail($('#email').val())) {
                 $('#email').css('border', '2px solid red');
-                throw EALang.invalid_email;
+                throw EALang['invalid_email'];
             }
 
             if ($('#username').attr('already-exists') === 'true') {
                 $('#username').css('border', '2px solid red');
-                throw EALang.username_already_exists;
+                throw EALang['username_already_exists'];
             }
 
             return true;

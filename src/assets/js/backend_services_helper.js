@@ -3,7 +3,7 @@
  *
  * @package     EasyAppointments
  * @author      A.Tselegidis <alextselegidis@gmail.com>
- * @copyright   Copyright (c) 2013 - 2017, Alex Tselegidis
+ * @copyright   Copyright (c) 2013 - 2016, Alex Tselegidis
  * @license     http://opensource.org/licenses/GPL-3.0 - GPLv3
  * @link        http://easyappointments.org
  * @since       v1.0.0
@@ -22,7 +22,7 @@
      */
     function ServicesHelper() {
         this.filterResults = {};
-    }
+    };
 
     ServicesHelper.prototype.bindEventHandlers = function() {
         var instance = this;
@@ -162,24 +162,19 @@
          */
         $('#delete-service').click(function() {
             var serviceId = $('#service-id').val();
-            var buttons = [
-                {
-                    text: EALang.delete,
-                    click: function() {
-                        instance.delete(serviceId);
-                        $('#message_box').dialog('close');
-                    }
-                },
-                {
-                    text: EALang.cancel,
-                    click:  function() {
-                        $('#message_box').dialog('close');
-                    }
-                }
-            ];
+            var messageBtns = {};
 
-            GeneralFunctions.displayMessageBox(EALang.delete_service,
-                    EALang.delete_record_prompt, buttons);
+            messageBtns[EALang['delete']] = function() {
+                instance.delete(serviceId);
+                $('#message_box').dialog('close');
+            };
+
+            messageBtns[EALang['cancel']] = function() {
+                $('#message_box').dialog('close');
+            };
+
+            GeneralFunctions.displayMessageBox(EALang['delete_service'],
+                    EALang['delete_record_prompt'], messageBtns);
         });
     };
 
@@ -201,7 +196,7 @@
                 return;
             }
 
-            Backend.displayNotification(EALang.service_saved);
+            Backend.displayNotification(EALang['service_saved']);
             this.resetForm();
             $('#filter-services .key').val('');
             this.filter('', response.id, true);
@@ -225,7 +220,7 @@
                 return;
             }
 
-            Backend.displayNotification(EALang.service_deleted);
+            Backend.displayNotification(EALang['service_deleted']);
 
             this.resetForm();
             this.filter($('#filter-services .key').val());
@@ -254,7 +249,7 @@
             });
 
             if (missingRequired) {
-                throw EALang.fields_are_required;
+                throw EALang['fields_are_required'];
             }
 
             return true;
@@ -333,7 +328,7 @@
             $('#filter-services .results').jScrollPane({ mouseWheelSpeed: 70 });
 
             if (response.length === 0) {
-                $('#filter-services .results').html('<em>' + EALang.no_records_found + '</em>');
+                $('#filter-services .results').html('<em>' + EALang['no_records_found'] + '</em>');
             }
 
             if (selectId !== undefined) {
@@ -375,7 +370,7 @@
         $('#filter-services .selected').removeClass('selected');
 
         $('#filter-services .service-row').each(function() {
-            if ($(this).attr('data-id') == id) {
+            if ($(this).attr('data-id') === id) {
                 $(this).addClass('selected');
                 return false;
             }
@@ -383,7 +378,7 @@
 
         if (display) {
             $.each(this.filterResults, function(index, service) {
-                if (service.id == id) {
+                if (service.id === id) {
                     this.display(service);
                     $('#edit-service, #delete-service').prop('disabled', false);
                     return false;

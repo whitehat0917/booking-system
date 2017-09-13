@@ -5,7 +5,7 @@
  *
  * @package     EasyAppointments
  * @author      A.Tselegidis <alextselegidis@gmail.com>
- * @copyright   Copyright (c) 2013 - 2017, Alex Tselegidis
+ * @copyright   Copyright (c) 2013 - 2016, Alex Tselegidis
  * @license     http://opensource.org/licenses/GPL-3.0 - GPLv3
  * @link        http://easyappointments.org
  * @since       v1.1.0
@@ -53,10 +53,9 @@ class Installation extends CI_Controller {
     /**
      * [AJAX] Installs Easy!Appointments on the server.
      *
-     * Required POST Parameters
-     *
-     * - array $_POST['admin'] Contains the initial admin user data. The App needs at least one admin user to work.
-     * - array $_POST['company'] Contains the basic company data.
+     * @param array $_POST['admin'] Contains the initial admin user data. The App needs at
+     * least one admin user to work.
+     * @param array $_POST['company'] Contains the basic company data.
      */
     public function ajax_install() {
         try {
@@ -121,3 +120,6 @@ class Installation extends CI_Controller {
         }
     }
 }
+
+/* End of file installation.php */
+/* Location: ./application/controllers/installation.php */

@@ -1,18 +1,31 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
+    <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#35A768">
-    <title><?php echo lang('no_privileges') . ' - ' . $company_name; ?></title>
+    <title><?php echo $this->lang->line('no_privileges') . ' - ' . $company_name; ?></title>
 
-    <script src="<?php echo base_url('assets/ext/jquery/jquery.min.js'); ?>"></script>
-    <script src="<?php echo base_url('assets/ext/bootstrap/js/bootstrap.min.js'); ?>"></script>
+    <?php // INCLUDE JS FILES ?>
+    <script
+        type="text/javascript"
+        src="<?php echo base_url('assets/ext/jquery/jquery.min.js'); ?>"></script>
+    <script
+        type="text/javascript"
+        src="<?php echo base_url('assets/ext/bootstrap/js/bootstrap.min.js'); ?>"></script>
 
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/ext/bootstrap/css/bootstrap.min.css'); ?>">
+    <?php // INCLUDE CSS FILES ?>
+    <link
+        rel="stylesheet"
+        type="text/css"
+        href="<?php echo base_url('assets/ext/bootstrap/css/bootstrap.min.css'); ?>">
 
-    <link rel="icon" type="image/x-icon" href="<?php echo base_url('assets/img/favicon.ico'); ?>">
+    <?php // SET FAVICON FOR PAGE ?>
+    <link
+        rel="icon"
+        type="image/x-icon"
+        href="<?php echo base_url('assets/img/favicon.ico'); ?>">
 
     <style>
         body {
@@ -50,16 +63,16 @@
 </head>
 <body>
     <div id="no-priv-frame" class="frame-container">
-        <h3><?php echo lang('no_privileges'); ?></h3>
+        <h3><?php echo $this->lang->line('no_privileges'); ?></h3>
         <p>
-            <?php echo lang('no_privileges_message'); ?>
+            <?php echo $this->lang->line('no_provileges_message'); ?>
         </p>
 
         <br>
 
         <a href="<?php echo site_url('backend') ?>" class="btn btn-success btn-large">
             <i class="icon-calendar icon-white"></i>
-            <?php echo lang('backend_calendar'); ?>
+            <?php echo $this->lang->line('backend_calendar'); ?>
         </a>
     </div>
 </body>

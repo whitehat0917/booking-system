@@ -5,7 +5,7 @@
  *
  * @package     EasyAppointments
  * @author      A.Tselegidis <alextselegidis@gmail.com>
- * @copyright   Copyright (c) 2013 - 2017, Alex Tselegidis
+ * @copyright   Copyright (c) 2013 - 2016, Alex Tselegidis
  * @license     http://opensource.org/licenses/GPL-3.0 - GPLv3
  * @link        http://easyappointments.org
  * @since       v1.0.0
@@ -41,10 +41,7 @@ class Backend_api extends CI_Controller {
 
         $this->load->library('session');
         $this->load->model('roles_model');
-
-        if ($this->session->userdata('role_slug')) {
-            $this->privileges = $this->roles_model->get_privileges($this->session->userdata('role_slug'));
-        }
+        $this->privileges = $this->roles_model->get_privileges($this->session->userdata('role_slug'));
 
         // Set user's selected language.
         if ($this->session->userdata('language')) {
@@ -139,12 +136,10 @@ class Backend_api extends CI_Controller {
      * This method returns the database appointments and unavailable periods for the
      * user selected date period and record type (provider or service).
      *
-     * Required POST Parameters:
-     *
-     * - int $_POST['record_id'] Selected record id.
-     * - string $_POST['filter_type'] Could be either FILTER_TYPE_PROVIDER or FILTER_TYPE_SERVICE.
-     * - string $_POST['start_date'] The user selected start date.
-     * - string $_POST['end_date'] The user selected end date.
+     * @param numeric $_POST['record_id'] Selected record id.
+     * @param string $_POST['filter_type'] Could be either FILTER_TYPE_PROVIDER or FILTER_TYPE_SERVICE.
+     * @param string $_POST['start_date'] The user selected start date.
+     * @param string $_POST['end_date'] The user selected end date.
      */
     public function ajax_get_calendar_appointments() {
         try {
@@ -208,10 +203,8 @@ class Backend_api extends CI_Controller {
     /**
      * [AJAX] Save appointment changes that are made from the backend calendar page.
      *
-     * Required POST Parameters:
-     *
-     * - array $_POST['appointment_data'] (OPTIONAL) Array with the appointment data.
-     * - array $_POST['customer_data'] (OPTIONAL) Array with the customer data.
+     * @param array $_POST['appointment_data'] (OPTIONAL) Array with the appointment data.
+     * @param array $_POST['customer_data'] (OPTIONAL) Array with the customer data.
      */
     public function ajax_save_appointment() {
         try {
@@ -351,13 +344,12 @@ class Backend_api extends CI_Controller {
     /**
      * [AJAX] Delete appointment from the database.
      *
-     * This method deletes an existing appointment from the database. Once this action is finished it cannot be undone.
-     * Notification emails are send to both provider and customer and the delete action is executed to the Google
-     * Calendar account of the provider, if the "google_sync" setting is enabled.
+     * This method deletes an existing appointment from the database. Once this
+     * action is finished it cannot be undone. Notification emails are send to both
+     * provider and customer and the delete action is executed to the Google Calendar
+     * account of the provider, if the "google_sync" setting is enabled.
      *
-     * Required POST Parameters:
-     *
-     * - int $_POST['appointment_id'] The appointment id to be deleted.
+     * @param int $_POST['appointment_id'] The appointment id to be deleted.
      */
     public function ajax_delete_appointment() {
         try {
@@ -450,12 +442,11 @@ class Backend_api extends CI_Controller {
     /**
      * [AJAX] Disable a providers sync setting.
      *
-     * This method deletes the "google_sync" and "google_token" settings from the database. After that the provider's
-     * appointments will be no longer synced with google calendar.
+     * This method deletes the "google_sync" and "google_token" settings from the
+     * database. After that the provider's appointments will be no longer synced
+     * with google calendar.
      *
-     * Required POST Parameters:
-     *
-     * - string $_POST['provider_id'] The selected provider record id.
+     * @param string $_POST['provider_id'] The selected provider record id.
      */
     public function ajax_disable_provider_sync() {
         try {
@@ -485,11 +476,9 @@ class Backend_api extends CI_Controller {
     /**
      * [AJAX] Filter the customer records with the given key string.
      *
-     * Required POST Parameters:
+     * @param string $_POST['key'] The filter key string.
      *
-     * - string $_POST['key'] The filter key string.
-     *
-     * Outputs the search results.
+     * @return array Returns the search results.
      */
     public function ajax_filter_customers() {
     	try {
@@ -543,9 +532,7 @@ class Backend_api extends CI_Controller {
     /**
      * [AJAX] Insert of update unavailable time period to database.
      *
-     * Required POST Parameters:
-     *
-     * - array $_POST['unavailable'] JSON encoded array that contains the unavailable period data.
+     * @param array $_POST['unavailable'] JSON encoded array that contains the unavailable period data.
      */
     public function ajax_save_unavailable() {
         try {
@@ -610,9 +597,7 @@ class Backend_api extends CI_Controller {
     /**
      * [AJAX] Delete an unavailable time period from database.
      *
-     * Required POST Parameters:
-     *
-     * - int $_POST['unavailable_id'] Record id to be deleted.
+     * @param numeric $_POST['unavailable_id'] Record id to be deleted.
      */
     public function ajax_delete_unavailable() {
         try {
@@ -660,9 +645,7 @@ class Backend_api extends CI_Controller {
     /**
      * [AJAX] Save (insert or update) a customer record.
      *
-     * Require POST Parameters:
-     *
-     * - array $_POST['customer'] JSON encoded array that contains the customer's data.
+     * @param array $_POST['customer'] JSON encoded array that contains the customer's data.
      */
     public function ajax_save_customer() {
         try {
@@ -691,9 +674,7 @@ class Backend_api extends CI_Controller {
     /**
      * [AJAX] Delete customer from database.
      *
-     * Required POST Parameters:
-     *
-     * - int $_POST['customer_id'] Customer record id to be deleted.
+     * @param numeric $_POST['customer_id'] Customer record id to be deleted.
      */
     public function ajax_delete_customer() {
         try {
@@ -714,9 +695,7 @@ class Backend_api extends CI_Controller {
     /**
      * [AJAX] Save (insert or update) service record.
      *
-     * Required POST Parameters:
-     *
-     * - array $_POST['service'] Contains the service data (json encoded).
+     * @param array $_POST['service'] Contains the service data (json encoded).
      */
     public function ajax_save_service() {
         try {
@@ -745,9 +724,7 @@ class Backend_api extends CI_Controller {
     /**
      * [AJAX] Delete service record from database.
      *
-     * Required POST Parameters:
-     *
-     * - int $_POST['service_id'] Record id to be deleted.
+     * @param numeric $_POST['service_id'] Record id to be deleted.
      */
     public function ajax_delete_service() {
         try {
@@ -768,11 +745,9 @@ class Backend_api extends CI_Controller {
     /**
      * [AJAX] Filter service records by given key string.
      *
-     * Required POST Parameters:
+     * @param string $_POST['key'] Key string used to filter the records.
      *
-     * - string $_POST['key'] Key string used to filter the records.
-     *
-     * Outputs a JSON encoded array back to client.
+     * @return array Returns a json encoded array back to client.
      */
     public function ajax_filter_services() {
         try {
@@ -798,10 +773,8 @@ class Backend_api extends CI_Controller {
     /**
      * [AJAX] Save (insert or update) category record.
      *
-     * Required POST Parameters:
-     *
-     * - array $_POST['category'] Json encoded array with the category data. If an ID value is provided then the
-     * category is going to be updated instead of inserted.
+     * @param array $_POST['category'] Json encoded array with the category data. If an id
+     * value is provided then the category is going to be updated instead of inserted.
      */
     public function ajax_save_service_category() {
         try {
@@ -830,7 +803,7 @@ class Backend_api extends CI_Controller {
     /**
      * [AJAX] Delete category record from database.
      *
-     * - int $_POST['category_id'] Record id to be deleted.
+     * @param numeric $_POST['category_id'] Record id to be deleted.
      */
     public function ajax_delete_service_category() {
         try {
@@ -851,11 +824,9 @@ class Backend_api extends CI_Controller {
     /**
      * [AJAX] Filter services categories with key string.
      *
-     * Required POST Parameters:
+     * @param string $_POST['key'] The key string used to filter the records.
      *
-     * - string $_POST['key'] The key string used to filter the records.
-     *
-     * Outputs a JSON encoded array back to client with the category records.
+     * @return array Returns a json encoded array back to client with the category records.
      */
     public function ajax_filter_service_categories() {
         try {
@@ -878,11 +849,9 @@ class Backend_api extends CI_Controller {
     /**
      * [AJAX] Filter admin records with string key.
      *
-     * Required POST Parameters:
+     * @param string $_POST['key'] The key string used to filter the records.
      *
-     * - string $_POST['key'] The key string used to filter the records.
-     *
-     * Outputs a JSON encoded array back to client with the admin records.
+     * @return array Returns a json encoded array back to client with the admin records.
      */
     public function ajax_filter_admins() {
         try {
@@ -910,12 +879,11 @@ class Backend_api extends CI_Controller {
     /**
      * [AJAX] Save (insert or update) admin record into database.
      *
-     * Required POST Parameters:
-     *
-     * - array $_POST['admin'] A json encoded array that contains the admin data. If an 'id'
+     * @param array $_POST['admin'] A json encoded array that contains the admin data. If an 'id'
      * value is provided then the record is going to be updated.
      *
-     * Outputs an array with the operation status and the record id that was saved into the database.
+     * @return array Returns an array with the operation status and the record id that was
+     * saved into the database.
      */
     public function ajax_save_admin() {
         try {
@@ -947,11 +915,9 @@ class Backend_api extends CI_Controller {
     /**
      * [AJAX] Delete an admin record from the database.
      *
-     * Required POST Parameters:
+     * @param numeric $_POST['admin_id'] The id of the record to be deleted.
      *
-     * - int $_POST['admin_id'] The id of the record to be deleted.
-     *
-     * Outputs the operation result constant (AJAX_SUCCESS or AJAX_FAILURE).
+     * @return string Returns the operation result constant (AJAX_SUCCESS or AJAX_FAILURE).
      */
     public function ajax_delete_admin() {
         try {
@@ -972,11 +938,9 @@ class Backend_api extends CI_Controller {
     /**
      * [AJAX] Filter provider records with string key.
      *
-     * Required POST Parameters:
+     * @param string $_POST['key'] The key string used to filter the records.
      *
-     * - string $_POST['key'] The key string used to filter the records.
-     *
-     * Outputs a JSON encoded array back to client with the provider records.
+     * @return array Returns a json encoded array back to client with the provider records.
      */
     public function ajax_filter_providers() {
         try {
@@ -1004,12 +968,11 @@ class Backend_api extends CI_Controller {
     /**
      * [AJAX] Save (insert or update) a provider record into database.
      *
-     * Required POST Parameters:
-     *
-     * - array $_POST['provider'] A json encoded array that contains the provider data. If an 'id'
+     * @param array $_POST['provider'] A json encoded array that contains the provider data. If an 'id'
      * value is provided then the record is going to be updated.
      *
-     * Outputs the success constant 'AJAX_SUCCESS' so javascript knows that everything completed successfully.
+     * @return string Returns the success constant 'AJAX_SUCCESS' so javascript knows that
+     * everything completed successfully.
      */
     public function ajax_save_provider() {
         try {
@@ -1046,11 +1009,9 @@ class Backend_api extends CI_Controller {
     /**
      * [AJAX] Delete a provider record from the database.
      *
-     * Required POST Parameters:
+     * @param numeric $_POST['provider_id'] The id of the record to be deleted.
      *
-     * - int $_POST['provider_id'] The id of the record to be deleted.
-     *
-     * Outputs the operation result constant (AJAX_SUCCESS or AJAX_FAILURE).
+     * @return string Returns the operation result constant (AJAX_SUCCESS or AJAX_FAILURE).
      */
     public function ajax_delete_provider() {
         try {
@@ -1071,11 +1032,9 @@ class Backend_api extends CI_Controller {
     /**
      * [AJAX] Filter secretary records with string key.
      *
-     * Required POST Parameters:
+     * @param string $_POST['key'] The key string used to filter the records.
      *
-     * - string $_POST['key'] The key string used to filter the records.
-     *
-     * Outputs a JSON encoded array back to client with the secretary records.
+     * @return array Returns a json encoded array back to client with the secretary records.
      */
     public function ajax_filter_secretaries() {
         try {
@@ -1103,12 +1062,11 @@ class Backend_api extends CI_Controller {
     /**
      * [AJAX] Save (insert or update) a secretary record into database.
      *
-     * Required POST Parameters:
-     *
-     * - array $_POST['secretary'] A json encoded array that contains the secretary data.
+     * @param array $_POST['secretary'] A json encoded array that contains the secretary data.
      * If an 'id' value is provided then the record is going to be updated.
      *
-     * Outputs the success constant 'AJAX_SUCCESS' so JavaScript knows that everything completed successfully.
+     * @return string Returns the success constant 'AJAX_SUCCESS' so javascript knows that
+     * everything completed successfully.
      */
     public function ajax_save_secretary() {
         try {
@@ -1138,11 +1096,9 @@ class Backend_api extends CI_Controller {
     /**
      * [AJAX] Delete a secretary record from the database.
      *
-     * Required POST Parameters:
+     * @param numeric $_POST['secretary_id'] The id of the record to be deleted.
      *
-     * - int $_POST['secretary_id'] The id of the record to be deleted.
-     *
-     * Outputs the operation result constant (AJAX_SUCCESS or AJAX_FAILURE).
+     * @return string Returns the operation result constant (AJAX_SUCCESS or AJAX_FAILURE).
      */
     public function ajax_delete_secretary() {
         try {
@@ -1163,13 +1119,12 @@ class Backend_api extends CI_Controller {
     /**
      * [AJAX] Save a setting or multiple settings in the database.
      *
-     * This method is used to store settings in the database. It can be either system or user settings, one or many.
-     * Use the $_POST variables accordingly.
+     * This method is used to store settings in the database. It can be either system
+     * or user settings, one or many. Use the $_POST variables accordingly.
      *
-     * Required POST Parameters:
-     *
-     * - array $_POST['settings'] Contains an array with settings.
-     * - bool $_POST['type'] Determines the settings type, can be either SETTINGS_SYSTEM or SETTINGS_USER.
+     * @param array $_POST['settings'] Contains an array with settings.
+     * @param bool $_POST['type'] Determines the settings type, can be either SETTINGS_SYSTEM
+     * or SETTINGS_USER.
      */
     public function ajax_save_settings() {
         try {
@@ -1199,10 +1154,8 @@ class Backend_api extends CI_Controller {
     /**
      * [AJAX] This method checks whether the username already exists in the database.
      *
-     * Required POST Parameters:
-     *
-     * - string $_POST['username'] Record's username to validate.
-     * - bool $_POST['record_exists'] Whether the record already exists in database.
+     * @param string $_POST['username'] Record's username to validate.
+     * @param bool $_POST['record_exists'] Whether the record already exists in database.
      */
     public function ajax_validate_username() {
         try {
@@ -1221,11 +1174,10 @@ class Backend_api extends CI_Controller {
     /**
      * [AJAX] Change system language for current user.
      *
-     * The language setting is stored in session data and retrieved every time the user visits any of the system pages.
+     * The language setting is stored in session data and retrieved every time the user
+     * visits any of the system pages.
      *
-     * Required POST Parameters:
-     *
-     * - string $_POST['language'] Selected language name.
+     * @param string $_POST['language'] Selected language name.
      */
     public function ajax_change_language() {
     	try {
@@ -1238,9 +1190,8 @@ class Backend_api extends CI_Controller {
                 }
             }
 
-            if (!$found) {
+            if (!$found)
                 throw new Exception('Translations for the given language does not exist (' . $_POST['language'] . ').');
-            }
 
             $this->session->set_userdata('language', $_POST['language']);
             $this->config->set_item('language', $_POST['language']);
@@ -1257,12 +1208,11 @@ class Backend_api extends CI_Controller {
     /**
      * This method will return a list of the available google calendars.
      *
-     * The user will need to select a specific calendar from this list to sync his appointments with. Google access must
-     * be already granted for the specific provider.
+     * The user will need to select a specific calendar from this list to sync his
+     * appointments with. Google access must be already granted for the specific
+     * provider.
      *
-     * Required POST Parameters:
-     *
-     * - string $_POST['provider_id'] Provider record id.
+     * @param string $_POST['provider_id'] Provider record id.
      */
     public function ajax_get_google_calendars() {
     	try {
@@ -1294,10 +1244,8 @@ class Backend_api extends CI_Controller {
      *
      * All the appointments will be synced with this particular calendar.
      *
-     * Required POST Parameters:
-     *
-     * - int $_POST['provider_id'] Provider record id.
-     * - string $_POST['calendar_id'] Google calendar's id.
+     * @param numeric $_POST['provider_id'] Provider record id.
+     * @param string $_POST['calendar_id'] Google calendar's id.
      */
     public function ajax_select_google_calendar() {
         try {
@@ -1317,3 +1265,6 @@ class Backend_api extends CI_Controller {
         }
     }
 }
+
+/* End of file backend_api.php */
+/* Location: ./application/controllers/backend_api.php */

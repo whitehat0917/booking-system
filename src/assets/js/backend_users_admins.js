@@ -3,7 +3,7 @@
  *
  * @package     EasyAppointments
  * @author      A.Tselegidis <alextselegidis@gmail.com>
- * @copyright   Copyright (c) 2013 - 2017, Alex Tselegidis
+ * @copyright   Copyright (c) 2013 - 2016, Alex Tselegidis
  * @license     http://opensource.org/licenses/GPL-3.0 - GPLv3
  * @link        http://easyappointments.org
  * @since       v1.0.0
@@ -112,25 +112,19 @@
          */
         $('#admins').on('click', '#delete-admin', function() {
             var adminId = $('#admin-id').val();
+            var messageBtns = {};
 
-            var buttons = [
-                {
-                    text: EALang.delete,
-                    click: function() {
-                        this.delete(adminId);
-                        $('#message_box').dialog('close');
-                    }.bind(this)
-                },
-                {
-                    text: EALang.cancel,
-                    click:  function() {
-                        $('#message_box').dialog('close');
-                    }
-                }
-            ];
+            messageBtns[EALang['delete']] = function() {
+                this.delete(adminId);
+                $('#message_box').dialog('close');
+            }.bind(this);
 
-            GeneralFunctions.displayMessageBox(EALang.delete_admin,
-                    EALang.delete_record_prompt, buttons);
+            messageBtns[EALang['cancel']] = function() {
+                $('#message_box').dialog('close');
+            };
+
+            GeneralFunctions.displayMessageBox(EALang['delete_admin'],
+                    EALang['delete_record_prompt'], messageBtns);
         }.bind(this));
 
         /**
@@ -203,7 +197,7 @@
             if (!GeneralFunctions.handleAjaxExceptions(response)) {
                 return;
             }
-            Backend.displayNotification(EALang.admin_saved);
+            Backend.displayNotification(EALang['admin_saved']);
             this.resetForm();
             $('#filter-admins .key').val('');
             this.filter('', response.id, true);
@@ -226,7 +220,7 @@
             if (!GeneralFunctions.handleAjaxExceptions(response)) {
                 return;
             }
-            Backend.displayNotification(EALang.admin_deleted);
+            Backend.displayNotification(EALang['admin_deleted']);
             this.resetForm();
             this.filter($('#filter-admins .key').val());
         }.bind(this), 'json').fail(GeneralFunctions.ajaxFailureHandler);
@@ -261,25 +255,25 @@
             // Validate passwords.
             if ($('#admin-password').val() != $('#admin-password-confirm').val()) {
                 $('#admin-password, #admin-password-confirm').css('border', '2px solid red');
-                throw EALang.passwords_mismatch;
+                throw EALang['passwords_mismatch'];
             }
 
             if ($('#admin-password').val().length < BackendUsers.MIN_PASSWORD_LENGTH
                     && $('#admin-password').val() != '') {
                 $('#admin-password, #admin-password-confirm').css('border', '2px solid red');
-                throw EALang.password_length_notice.replace('$number', BackendUsers.MIN_PASSWORD_LENGTH);
+                throw EALang['password_length_notice'].replace('$number', BackendUsers.MIN_PASSWORD_LENGTH);
             }
 
             // Validate user email.
             if (!GeneralFunctions.validateEmail($('#admin-email').val())) {
                 $('#admin-email').css('border', '2px solid red');
-                throw EALang.invalid_email;
+                throw EALang['invalid_email'];
             }
 
             // Check if username exists
             if ($('#admin-username').attr('already-exists') ==  'true') {
                 $('#admin-username').css('border', '2px solid red');
-                throw EALang.username_already_exists;
+                throw EALang['username_already_exists'];
             }
 
             return true;
@@ -372,7 +366,7 @@
             $('#filter-admins .results').jScrollPane({ mouseWheelSpeed: 70 });
 
             if (response.length == 0) {
-                $('#filter-admins .results').html('<em>' + EALang.no_records_found + '</em>')
+                $('#filter-admins .results').html('<em>' + EALang['no_records_found'] + '</em>')
             }
 
             if (selectId != undefined) {
