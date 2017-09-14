@@ -5,7 +5,7 @@
  *
  * @package     EasyAppointments
  * @author      A.Tselegidis <alextselegidis@gmail.com>
- * @copyright   Copyright (c) 2013 - 2016, Alex Tselegidis
+ * @copyright   Copyright (c) 2013 - 2017, Alex Tselegidis
  * @license     http://opensource.org/licenses/GPL-3.0 - GPLv3
  * @link        http://easyappointments.org
  * @since       v1.0.0
@@ -55,9 +55,7 @@ class Google_Sync {
     public function __construct() {
         $this->CI =& get_instance();
 
-        if (!isset($_SESSION)) {
-            @session_start();
-        }
+        $this->CI->load->library('session');
 
         // Initialize google client and calendar service.
         $this->client = new Google_Client();
@@ -233,7 +231,11 @@ class Google_Sync {
      * be deleted.
      */
     public function delete_appointment($provider, $google_event_id) {
-        $this->service->events->delete($provider['settings']['google_calendar'], $google_event_id);
+        try {
+            $this->service->events->delete($provider['settings']['google_calendar'], $google_event_id);
+        } catch (Exception $ex) {
+            // Event was not found on Google Calendar.
+        }
     }
 
     /**
@@ -301,7 +303,11 @@ class Google_Sync {
      * @param string $google_event_id Google Calendar event id to be deleted.
      */
     public function delete_unavailable($provider, $google_event_id) {
-        $this->service->events->delete($provider['settings']['google_calendar'], $google_event_id);
+        try {
+            $this->service->events->delete($provider['settings']['google_calendar'], $google_event_id);
+        } catch (Exception $ex) {
+            // Event was not found on Google Calendar.
+        }
     }
 
     /**
@@ -351,6 +357,10 @@ class Google_Sync {
         $calendarList = $this->service->calendarList->listCalendarList();
         $calendars = array();
         foreach ($calendarList->items as $google_calendar) {
+            if ($google_calendar->getAccessRole() === 'reader') {
+                continue;
+            }
+
             $calendars[] = array(
                 'id' => $google_calendar->id,
                 'summary' => $google_calendar->summary
@@ -359,6 +369,3 @@ class Google_Sync {
          return $calendars;
     }
 }
-
-/* End of file google_sync.php */
-/* Location: ./application/libraries/google_sync.php */

@@ -5,7 +5,7 @@
  *
  * @package     EasyAppointments
  * @author      A.Tselegidis <alextselegidis@gmail.com>
- * @copyright   Copyright (c) 2013 - 2016, Alex Tselegidis
+ * @copyright   Copyright (c) 2013 - 2017, Alex Tselegidis
  * @license     http://opensource.org/licenses/GPL-3.0 - GPLv3
  * @link        http://easyappointments.org
  * @since       v1.0.0
@@ -22,11 +22,12 @@ class Settings_Model extends CI_Model {
      *
      * This method returns a system setting from the database.
      *
-     * @expectedException Exception
-     *
      * @param string $name The database setting name.
      *
      * @return string Returns the database value for the selected setting.
+     *
+     * @throws Exception If the $name argument is invalid.
+     * @throws Exception If the requested $name setting does not exist in the database.
      */
     public function get_setting($name) {
         if (!is_string($name)) { // Check argument type.
@@ -38,21 +39,22 @@ class Settings_Model extends CI_Model {
         }
 
         $query = $this->db->get_where('ea_settings', array('name' => $name));
-        $setting = ($query->num_rows() > 0) ? $query->row() : '';
+        $setting = $query->num_rows() > 0 ? $query->row() : '';
         return $setting->value;
     }
 
     /**
-     * This method sets the value for a specific setting
-     * on the database. If the setting doesn't exist, it
-     * is going to be created, otherwise updated.
+     * This method sets the value for a specific setting on the database.
      *
-     * @expectedException Exception
+     * If the setting doesn't exist, it is going to be created, otherwise updated.
      *
      * @param string $name The setting name.
-     * @param type $value The setting value.
+     * @param string $value The setting value.
      *
      * @return int Returns the setting database id.
+     *
+     * @throws Exception If $name argument is invalid.
+     * @throws Exception If the save operation fails.
      */
     public function set_setting($name, $value) {
         if (!is_string($name)) {
@@ -65,7 +67,7 @@ class Settings_Model extends CI_Model {
             if (!$this->db->update('ea_settings', array('value' => $value), array('name' => $name))) {
                 throw new Exception('Could not update database setting.');
             }
-            $setting_id = intval($this->db->get_where('ea_settings', array('name' => $name))->row()->id);
+            $setting_id = (int)$this->db->get_where('ea_settings', array('name' => $name))->row()->id;
         } else {
             // Insert setting
             $insert_data = array(
@@ -75,7 +77,7 @@ class Settings_Model extends CI_Model {
             if (!$this->db->insert('ea_settings', $insert_data)) {
                 throw new Exception('Could not insert database setting');
             }
-            $setting_id = intval($this->db->insert_id());
+            $setting_id = (int)$this->db->insert_id();
         }
 
         return $setting_id;
@@ -84,11 +86,11 @@ class Settings_Model extends CI_Model {
     /**
      * Remove a setting from the database.
      *
-     * @expectedException Exception
-     *
      * @param string $name The setting name to be removed.
      *
      * @return bool Returns the delete operation result.
+     *
+     * @throws Exception If the $name argument is invalid.
      */
     public function remove_setting($name) {
         if (!is_string($name)) {
@@ -139,6 +141,3 @@ class Settings_Model extends CI_Model {
         return $this->db->get('ea_settings')->result_array();
     }
 }
-
-/* End of file settings_model.php */
-/* Location: ./application/models/settings_model.php */

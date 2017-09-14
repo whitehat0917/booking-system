@@ -3,7 +3,7 @@
  *
  * @package     EasyAppointments
  * @author      A.Tselegidis <alextselegidis@gmail.com>
- * @copyright   Copyright (c) 2013 - 2016, Alex Tselegidis
+ * @copyright   Copyright (c) 2013 - 2017, Alex Tselegidis
  * @license     http://opensource.org/licenses/GPL-3.0 - GPLv3
  * @link        http://easyappointments.org
  * @since       v1.0.0
@@ -40,7 +40,7 @@
                 return;
             }
 
-            Backend.displayNotification(EALang['settings_saved']);
+            Backend.displayNotification(EALang.settings_saved);
 
             // Update the logo title on the header.
             $('#header-logo span').text($('#company-name').val());
@@ -116,13 +116,13 @@
             });
 
             if (missingRequired) {
-                throw EALang['fields_are_required'];
+                throw EALang.fields_are_required;
             }
 
             // Validate company email address.
             if (!GeneralFunctions.validateEmail($('#company-email').val())) {
                 $('#company-email').css('border', '2px solid red');
-                throw EALang['invalid_email'];
+                throw EALang.invalid_email;
             }
 
             return true;

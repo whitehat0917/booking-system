@@ -3,7 +3,7 @@
  *
  * @package     EasyAppointments
  * @author      A.Tselegidis <alextselegidis@gmail.com>
- * @copyright   Copyright (c) 2013 - 2016, Alex Tselegidis
+ * @copyright   Copyright (c) 2013 - 2017, Alex Tselegidis
  * @license     http://opensource.org/licenses/GPL-3.0 - GPLv3
  * @link        http://easyappointments.org
  * @since       v1.2.0
@@ -47,13 +47,14 @@ window.BackendCalendarGoogleSync = window.BackendCalendarGoogleSync || {};
                     // When the browser redirects to the google user consent page the "window.document" variable
                     // becomes "undefined" and when it comes back to the redirect URL it changes back. So check
                     // whether the variable is undefined to avoid javascript errors.
-                    if (windowHandle.document !== undefined) {
+                    try {
+                        if (windowHandle.document !== undefined) {
                         if (windowHandle.document.URL.indexOf(redirectUrl) !== -1) {
                             // The user has granted access to his data.
                             windowHandle.close();
                             window.clearInterval(authInterval);
                             $('#enable-sync').addClass('btn-danger enabled');
-                            $('#enable-sync span:eq(1)').text(EALang['disable_sync']);
+                            $('#enable-sync span:eq(1)').text(EALang.disable_sync);
                             $('#google-sync').prop('disabled', false);
                             $('#select-filter-item option:selected').attr('google-sync', 'true');
 
@@ -81,6 +82,11 @@ window.BackendCalendarGoogleSync = window.BackendCalendarGoogleSync || {};
                             }, 'json').fail(GeneralFunctions.ajaxFailureHandler);
                         }
                     }
+                    } catch(Error) {
+                        // Accessing the document object before the window is loaded throws an error, but
+                        // it will only happen during the initialization of the window. Attaching "load"
+                        // event handling is not possible due to CORS restrictions.
+                    }
                 }, 100);
 
             } else {
@@ -95,7 +101,7 @@ window.BackendCalendarGoogleSync = window.BackendCalendarGoogleSync || {};
                         _disableProviderSync(provider['id']);
 
                         $('#enable-sync').removeClass('btn-danger enabled');
-                        $('#enable-sync span:eq(1)').text(EALang['enable_sync']);
+                        $('#enable-sync span:eq(1)').text(EALang.enable_sync);
                         $('#google-sync').prop('disabled', true);
                         $('#select-filter-item option:selected').attr('google-sync', 'false');
 
@@ -119,7 +125,7 @@ window.BackendCalendarGoogleSync = window.BackendCalendarGoogleSync || {};
                 if (!GeneralFunctions.handleAjaxExceptions(response)) {
                     return;
                 }
-                Backend.displayNotification(EALang['google_calendar_selected']);
+                Backend.displayNotification(EALang.google_calendar_selected);
                 $('#select-google-calendar').modal('hide');
             }, 'json').fail(GeneralFunctions.ajaxFailureHandler);
         });
@@ -160,11 +166,11 @@ window.BackendCalendarGoogleSync = window.BackendCalendarGoogleSync || {};
                         $('#message_box').append(GeneralFunctions.exceptionsToHtml(response.warnings));
                     }
 
-                    Backend.displayNotification(EALang['google_sync_completed']);
+                    Backend.displayNotification(EALang.google_sync_completed);
                     $('#reload-appointments').trigger('click');
                 })
                 .fail(function(jqXHR, textStatus, errorThrown) {
-                    Backend.displayNotification(EALang['google_sync_failed']);
+                    Backend.displayNotification(EALang.google_sync_failed);
                 });
         });
     }

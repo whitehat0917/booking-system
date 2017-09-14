@@ -3,7 +3,7 @@
  *
  * @package     EasyAppointments
  * @author      A.Tselegidis <alextselegidis@gmail.com>
- * @copyright   Copyright (c) 2013 - 2016, Alex Tselegidis
+ * @copyright   Copyright (c) 2013 - 2017, Alex Tselegidis
  * @license     http://opensource.org/licenses/GPL-3.0 - GPLv3
  * @link        http://easyappointments.org
  * @since       v1.0.0
@@ -45,7 +45,7 @@ window.BackendServices = window.BackendServices || {};
             var option = new Option(category.name, category.id);
             $('#service-category').append(option);
         });
-        $('#service-category').append(new Option('- ' + EALang['no_category'] + ' -', null)).val('null');
+        $('#service-category').append(new Option('- ' + EALang.no_category + ' -', null)).val('null');
 
         $('#service-duration, #service-attendants-number').spinner({
             min: 1,
@@ -123,7 +123,7 @@ window.BackendServices = window.BackendServices || {};
                 var option = new Option(category.name, category.id);
                 $select.append(option);
             });
-            $select.append(new Option('- ' + EALang['no_category'] + ' -', null)).val('null');
+            $select.append(new Option('- ' + EALang.no_category + ' -', null)).val('null');
         }, 'json').fail(GeneralFunctions.ajaxFailureHandler);
     }
 

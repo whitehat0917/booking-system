@@ -5,7 +5,7 @@
  *
  * @package     EasyAppointments
  * @author      A.Tselegidis <alextselegidis@gmail.com>
- * @copyright   Copyright (c) 2013 - 2016, Alex Tselegidis
+ * @copyright   Copyright (c) 2013 - 2017, Alex Tselegidis
  * @license     http://opensource.org/licenses/GPL-3.0 - GPLv3
  * @link        http://easyappointments.org
  * @since       v1.0.0
@@ -135,8 +135,10 @@ class User extends CI_Controller {
      * Regenerate a new password for the current user, only if the username and
      * email address given correspond to an existing user in db.
      *
-     * @param string $_POST['username']
-     * @param string $_POST['email']
+     * Required POST Parameters:
+     *
+     * - string $_POST['username'] Username to be validated.
+     * - string $_POST['email'] Email to be validated.
      */
     public function ajax_forgot_password() {
         try {
@@ -170,6 +172,3 @@ class User extends CI_Controller {
         }
     }
 }
-
-/* End of file user.php */
-/* Location: ./application/controllers/user.php */
