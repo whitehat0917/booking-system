@@ -3,7 +3,7 @@
  *
  * @package     EasyAppointments
  * @author      A.Tselegidis <alextselegidis@gmail.com>
- * @copyright   Copyright (c) 2013 - 2017, Alex Tselegidis
+ * @copyright   Copyright (c) 2013 - 2016, Alex Tselegidis
  * @license     http://opensource.org/licenses/GPL-3.0 - GPLv3
  * @link        http://easyappointments.org
  * @since       v1.0.0
@@ -83,13 +83,13 @@ $(document).ready(function() {
     function validate() {
         try {
             $('.alert').hide();
-            $('input').closest('.form-group').removeClass('has-error');
+            $('input').css('border', '');
 
             // Check for empty fields.
             var missingRequired = false;
             $('input').each(function() {
                 if ($(this).val() == '') {
-                    $(this).closest('.form-group').addClass('has-error');
+                    $(this).css('border', '2px solid red');
                     missingRequired = true;
                 }
             });
@@ -100,25 +100,25 @@ $(document).ready(function() {
 
             // Validate Passwords
             if ($('#password').val() != $('#retype-password').val()) {
-                $('#password').closest('.form-group').addClass('has-error');
-                $('#retype-password').closest('.form-group').addClass('has-error');
+                $('#password').css('border', '2px solid red');
+                $('#retype-password').css('border', '2px solid red');
                 throw 'Passwords do not match!';
             }
 
             if ($('#password').val().length < MIN_PASSWORD_LENGTH) {
-                $('#password').closest('.form-group').addClass('has-error');
-                $('#retype-password').closest('.form-group').addClass('has-error');
+                $('#password').css('border', '2px solid red');
+                $('#retype-password').css('border', '2px solid red');
                 throw 'The password must be at least ' + MIN_PASSWORD_LENGTH + ' characters long.';
             }
 
             // Validate Email
             if (!GeneralFunctions.validateEmail($('#email').val())) {
-                $('#email').closest('.form-group').addClass('has-error');
+                $('#email').css('border', '2px solid red');
                 throw 'The email address is invalid!';
             }
 
             if (!GeneralFunctions.validateEmail($('#company-email').val())) {
-                $('#company-email').closest('.form-group').addClass('has-error');
+                $('#company-email').css('border', '2px solid red');
                 throw 'The email address is invalid!';
             }
 

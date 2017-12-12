@@ -3,7 +3,7 @@
  *
  * @package     EasyAppointments
  * @author      A.Tselegidis <alextselegidis@gmail.com>
- * @copyright   Copyright (c) 2013 - 2017, Alex Tselegidis
+ * @copyright   Copyright (c) 2013 - 2016, Alex Tselegidis
  * @license     http://opensource.org/licenses/GPL-3.0 - GPLv3
  * @link        http://easyappointments.org
  * @since       v1.0.0
@@ -74,6 +74,11 @@ window.BackendSettings = window.BackendSettings || {};
         exports.wp.setup(workingPlan);
         exports.wp.timepickers(false);
 
+        // Book Advance Timeout Spinner
+        $('#book-advance-timeout').spinner({
+            'min': 0
+        });
+
         // Load user settings into form
         $('#user-id').val(GlobalVariables.settings.user.id);
         $('#first-name').val(GlobalVariables.settings.user.first_name);
@@ -133,18 +138,25 @@ window.BackendSettings = window.BackendSettings || {};
          *
          * Change the visible tab contents.
          */
-        $('a[data-toggle="tab"]').on('shown.bs.tab', function (event) {
-            // Bootstrap has a bug with toggle buttons. Their toggle state is lost when the button is hidden or shown.
-            // Show before anything else we need to store the toggle and apply it whenever the user tab is clicked.
+        $('.tab').click(function() {
+            // Bootstrap has a bug with toggle buttons. Their toggle state is lost when the
+            // button is hidden or shown. Show before anything else we need to store the toggle
+            // and apply it whenever the user tab is clicked..
             var areNotificationsActive = $('#user-notifications').hasClass('active');
 
-            var href = $(this).attr('href');
+            $(this).parent().find('.active').removeClass('active');
+            $(this).addClass('active');
+            $('.tab-content').hide();
 
-            if (href === '#general') {
+            if ($(this).hasClass('general-tab')) {
+                $('#general').show();
                 settings = new SystemSettings();
-            } else if (href === '#business-logic') {
+            } else if ($(this).hasClass('business-logic-tab')) {
+                $('#business-logic').show();
                 settings = new SystemSettings();
-            } else if (href === '#current-user') {
+
+            } else if ($(this).hasClass('user-tab')) {
+                $('#user').show();
                 settings = new UserSettings();
 
                 // Apply toggle state to user notifications button.
@@ -153,6 +165,8 @@ window.BackendSettings = window.BackendSettings || {};
                 } else {
                     $('#user-notifications').removeClass('active');
                 }
+            } else if ($(this).hasClass('about-tab')) {
+                $('#about').show();
             }
 
             Backend.placeFooterToBottom();
@@ -194,11 +208,11 @@ window.BackendSettings = window.BackendSettings || {};
                 }
 
                 if (response == false) {
-                    $input.closest('.form-group').addClass('has-error');
-                    Backend.displayNotification(EALang.username_already_exists);
+                    $input.css('border', '2px solid red');
+                    Backend.displayNotification(EALang['username_already_exists']);
                     $input.attr('already-exists', 'true');
                 } else {
-                    $input.closest('.form-group').removeClass('has-error');
+                    $input.css('border', '');
                     $input.attr('already-exists', 'false');
                 }
             }, 'json').fail(GeneralFunctions.ajaxFailureHandler);

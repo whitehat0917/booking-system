@@ -3,7 +3,7 @@
  *
  * @package     EasyAppointments
  * @author      A.Tselegidis <alextselegidis@gmail.com>
- * @copyright   Copyright (c) 2013 - 2017, Alex Tselegidis
+ * @copyright   Copyright (c) 2013 - 2016, Alex Tselegidis
  * @license     http://opensource.org/licenses/GPL-3.0 - GPLv3
  * @link        http://easyappointments.org
  * @since       v1.2.0
@@ -34,20 +34,20 @@ window.BackendCalendarApi = window.BackendCalendarApi || {};
      * @param {Function} errorCallback Optional, if defined, this function is going to be executed on post failure.
      */
     exports.saveAppointment = function(appointment, customer, successCallback, errorCallback) {
-        var url = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_save_appointment';
-        var data = {
+        var postUrl = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_save_appointment';
+        var postData = {
             csrfToken: GlobalVariables.csrfToken,
             appointment_data: JSON.stringify(appointment)
         };
 
         if (customer !== undefined) {
-            data.customer_data = JSON.stringify(customer);
+            postData['customer_data'] = JSON.stringify(customer);
         }
 
         $.ajax({
-            url: url,
+            url: postUrl,
             type: 'POST',
-            data: data,
+            data: postData,
             dataType: 'json'
         })
             .done(function(response) {

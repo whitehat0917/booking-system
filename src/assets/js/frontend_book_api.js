@@ -3,7 +3,7 @@
  *
  * @package     EasyAppointments
  * @author      A.Tselegidis <alextselegidis@gmail.com>
- * @copyright   Copyright (c) 2013 - 2017, Alex Tselegidis
+ * @copyright   Copyright (c) 2013 - 2016, Alex Tselegidis
  * @license     http://opensource.org/licenses/GPL-3.0 - GPLv3
  * @link        http://easyappointments.org
  * @since       v1.0.0
@@ -40,13 +40,13 @@ window.FrontendBookApi = window.FrontendBookApi || {};
         // Find the selected service duration (it is going to be send within the "postData" object).
         var selServiceDuration = 15; // Default value of duration (in minutes).
         $.each(GlobalVariables.availableServices, function(index, service) {
-            if (service.id == $('#select-service').val()) {
-                selServiceDuration = service.duration;
+            if (service['id'] == $('#select-service').val()) {
+                selServiceDuration = service['duration'];
             }
         });
 
         // If the manage mode is true then the appointment's start date should return as available too.
-        var appointmentId = FrontendBook.manageMode ? GlobalVariables.appointmentData.id : undefined;
+        var appointmentId = FrontendBook.manageMode ? GlobalVariables.appointmentData['id'] : undefined;
 
         // Make ajax post request and get the available hours.
         var postUrl = GlobalVariables.baseUrl + '/index.php/appointments/ajax_get_available_hours';
@@ -69,16 +69,16 @@ window.FrontendBookApi = window.FrontendBookApi || {};
             // service. Fill the available hours div with response data.
             if (response.length > 0) {
                 var currColumn = 1;
-                $('#available-hours').html('<div style="width:80px; float:left;"></div>');
+                $('#available-hours').html('<div style="width:50px; float:left;"></div>');
 
                 $.each(response, function(index, availableHour) {
                     if ((currColumn * 10) < (index + 1)) {
                         currColumn++;
-                        $('#available-hours').append('<div style="width:80px; float:left;"></div>');
+                        $('#available-hours').append('<div style="width:50px; float:left;"></div>');
                     }
 
                     $('#available-hours div:eq(' + (currColumn - 1) + ')').append(
-                            '<span class="available-hour">' + Date.parse(availableHour).toString('h:mm tt') + '</span><br/>');
+                            '<span class="available-hour">' + availableHour + '</span><br/>');
                 });
 
                 if (FrontendBook.manageMode) {
@@ -86,8 +86,8 @@ window.FrontendBookApi = window.FrontendBookApi || {};
                     $('.available-hour').removeClass('selected-hour');
                     $('.available-hour').filter(function() {
                         return $(this).text() === Date.parseExact(
-                                GlobalVariables.appointmentData.start_datetime,
-                                'yyyy-MM-dd HH:mm:ss').toString('h:mm tt');
+                                GlobalVariables.appointmentData['start_datetime'],
+                                'yyyy-MM-dd HH:mm:ss').toString('HH:mm');
                     }).addClass('selected-hour');
                 } else {
                     // Set the first available hour as the default selection.
@@ -97,7 +97,7 @@ window.FrontendBookApi = window.FrontendBookApi || {};
                 FrontendBook.updateConfirmFrame();
 
             } else {
-                $('#available-hours').text(EALang.no_available_hours);
+                $('#available-hours').text(EALang['no_available_hours']);
             }
         }, 'json').fail(GeneralFunctions.ajaxFailureHandler);
     };
@@ -112,9 +112,9 @@ window.FrontendBookApi = window.FrontendBookApi || {};
         var $captchaText = $('.captcha-text');
 
         if ($captchaText.length > 0) {
-            $captchaText.closest('.form-group').removeClass('has-error');
+            $captchaText.css('border', '');
             if ($captchaText.val() === '') {
-                $captchaText.closest('.form-group').addClass('has-error');
+                $captchaText.css('border', '1px solid #dc3b40');
                 return;
             }
         }
@@ -163,7 +163,7 @@ window.FrontendBookApi = window.FrontendBookApi || {};
 
                 if (response.captcha_verification === false) {
                     $('#captcha-hint')
-                        .text(EALang.captcha_is_wrong + '(' + response.expected_phrase + ')')
+                        .text(EALang['captcha_is_wrong'] + '(' + response.expected_phrase + ')')
                         .fadeTo(400, 1);
 
                     setTimeout(function() {
@@ -172,13 +172,13 @@ window.FrontendBookApi = window.FrontendBookApi || {};
 
                     $('.captcha-title small').trigger('click');
 
-                    $captchaText.closest('.form-group').addClass('has-error');
+                    $captchaText.css('border', '1px solid #dc3b40');
 
                     return false;
                 }
 
-                window.location.href = GlobalVariables.baseUrl
-                    + '/index.php/appointments/book_success/' + response.appointment_id;
+                window.location.replace(GlobalVariables.baseUrl
+                    + '/index.php/appointments/book_success/' + response.appointment_id);
             })
             .fail(function(jqxhr, textStatus, errorThrown) {
                 $('.captcha-title small').trigger('click');
@@ -253,7 +253,7 @@ window.FrontendBookApi = window.FrontendBookApi || {};
 
         // If all the days are unavailable then hide the appointments hours.
         if (unavailableDates.length === numberOfDays) {
-            $('#available-hours').text(EALang.no_available_hours);
+            $('#available-hours').text(EALang['no_available_hours']);
         }
 
         // Grey out unavailable dates.

@@ -3,7 +3,7 @@
  *
  * @package     EasyAppointments
  * @author      A.Tselegidis <alextselegidis@gmail.com>
- * @copyright   Copyright (c) 2013 - 2017, Alex Tselegidis
+ * @copyright   Copyright (c) 2013 - 2016, Alex Tselegidis
  * @license     http://opensource.org/licenses/GPL-3.0 - GPLv3
  * @link        http://easyappointments.org
  * @since       v1.0.0
@@ -40,7 +40,7 @@
                 return;
             }
 
-            Backend.displayNotification(EALang.settings_saved);
+            Backend.displayNotification(EALang['settings_saved']);
 
             // Update the logo title on the header.
             $('#header-logo span').text($('#company-name').val());
@@ -103,31 +103,31 @@
      * @return {Boolean} Returns the validation result.
      */
     SystemSettings.prototype.validate = function() {
-        $('#general .has-error').removeClass('has-error');
+        $('#general .required').css('border', '');
 
         try {
             // Validate required fields.
             var missingRequired = false;
             $('#general .required').each(function() {
                 if ($(this).val() == '' || $(this).val() == undefined) {
-                    $(this).closest('.form-group').addClass('has-error');
+                    $(this).css('border', '2px solid red');
                     missingRequired = true;
                 }
             });
 
             if (missingRequired) {
-                throw EALang.fields_are_required;
+                throw EALang['fields_are_required'];
             }
 
             // Validate company email address.
             if (!GeneralFunctions.validateEmail($('#company-email').val())) {
-                $('#company-email').closest('.form-group').addClass('has-error');
-                throw EALang.invalid_email;
+                $('#company-email').css('border', '2px solid red');
+                throw EALang['invalid_email'];
             }
 
             return true;
-        } catch(message) {
-            Backend.displayNotification(message);
+        } catch(exc) {
+            Backend.displayNotification(exc);
             return false;
         }
     };

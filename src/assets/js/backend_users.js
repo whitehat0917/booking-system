@@ -3,7 +3,7 @@
  *
  * @package     EasyAppointments
  * @author      A.Tselegidis <alextselegidis@gmail.com>
- * @copyright   Copyright (c) 2013 - 2017, Alex Tselegidis
+ * @copyright   Copyright (c) 2013 - 2016, Alex Tselegidis
  * @license     http://opensource.org/licenses/GPL-3.0 - GPLv3
  * @link        http://easyappointments.org
  * @since       v1.0.0
@@ -52,17 +52,22 @@ window.BackendUsers = window.BackendUsers || {};
     exports.initialize = function(defaultEventHandlers) {
         defaultEventHandlers = defaultEventHandlers || true;
 
-        exports.wp = new WorkingPlan();
-        exports.wp.bindEventHandlers();
+        // Initialize jScrollPane Scrollbars
+        $('#filter-admins .results').jScrollPane();
+        $('#filter-providers .results').jScrollPane();
+        $('#filter-secretaries .results').jScrollPane();
 
         // Instantiate default helper object (admin).
-        helper = new ProvidersHelper();
+        helper = new AdminsHelper();
         helper.resetForm();
         helper.filter('');
         helper.bindEventHandlers();
 
+        exports.wp = new WorkingPlan();
+        exports.wp.bindEventHandlers();
+
         // Fill the services and providers list boxes.
-        var html = '<div class="col-xs-12">';
+        var html = '<div class="col-md-12">';
         $.each(GlobalVariables.services, function(index, service) {
             html +=
                 '<div class="checkbox">' +
@@ -75,8 +80,9 @@ window.BackendUsers = window.BackendUsers || {};
         });
         html += '</div>';
         $('#provider-services').html(html);
+        $('#provider-services').jScrollPane({ mouseWheelSpeed: 70 });
 
-        html = '<div class="col-xs-12">';
+        html = '<div class="col-md-12">';
         $.each(GlobalVariables.providers, function(index, provider) {
            html +=
                 '<div class="checkbox">' +
@@ -89,6 +95,7 @@ window.BackendUsers = window.BackendUsers || {};
         });
         html += '</div>';
         $('#secretary-providers').html(html);
+        $('#secretary-providers').jScrollPane({ mouseWheelSpeed: 70 });
 
         $('#reset-working-plan').qtip({
             position: {
@@ -116,28 +123,40 @@ window.BackendUsers = window.BackendUsers || {};
          *
          * Changes the displayed tab.
          */
-        $('a[data-toggle="tab"]').on('shown.bs.tab', function() {
-            if ($(this).attr('href') === '#admins') {
+        $('.tab').click(function() {
+            $(this).parent().find('.active').removeClass('active');
+            $(this).addClass('active');
+            $('.tab-content').hide();
+            $('#admins, #providers, #secretaries').off();
+
+            if ($(this).hasClass('admins-tab')) { // display admins tab
+                $('#admins').show();
                 helper = new AdminsHelper();
-            } else if ($(this).attr('href') === '#providers') {
+            } else if ($(this).hasClass('providers-tab')) { // display providers tab
+                $('#providers').show();
+                $('#provider-services').data('jsp').destroy();
+                $('#provider-services').jScrollPane({ mouseWheelSpeed: 70 });
                 helper = new ProvidersHelper();
-            } else if ($(this).attr('href') === '#secretaries') {
+            } else if ($(this).hasClass('secretaries-tab')) { // display secretaries tab
+                $('#secretaries').show();
                 helper = new SecretariesHelper();
 
                 // Update the list with the all the available providers.
-                var url = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_filter_providers';
-                var data = {
+                var postUrl = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_filter_providers';
+                var postData = {
                     csrfToken: GlobalVariables.csrfToken,
                     key: ''
                 };
-                $.post(url, data, function(response) {
+                $.post(postUrl, postData, function(response) {
                     if (!GeneralFunctions.handleAjaxExceptions(response)) {
                         return;
                     }
 
                     GlobalVariables.providers = response;
 
-                    var html = '<div class="col-xs-12">';
+                    $('#secretary-providers').data('jsp').destroy();
+
+                    var html = '<div class="col-md-12">';
                     $.each(GlobalVariables.providers, function(index, provider) {
                        html +=
                             '<div class="checkbox">' +
@@ -146,10 +165,13 @@ window.BackendUsers = window.BackendUsers || {};
                                     provider.first_name + ' ' + provider.last_name +
                                 '</label>' +
                             '</div>';
+
                     });
                     html += '</div>';
                     $('#secretary-providers').html(html);
-                    $('#secretary-providers input:checkbox').prop('disabled', true);
+
+                    $('#secretary-providers input[type="checkbox"]').prop('disabled', true);
+                    $('#secretary-providers').jScrollPane({ mouseWheelSpeed: 70 });
                 }, 'json').fail(GeneralFunctions.ajaxFailureHandler);
             }
 
@@ -191,19 +213,19 @@ window.BackendUsers = window.BackendUsers || {};
                 }
 
                 if (response == false) {
-                    $input.closest('.form-group').addClass('has-error');
+                    $input.css('border', '2px solid red');
                     $input.attr('already-exists', 'true');
-                    $input.parents().eq(3).find('.form-message').text(EALang.username_already_exists);
+                    $input.parents().eq(3).find('.form-message').text(EALang['username_already_exists']);
                     $input.parents().eq(3).find('.form-message').show();
                 } else {
-                    $input.closest('.form-group').removeClass('has-error');
+                    $input.css('border', '');
                     $input.attr('already-exists', 'false');
-                    if ($input.parents().eq(3).find('.form-message').text() == EALang.username_already_exists) {
+                    if ($input.parents().eq(3).find('.form-message').text() == EALang['username_already_exists']) {
                         $input.parents().eq(3).find('.form-message').hide();
                     }
                 }
             }, 'json').fail(GeneralFunctions.ajaxFailureHandler);
         });
-    }
+    };
 
 })(window.BackendUsers);

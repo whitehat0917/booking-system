@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit745c9af234090db98769aa0b5014bcf4
+class ComposerStaticInit9c38908245762ba05608594a95bb6a4f
 {
     public static $prefixLengthsPsr4 = array (
         'p' => 
@@ -18,10 +18,6 @@ class ComposerStaticInit745c9af234090db98769aa0b5014bcf4
         'S' => 
         array (
             'Symfony\\Component\\Yaml\\' => 23,
-        ),
-        'J' => 
-        array (
-            'Jsvrcek\\ICS\\' => 12,
         ),
         'G' => 
         array (
@@ -48,10 +44,6 @@ class ComposerStaticInit745c9af234090db98769aa0b5014bcf4
         'Symfony\\Component\\Yaml\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/yaml',
-        ),
-        'Jsvrcek\\ICS\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/jsvrcek/ics/src',
         ),
         'Gregwar\\Captcha\\' => 
         array (
@@ -547,10 +539,10 @@ class ComposerStaticInit745c9af234090db98769aa0b5014bcf4
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit745c9af234090db98769aa0b5014bcf4::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit745c9af234090db98769aa0b5014bcf4::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit745c9af234090db98769aa0b5014bcf4::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit745c9af234090db98769aa0b5014bcf4::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit9c38908245762ba05608594a95bb6a4f::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit9c38908245762ba05608594a95bb6a4f::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit9c38908245762ba05608594a95bb6a4f::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit9c38908245762ba05608594a95bb6a4f::$classMap;
 
         }, null, ClassLoader::class);
     }

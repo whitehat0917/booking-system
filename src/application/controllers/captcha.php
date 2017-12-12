@@ -1,11 +1,11 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 /* ----------------------------------------------------------------------------
  * Easy!Appointments - Open Source Web Scheduler
  *
  * @package     EasyAppointments
  * @author      A.Tselegidis <alextselegidis@gmail.com>
- * @copyright   Copyright (c) 2013 - 2017, Alex Tselegidis
+ * @copyright   Copyright (c) 2013 - 2016, Alex Tselegidis
  * @license     http://opensource.org/licenses/GPL-3.0 - GPLv3
  * @link        http://easyappointments.org
  * @since       v1.0.0
@@ -17,11 +17,11 @@
  * @package Controllers
  */
 class Captcha extends CI_Controller {
+
     /**
      * Class Constructor
      */
-    public function __construct()
-    {
+    public function __construct() {
         parent::__construct();
         $this->load->library('session');
     }
@@ -29,8 +29,7 @@ class Captcha extends CI_Controller {
     /**
      * Make a request to this method to get a captcha image.
      */
-    public function index()
-    {
+    public function index() {
         header('Content-type: image/jpeg');
         $builder = new Gregwar\Captcha\CaptchaBuilder;
         $builder->build();
@@ -38,3 +37,6 @@ class Captcha extends CI_Controller {
         $builder->output();
     }
 }
+
+/* End of file appointments.php */
+/* Location: ./application/controllers/appointments.php */

@@ -3,7 +3,7 @@
  *
  * @package     EasyAppointments
  * @author      A.Tselegidis <alextselegidis@gmail.com>
- * @copyright   Copyright (c) 2013 - 2017, Alex Tselegidis
+ * @copyright   Copyright (c) 2013 - 2016, Alex Tselegidis
  * @license     http://opensource.org/licenses/GPL-3.0 - GPLv3
  * @link        http://easyappointments.org
  * @since       v1.0.0
@@ -48,8 +48,8 @@
         $.each(workingPlan, function(index, workingDay) {
             if (workingDay != null) {
                 $('#' + index).prop('checked', true);
-                $('#' + index + '-start').val(Date.parse(workingDay.start).toString('h:mm tt').toUpperCase());
-                $('#' + index + '-end').val(Date.parse(workingDay.end).toString('h:mm tt').toUpperCase());
+                $('#' + index + '-start').val(workingDay.start);
+                $('#' + index + '-end').val(workingDay.end);
 
                 // Add the day's breaks on the breaks table.
                 $.each(workingDay.breaks, function(i, brk) {
@@ -58,19 +58,19 @@
                     var tr =
                             '<tr>' +
                                 '<td class="break-day editable">' + GeneralFunctions.ucaseFirstLetter(day) + '</td>' +
-                                '<td class="break-start editable">' + Date.parse(brk.start).toString('h:mm tt').toUpperCase() + '</td>' +
-                                '<td class="break-end editable">' + Date.parse(brk.end).toString('h:mm tt').toUpperCase() + '</td>' +
+                                '<td class="break-start editable">' + brk.start + '</td>' +
+                                '<td class="break-end editable">' + brk.end + '</td>' +
                                 '<td>' +
-                                    '<button type="button" class="btn btn-default btn-sm edit-break" title="' + EALang.edit + '">' +
+                                    '<button type="button" class="btn btn-default btn-sm edit-break" title="' + EALang['edit'] + '">' +
                                         '<span class="glyphicon glyphicon-pencil"></span>' +
                                     '</button>' +
-                                    '<button type="button" class="btn btn-default btn-sm delete-break" title="' + EALang.delete + '">' +
+                                    '<button type="button" class="btn btn-default btn-sm delete-break" title="' + EALang['delete'] + '">' +
                                         '<span class="glyphicon glyphicon-remove"></span>' +
                                     '</button>' +
-                                    '<button type="button" class="btn btn-default btn-sm save-break hidden" title="' + EALang.save + '">' +
+                                    '<button type="button" class="btn btn-default btn-sm save-break hidden" title="' + EALang['save'] + '">' +
                                         '<span class="glyphicon glyphicon-ok"></span>' +
                                     '</button>' +
-                                    '<button type="button" class="btn btn-default btn-sm cancel-break hidden" title="' + EALang.cancel + '">' +
+                                    '<button type="button" class="btn btn-default btn-sm cancel-break hidden" title="' + EALang['cancel'] + '">' +
                                         '<span class="glyphicon glyphicon-ban-circle"></span>' +
                                     '</button>' +
                                 '</td>' +
@@ -98,13 +98,13 @@
      */
     WorkingPlan.prototype.editableBreakDay = function($selector) {
         var weekDays = {};
-        weekDays[EALang.sunday] = EALang.sunday; //'Sunday';
-        weekDays[EALang.monday] = EALang.monday; //'Monday';
-        weekDays[EALang.tuesday] = EALang.tuesday; //'Tuesday';
-        weekDays[EALang.wednesday] = EALang.wednesday; //'Wednesday';
-        weekDays[EALang.thursday] = EALang.thursday; //'Thursday';
-        weekDays[EALang.friday] = EALang.friday; //'Friday';
-        weekDays[EALang.saturday] = EALang.saturday; //'Saturday';
+        weekDays[EALang['monday']] = EALang['monday']; //'Monday';
+        weekDays[EALang['tuesday']] = EALang['tuesday']; //'Tuesday';
+        weekDays[EALang['wednesday']] = EALang['wednesday']; //'Wednesday';
+        weekDays[EALang['thursday']] = EALang['thursday']; //'Thursday';
+        weekDays[EALang['friday']] = EALang['friday']; //'Friday';
+        weekDays[EALang['saturday']] = EALang['saturday']; //'Saturday';
+        weekDays[EALang['sunday']] = EALang['sunday']; //'Sunday';
 
         $selector.editable(function(value, settings) {
             return value;
@@ -142,7 +142,7 @@
             return value;
         }, {
             event: 'edit',
-            height: '30px',
+            height: '25px',
             submit: '<button type="button" class="hidden submit-editable">Submit</button>',
             cancel: '<button type="button" class="hidden cancel-editable">Cancel</button>',
             onblur: 'ignore',
@@ -168,12 +168,12 @@
          *
          * Enable or disable the time selection for each day.
          */
-        $('.working-plan input:checkbox').click(function() {
+        $('.working-plan input[type="checkbox"]').click(function() {
             var id = $(this).attr('id');
 
             if ($(this).prop('checked') == true) {
-                $('#' + id + '-start').prop('disabled', false).val('09:00 AM');
-                $('#' + id + '-end').prop('disabled', false).val('18:00 PM');
+                $('#' + id + '-start').prop('disabled', false).val('09:00');
+                $('#' + id + '-end').prop('disabled', false).val('18:00');
             } else {
                 $('#' + id + '-start').prop('disabled', true).val('');
                 $('#' + id + '-end').prop('disabled', true).val('');
@@ -189,20 +189,20 @@
         $('.add-break').click(function() {
             var tr =
                     '<tr>' +
-                        '<td class="break-day editable">' + EALang.sunday + '</td>' +
-                        '<td class="break-start editable">09:00 AM</td>' +
-                        '<td class="break-end editable">10:00 AM</td>' +
+                        '<td class="break-day editable">' + EALang['monday'] + '</td>' +
+                        '<td class="break-start editable">09:00</td>' +
+                        '<td class="break-end editable">10:00</td>' +
                         '<td>' +
-                            '<button type="button" class="btn btn-default btn-sm edit-break" title="' + EALang.edit + '">' +
+                            '<button type="button" class="btn btn-default btn-sm edit-break" title="' + EALang['edit'] + '">' +
                                 '<span class="glyphicon glyphicon-pencil"></span>' +
                             '</button>' +
-                            '<button type="button" class="btn btn-default btn-sm delete-break" title="' + EALang.delete + '">' +
+                            '<button type="button" class="btn btn-default btn-sm delete-break" title="' + EALang['delete'] + '">' +
                                 '<span class="glyphicon glyphicon-remove"></span>' +
                             '</button>' +
-                            '<button type="button" class="btn btn-default btn-sm save-break hidden" title="' + EALang.save + '">' +
+                            '<button type="button" class="btn btn-default btn-sm save-break hidden" title="' + EALang['save'] + '">' +
                                 '<span class="glyphicon glyphicon-ok"></span>' +
                             '</button>' +
-                            '<button type="button" class="btn btn-default btn-sm cancel-break hidden" title="' + EALang.cancel + '">' +
+                            '<button type="button" class="btn btn-default btn-sm cancel-break hidden" title="' + EALang['cancel'] + '">' +
                                 '<span class="glyphicon glyphicon-ban-circle"></span>' +
                             '</button>' +
                         '</td>' +
@@ -234,20 +234,18 @@
             // Make all cells in current row editable.
             $(this).parent().parent().children().trigger('edit');
             $(this).parent().parent().find('.break-start input, .break-end input').timepicker({
-                timeFormat: 'h:mm TT',
-                currentText: EALang.now,
-                closeText: EALang.close,
-                timeOnlyTitle: EALang.select_time,
-                timeText: EALang.time,
-                hourText: EALang.hour,
-                minuteText: EALang.minutes
+                currentText: EALang['now'],
+                closeText: EALang['close'],
+                timeOnlyTitle: EALang['select_time'],
+                timeText: EALang['time'],
+                hourText: EALang['hour'],
+                minuteText: EALang['minutes']
             });
             $(this).parent().parent().find('.break-day select').focus();
 
             // Show save - cancel buttons.
             $(this).closest('table').find('.edit-break, .delete-break').addClass('hidden');
             $(this).parent().find('.save-break, .cancel-break').removeClass('hidden');
-            $(this).closest('tr').find('select,input:text').addClass('form-control input-sm')
 
             $('.add-break').prop('disabled', true);
         });
@@ -295,7 +293,7 @@
                 end = Date.parse($modifiedRow.find('.break-end input').val());
 
             if (start > end) {
-                $modifiedRow.find('.break-end input').val(start.addHours(1).toString('h:mm tt'));
+                $modifiedRow.find('.break-end input').val(start.addHours(1).toString('HH:mm'));
             }
 
             this.enableSubmit = true;
@@ -315,30 +313,28 @@
      */
     WorkingPlan.prototype.get = function() {
         var workingPlan = {};
-        $('.working-plan input:checkbox').each(function(index, checkbox) {
+        $('.working-plan input[type="checkbox"]').each(function(index, checkbox) {
             var id = $(checkbox).attr('id');
             if ($(checkbox).prop('checked') == true) {
-                workingPlan[id] = {
-                    start: Date.parse($('#' + id + '-start').val()).toString('HH:mm'),
-                    end: Date.parse($('#' + id + '-end').val()).toString('HH:mm'),
-                    breaks: []
-                };
+                workingPlan[id] = {};
+                workingPlan[id].start = $('#' + id + '-start').val();
+                workingPlan[id].end = $('#' + id + '-end').val();
+                workingPlan[id].breaks = [];
 
                 $('.breaks tr').each(function(index, tr) {
                     var day = this.convertDayToValue($(tr).find('.break-day').text());
-
                     if (day == id) {
-                        var start = $(tr).find('.break-start').text();
-                        var end = $(tr).find('.break-end').text();
+                        var start = $(tr).find('.break-start').text(),
+                            end = $(tr).find('.break-end').text();
 
                         workingPlan[id].breaks.push({
-                            start: Date.parse(start).toString('HH:mm'),
-                            end: Date.parse(end).toString('HH:mm')
+                            'start': start,
+                            'end': end
                         });
                     }
 
                     workingPlan[id].breaks.sort(function(break1, break2) {
-                        // We can do a direct string comparison since we have time based on 24 hours clock.
+                        // We can do a direct string comparison since we have time based on 24 hours clock
                         return break1.start - break2.start;
                     });
                 }.bind(this));
@@ -360,14 +356,15 @@
 
         if (disabled == false) {
             // Set timepickers where needed.
-            $('.working-plan input:text').timepicker({
-                timeFormat: 'h:mm TT',
-                currentText: EALang.now,
-                closeText: EALang.close,
-                timeOnlyTitle: EALang.select_time,
-                timeText: EALang.time,
-                hourText: EALang.hour,
-                minuteText: EALang.minutes,
+            $('.working-plan input[type="text"]').timepicker({
+                timeFormat: 'HH:mm',
+
+                currentText: EALang['now'],
+                closeText: EALang['close'],
+                timeOnlyTitle: EALang['select_time'],
+                timeText: EALang['time'],
+                hourText: EALang['hour'],
+                minuteText: EALang['minutes'],
 
                 onSelect: function(datetime, inst) {
                     // Start time must be earlier than end time.
@@ -375,7 +372,7 @@
                         end = Date.parse($(this).parent().parent().find('.work-end').val());
 
                     if (start > end) {
-                        $(this).parent().parent().find('.work-end').val(start.addHours(1).toString('h:mm tt'));
+                        $(this).parent().parent().find('.work-end').val(start.addHours(1).toString('HH:mm'));
                     }
                 }
             });
@@ -398,20 +395,27 @@
      */
     WorkingPlan.prototype.convertValueToDay = function(value) {
         switch (value) {
-            case 'sunday':
-                return EALang.sunday;
             case 'monday':
-                return EALang.monday;
+                return EALang['monday'];
+                break;
             case 'tuesday':
-                return EALang.tuesday;
+                return EALang['tuesday'];
+                break;
             case 'wednesday':
-                return EALang.wednesday;
+                return EALang['wednesday'];
+                break;
             case 'thursday':
-                return EALang.thursday;
+                return EALang['thursday'];
+                break;
             case 'friday':
-                return EALang.friday;
+                return EALang['friday'];
+                break;
             case 'saturday':
-                return EALang.saturday;
+                return EALang['saturday'];
+                break;
+            case 'sunday':
+                return EALang['sunday'];
+                break;
         }
     };
 
@@ -422,20 +426,27 @@
      */
     WorkingPlan.prototype.convertDayToValue = function(day) {
         switch (day) {
-            case EALang.sunday:
-                return 'sunday';
-            case EALang.monday:
+            case EALang['monday']:
                 return 'monday';
-            case EALang.tuesday:
+                break;
+            case EALang['tuesday']:
                 return 'tuesday';
-            case EALang.wednesday:
+                break;
+            case EALang['wednesday']:
                 return 'wednesday';
-            case EALang.thursday:
+                break;
+            case EALang['thursday']:
                 return 'thursday';
-            case EALang.friday:
+                break;
+            case EALang['friday']:
                 return 'friday';
-            case EALang.saturday:
+                break;
+            case EALang['saturday']:
                 return 'saturday';
+                break;
+            case EALang['sunday']:
+                return 'sunday';
+                break;
         }
     };
 

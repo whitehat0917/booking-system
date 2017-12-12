@@ -8,8 +8,8 @@
 | Declare some of the global config values of Easy!Appointments.
 |
 */
-$config['version']             = '1.3.0'; // This must be changed manually.
-$config['release_label']       = 'alpha'; // Leave empty for no title or add Alpha, Beta etc ...
+$config['version']             = '1.2.1'; // This must be changed manually.
+$config['release_label']       = ''; // Leave empty for no title or add Alpha, Beta etc ...
 $config['google_sync_feature'] = Config::GOOGLE_SYNC_FEATURE;
 
 /*
@@ -115,8 +115,7 @@ $config['available_languages'] = array(
     'romanian',
     'turkish',
     'hindi',
-    'bulgarian',
-    'arabic'
+    'bulgarian'
 );
 
 /*
@@ -262,18 +261,6 @@ $config['log_date_format'] = 'Y-m-d H:i:s';
 |
 */
 $config['cache_path'] = __DIR__ . '/../../storage/cache/';
-
-/*
-|--------------------------------------------------------------------------
-| Cache Busting Token
-|--------------------------------------------------------------------------
-|
-| This token will be appending to asset URLs in order to invalidate the browser
-| cache and enforce end clients to fetch new files. Update the token with each
-| new release.
-|
-*/
-$config['cache_busting_token'] = 'dfsg8s09df8g098';
 
 /*
 |--------------------------------------------------------------------------

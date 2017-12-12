@@ -3,7 +3,7 @@
  *
  * @package     EasyAppointments
  * @author      A.Tselegidis <alextselegidis@gmail.com>
- * @copyright   Copyright (c) 2013 - 2017, Alex Tselegidis
+ * @copyright   Copyright (c) 2013 - 2016, Alex Tselegidis
  * @license     http://opensource.org/licenses/GPL-3.0 - GPLv3
  * @link        http://easyappointments.org
  * @since       v1.0.0
@@ -59,7 +59,7 @@
      */
     UserSettings.prototype.save = function(settings) {
         if (!this.validate(settings)) {
-            Backend.displayNotification(EALang.user_settings_are_invalid);
+            Backend.displayNotification(EALang['user_settings_are_invalid']);
             return; // Validation failed, do not proceed.
         }
 
@@ -75,7 +75,7 @@
                 return;
             }
 
-            Backend.displayNotification(EALang.settings_saved);
+            Backend.displayNotification(EALang['settings_saved']);
 
             // Update footer greetings.
             $('#footer-user-display-name').text('Hello, ' + $('#first-name').val() + ' ' + $('#last-name').val() + '!');
@@ -91,37 +91,38 @@
      * @return {Boolean} Returns the validation result.
      */
     UserSettings.prototype.validate = function() {
-        $('#user .has-error').removeClass('has-error');
+        $('#user .required').css('border', '');
+        $('#user').find('#password, #retype-password').css('border', '');
 
         try {
             // Validate required fields.
             var missingRequired = false;
             $('#user .required').each(function() {
                 if ($(this).val() === '' || $(this).val() === undefined) {
-                    $(this).closest('.form-group').addClass('has-error');
+                    $(this).css('border', '2px solid red');
                     missingRequired = true;
                 }
             });
 
             if (missingRequired) {
-                throw EALang.fields_are_required;
+                throw EALang['fields_are_required'];
             }
 
             // Validate passwords (if provided).
             if ($('#password').val() != $('#retype-password').val()) {
-                $('#password, #retype-password').closest('.form-group').addClass('has-error');
-                throw EALang.passwords_mismatch;
+                $('#password, #retype-password').css('border', '2px solid red');
+                throw EALang['passwords_mismatch'];
             }
 
             // Validate user email.
             if (!GeneralFunctions.validateEmail($('#email').val())) {
-                $('#email').closest('.form-group').addClass('has-error');
-                throw EALang.invalid_email;
+                $('#email').css('border', '2px solid red');
+                throw EALang['invalid_email'];
             }
 
             if ($('#username').attr('already-exists') === 'true') {
-                $('#username').closest('.form-group').addClass('has-error');
-                throw EALang.username_already_exists;
+                $('#username').css('border', '2px solid red');
+                throw EALang['username_already_exists'];
             }
 
             return true;

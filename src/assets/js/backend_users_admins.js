@@ -3,7 +3,7 @@
  *
  * @package     EasyAppointments
  * @author      A.Tselegidis <alextselegidis@gmail.com>
- * @copyright   Copyright (c) 2013 - 2017, Alex Tselegidis
+ * @copyright   Copyright (c) 2013 - 2016, Alex Tselegidis
  * @license     http://opensource.org/licenses/GPL-3.0 - GPLv3
  * @link        http://easyappointments.org
  * @since       v1.0.0
@@ -112,25 +112,19 @@
          */
         $('#admins').on('click', '#delete-admin', function() {
             var adminId = $('#admin-id').val();
+            var messageBtns = {};
 
-            var buttons = [
-                {
-                    text: EALang.delete,
-                    click: function() {
-                        this.delete(adminId);
-                        $('#message_box').dialog('close');
-                    }.bind(this)
-                },
-                {
-                    text: EALang.cancel,
-                    click:  function() {
-                        $('#message_box').dialog('close');
-                    }
-                }
-            ];
+            messageBtns[EALang['delete']] = function() {
+                this.delete(adminId);
+                $('#message_box').dialog('close');
+            }.bind(this);
 
-            GeneralFunctions.displayMessageBox(EALang.delete_admin,
-                    EALang.delete_record_prompt, buttons);
+            messageBtns[EALang['cancel']] = function() {
+                $('#message_box').dialog('close');
+            };
+
+            GeneralFunctions.displayMessageBox(EALang['delete_admin'],
+                    EALang['delete_record_prompt'], messageBtns);
         }.bind(this));
 
         /**
@@ -165,7 +159,7 @@
                 admin.id = $('#admin-id').val();
             }
 
-            if (!this.validate()) {
+            if (!this.validate(admin)) {
                 return;
             }
 
@@ -203,7 +197,7 @@
             if (!GeneralFunctions.handleAjaxExceptions(response)) {
                 return;
             }
-            Backend.displayNotification(EALang.admin_saved);
+            Backend.displayNotification(EALang['admin_saved']);
             this.resetForm();
             $('#filter-admins .key').val('');
             this.filter('', response.id, true);
@@ -226,7 +220,7 @@
             if (!GeneralFunctions.handleAjaxExceptions(response)) {
                 return;
             }
-            Backend.displayNotification(EALang.admin_deleted);
+            Backend.displayNotification(EALang['admin_deleted']);
             this.resetForm();
             this.filter($('#filter-admins .key').val());
         }.bind(this), 'json').fail(GeneralFunctions.ajaxFailureHandler);
@@ -235,10 +229,13 @@
     /**
      * Validates an admin record.
      *
+     * @param {Object} admin Contains the admin data to be validated.
+     *
      * @return {Boolean} Returns the validation result.
      */
-    AdminsHelper.prototype.validate = function() {
-        $('#admins .has-error').removeClass('has-error');
+    AdminsHelper.prototype.validate = function(admin) {
+        $('#admins .required').css('border', '');
+        $('#admin-password, #admin-password-confirm').css('border', '');
 
         try {
             // Validate required fields.
@@ -246,7 +243,7 @@
 
             $('#admins .required').each(function() {
                 if ($(this).val() == '' || $(this).val() == undefined) {
-                    $(this).closest('.form-group').addClass('has-error');
+                    $(this).css('border', '2px solid red');
                     missingRequired = true;
                 }
             });
@@ -257,34 +254,32 @@
 
             // Validate passwords.
             if ($('#admin-password').val() != $('#admin-password-confirm').val()) {
-                $('#admin-password, #admin-password-confirm').closest('.form-group').addClass('has-error');
-                throw EALang.passwords_mismatch;
+                $('#admin-password, #admin-password-confirm').css('border', '2px solid red');
+                throw EALang['passwords_mismatch'];
             }
 
             if ($('#admin-password').val().length < BackendUsers.MIN_PASSWORD_LENGTH
                     && $('#admin-password').val() != '') {
-                $('#admin-password, #admin-password-confirm').closest('.form-group').addClass('has-error');
-                throw EALang.password_length_notice.replace('$number', BackendUsers.MIN_PASSWORD_LENGTH);
+                $('#admin-password, #admin-password-confirm').css('border', '2px solid red');
+                throw EALang['password_length_notice'].replace('$number', BackendUsers.MIN_PASSWORD_LENGTH);
             }
 
             // Validate user email.
             if (!GeneralFunctions.validateEmail($('#admin-email').val())) {
-                $('#admin-email').closest('.form-group').addClass('has-error');
-                throw EALang.invalid_email;
+                $('#admin-email').css('border', '2px solid red');
+                throw EALang['invalid_email'];
             }
 
             // Check if username exists
             if ($('#admin-username').attr('already-exists') ==  'true') {
-                $('#admin-username').closest('.form-group').addClass('has-error');
-                throw EALang.username_already_exists;
+                $('#admin-username').css('border', '2px solid red');
+                throw EALang['username_already_exists'];
             }
 
             return true;
-        } catch(message) {
-            $('#admins .form-message')
-                .addClass('alert-danger')
-                .text(message)
-                .show();
+        } catch(exc) {
+            $('#admins .form-message').text(exc);
+            $('#admins .form-message').show();
             return false;
         }
     };
@@ -299,6 +294,8 @@
         $('#admins .record-details').find('select').prop('disabled', true);
         $('#admins .form-message').hide();
         $('#admin-notifications').prop('disabled', true);
+        $('#admins .required').css('border', '');
+        $('#admin-password, #admin-password-confirm').css('border', '');
         $('#admins .record-details').find('input, textarea').val('');
         $('#admin-notifications').removeClass('active');
         $('#edit-admin, #delete-admin').prop('disabled', true);
@@ -360,14 +357,16 @@
 
             this.filterResults = response;
 
+            $('#filter-admins .results').data('jsp').destroy();
             $('#filter-admins .results').html('');
             $.each(response, function(index, admin) {
                 var html = this.getFilterHtml(admin);
                 $('#filter-admins .results').append(html);
             }.bind(this));
+            $('#filter-admins .results').jScrollPane({ mouseWheelSpeed: 70 });
 
             if (response.length == 0) {
-                $('#filter-admins .results').html('<em>' + EALang.no_records_found + '</em>')
+                $('#filter-admins .results').html('<em>' + EALang['no_records_found'] + '</em>')
             }
 
             if (selectId != undefined) {

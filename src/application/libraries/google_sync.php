@@ -1,11 +1,11 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 /* ----------------------------------------------------------------------------
  * Easy!Appointments - Open Source Web Scheduler
  *
  * @package     EasyAppointments
  * @author      A.Tselegidis <alextselegidis@gmail.com>
- * @copyright   Copyright (c) 2013 - 2017, Alex Tselegidis
+ * @copyright   Copyright (c) 2013 - 2016, Alex Tselegidis
  * @license     http://opensource.org/licenses/GPL-3.0 - GPLv3
  * @link        http://easyappointments.org
  * @since       v1.0.0
@@ -52,15 +52,16 @@ class Google_Sync {
      * This method initializes the Google client class and the Calendar service
      * class so that they can be used by the other methods.
      */
-    public function __construct()
-    {
+    public function __construct() {
         $this->CI =& get_instance();
 
-        $this->CI->load->library('session');
+        if (!isset($_SESSION)) {
+            @session_start();
+        }
 
         // Initialize google client and calendar service.
         $this->client = new Google_Client();
-        $this->client->setUseObjects(TRUE);
+        $this->client->setUseObjects(true);
 
         $this->client->setApplicationName(Config::GOOGLE_PRODUCT_NAME);
         $this->client->setClientId(Config::GOOGLE_CLIENT_ID);
@@ -77,11 +78,10 @@ class Google_Sync {
      * This url must be used to redirect the user to the Google user consent page,
      * where the user grants access to his data for the Easy!Appointments app.
      */
-    public function get_auth_url()
-    {
-        // "max_auth_age" is needed because the user needs to always log in
-        // and not use an existing session.
-        return $this->client->createAuthUrl() . '&max_auth_age=0';
+    public function get_auth_url() {
+    	// "max_auth_age" is needed because the user needs to always log in
+    	// and not use an existing session.
+    	return $this->client->createAuthUrl() . '&max_auth_age=0';
     }
 
     /**
@@ -94,8 +94,7 @@ class Google_Sync {
      *
      * @see Google Controller
      */
-    public function authenticate($auth_code)
-    {
+    public function authenticate($auth_code) {
         $this->client->authenticate($auth_code);
         return $this->client->getAccessToken();
     }
@@ -113,9 +112,8 @@ class Google_Sync {
      * stored in the database and used every time we need to make actions to his
      * Google Caledar account.
      */
-    public function refresh_token($refresh_token)
-    {
-        $this->client->refreshToken($refresh_token);
+    public function refresh_token($refresh_token) {
+    	$this->client->refreshToken($refresh_token);
     }
 
     /**
@@ -136,8 +134,7 @@ class Google_Sync {
      *
      * @return Google_Event Returns the Google_Event class object.
      */
-    public function add_appointment($appointment, $provider, $service, $customer, $company_settings)
-    {
+    public function add_appointment($appointment, $provider, $service, $customer, $company_settings) {
         $this->CI->load->helper('general');
 
         $event = new Google_Event();
@@ -152,19 +149,18 @@ class Google_Sync {
         $end->setDateTime(date3339(strtotime($appointment['end_datetime'])));
         $event->setEnd($end);
 
-        $event->attendees = [];
+        $event->attendees = array();
 
         $event_provider = new Google_EventAttendee();
         $event_provider->setDisplayName($provider['first_name'] . ' '
-            . $provider['last_name']);
+                . $provider['last_name']);
         $event_provider->setEmail($provider['email']);
         $event->attendees[] = $event_provider;
 
-        if ($customer != NULL)
-        {
+        if ($customer != NULL) {
             $event_customer = new Google_EventAttendee();
             $event_customer->setDisplayName($customer['first_name'] . ' '
-                . $customer['last_name']);
+                    . $customer['last_name']);
             $event_customer->setEmail($customer['email']);
             $event->attendees[] = $event_customer;
         }
@@ -191,12 +187,10 @@ class Google_Sync {
      *
      * @return Google_Event Returns the Google_Event class object.
      */
-    public function update_appointment($appointment, $provider, $service, $customer, $company_settings)
-    {
+    public function update_appointment($appointment, $provider, $service, $customer, $company_settings) {
         $this->CI->load->helper('general');
 
-        $event = $this->service->events->get($provider['settings']['google_calendar'],
-            $appointment['id_google_calendar']);
+        $event = $this->service->events->get($provider['settings']['google_calendar'], $appointment['id_google_calendar']);
 
         $event->setSummary($service['name']);
         $event->setLocation($company_settings['company_name']);
@@ -209,25 +203,24 @@ class Google_Sync {
         $end->setDateTime(date3339(strtotime($appointment['end_datetime'])));
         $event->setEnd($end);
 
-        $event->attendees = [];
+        $event->attendees = array();
 
         $event_provider = new Google_EventAttendee();
         $event_provider->setDisplayName($provider['first_name'] . ' '
-            . $provider['last_name']);
+                . $provider['last_name']);
         $event_provider->setEmail($provider['email']);
         $event->attendees[] = $event_provider;
 
-        if ($customer != NULL)
-        {
+        if ($customer != NULL) {
             $event_customer = new Google_EventAttendee();
             $event_customer->setDisplayName($customer['first_name'] . ' '
-                . $customer['last_name']);
+                    . $customer['last_name']);
             $event_customer->setEmail($customer['email']);
             $event->attendees[] = $event_customer;
         }
 
         $updated_event = $this->service->events->update($provider['settings']['google_calendar'],
-            $event->getId(), $event);
+                $event->getId(), $event);
 
         return $updated_event;
     }
@@ -239,16 +232,8 @@ class Google_Sync {
      * @param string $google_event_id The Google Calendar event id to
      * be deleted.
      */
-    public function delete_appointment($provider, $google_event_id)
-    {
-        try
-        {
-            $this->service->events->delete($provider['settings']['google_calendar'], $google_event_id);
-        }
-        catch (Exception $ex)
-        {
-            // Event was not found on Google Calendar.
-        }
+    public function delete_appointment($provider, $google_event_id) {
+        $this->service->events->delete($provider['settings']['google_calendar'], $google_event_id);
     }
 
     /**
@@ -259,8 +244,7 @@ class Google_Sync {
      *
      * @return Google_Event Returns the google event's object.
      */
-    public function add_unavailable($provider, $unavailable)
-    {
+    public function add_unavailable($provider, $unavailable) {
         $this->CI->load->helper('general');
 
         $event = new Google_Event();
@@ -290,12 +274,10 @@ class Google_Sync {
      *
      * @return Google_Event Returns the Google_Event object.
      */
-    public function update_unavailable($provider, $unavailable)
-    {
+    public function update_unavailable($provider, $unavailable) {
         $this->CI->load->helper('general');
 
-        $event = $this->service->events->get($provider['settings']['google_calendar'],
-            $unavailable['id_google_calendar']);
+        $event = $this->service->events->get($provider['settings']['google_calendar'], $unavailable['id_google_calendar']);
         $event->setDescription($unavailable['notes']);
 
         $start = new Google_EventDateTime();
@@ -307,7 +289,7 @@ class Google_Sync {
         $event->setEnd($end);
 
         $updated_event = $this->service->events->update($provider['settings']['google_calendar'],
-            $event->getId(), $event);
+                $event->getId(), $event);
 
         return $updated_event;
     }
@@ -318,16 +300,8 @@ class Google_Sync {
      * @param array $provider Contains the provider record data.
      * @param string $google_event_id Google Calendar event id to be deleted.
      */
-    public function delete_unavailable($provider, $google_event_id)
-    {
-        try
-        {
-            $this->service->events->delete($provider['settings']['google_calendar'], $google_event_id);
-        }
-        catch (Exception $ex)
-        {
-            // Event was not found on Google Calendar.
-        }
+    public function delete_unavailable($provider, $google_event_id) {
+        $this->service->events->delete($provider['settings']['google_calendar'], $google_event_id);
     }
 
     /**
@@ -338,8 +312,7 @@ class Google_Sync {
      *
      * @return Google_Event Returns the google event object.
      */
-    public function get_event($provider, $google_event_id)
-    {
+    public function get_event($provider, $google_event_id) {
         return $this->service->events->get($provider['settings']['google_calendar'], $google_event_id);
     }
 
@@ -353,14 +326,13 @@ class Google_Sync {
      * @return object Returns an array with Google_Event objects that belong on the given
      * sync period (start, end).
      */
-    public function get_sync_events($google_calendar, $start, $end)
-    {
+    public function get_sync_events($google_calendar, $start, $end) {
         $this->CI->load->helper('general');
 
-        $params = [
+        $params = array(
             'timeMin' => date3339($start),
             'timeMax' => date3339($end)
-        ];
+        );
 
         return $this->service->events->listEvents($google_calendar, $params);
     }
@@ -375,22 +347,18 @@ class Google_Sync {
      *
      * @return array Returns an array with the available calendars.
      */
-    public function get_google_calendars()
-    {
+    public function get_google_calendars() {
         $calendarList = $this->service->calendarList->listCalendarList();
-        $calendars = [];
-        foreach ($calendarList->items as $google_calendar)
-        {
-            if ($google_calendar->getAccessRole() === 'reader')
-            {
-                continue;
-            }
-
-            $calendars[] = [
+        $calendars = array();
+        foreach ($calendarList->items as $google_calendar) {
+            $calendars[] = array(
                 'id' => $google_calendar->id,
                 'summary' => $google_calendar->summary
-            ];
+            );
         }
-        return $calendars;
+         return $calendars;
     }
 }
+
+/* End of file google_sync.php */
+/* Location: ./application/libraries/google_sync.php */
