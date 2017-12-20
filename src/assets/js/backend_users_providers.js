@@ -3,7 +3,7 @@
  *
  * @package     EasyAppointments
  * @author      A.Tselegidis <alextselegidis@gmail.com>
- * @copyright   Copyright (c) 2013 - 2016, Alex Tselegidis
+ * @copyright   Copyright (c) 2013 - 2017, Alex Tselegidis
  * @license     http://opensource.org/licenses/GPL-3.0 - GPLv3
  * @link        http://easyappointments.org
  * @since       v1.0.0
@@ -93,8 +93,8 @@
             $('#provider-password, #provider-password-confirm').addClass('required');
             $('#provider-notifications').prop('disabled', false);
             $('#providers').find('.add-break, .edit-break, .delete-break, #reset-working-plan').prop('disabled', false);
-            $('#provider-services input[type="checkbox"]').prop('disabled', false);
-            $('#providers input[type="checkbox"]').prop('disabled', false);
+            $('#provider-services input:checkbox').prop('disabled', false);
+            $('#providers input:checkbox').prop('disabled', false);
 
             // Apply default working plan
             BackendUsers.wp.setup(GlobalVariables.workingPlan);
@@ -113,9 +113,9 @@
             $('#providers .record-details').find('select').prop('disabled', false);
             $('#provider-password, #provider-password-confirm').removeClass('required');
             $('#provider-notifications').prop('disabled', false);
-            $('#provider-services input[type="checkbox"]').prop('disabled', false);
+            $('#provider-services input:checkbox').prop('disabled', false);
             $('#providers').find('.add-break, .edit-break, .delete-break, #reset-working-plan').prop('disabled', false);
-            $('#providers input[type="checkbox"]').prop('disabled', false);
+            $('#providers input:checkbox').prop('disabled', false);
             BackendUsers.wp.timepickers(false);
         });
 
@@ -125,17 +125,24 @@
         $('#providers').on('click', '#delete-provider', function() {
             var providerId = $('#provider-id').val();
 
-            var messageBtns = {};
-            messageBtns[EALang['delete']] = function() {
-                this.delete(providerId);
-                $('#message_box').dialog('close');
-            }.bind(this);
-            messageBtns[EALang['cancel']] = function() {
-                $('#message_box').dialog('close');
-            };
+            var buttons = [
+                {
+                    text: EALang.delete,
+                    click: function() {
+                        this.delete(providerId);
+                        $('#message_box').dialog('close');
+                    }.bind(this)
+                },
+                {
+                    text: EALang.cancel,
+                    click: function() {
+                        $('#message_box').dialog('close');
+                    }
+                }
+            ];
 
-            GeneralFunctions.displayMessageBox(EALang['delete_provider'],
-                    EALang['delete_record_prompt'], messageBtns);
+            GeneralFunctions.displayMessageBox(EALang.delete_provider,
+                    EALang.delete_record_prompt, buttons);
         }.bind(this));
 
         /**
@@ -163,7 +170,7 @@
 
             // Include provider services.
             provider.services = [];
-            $('#provider-services input[type="checkbox"]').each(function() {
+            $('#provider-services input:checkbox').each(function() {
                 if ($(this).prop('checked')) {
                     provider.services.push($(this).attr('data-id'));
                 }
@@ -179,7 +186,7 @@
                 provider.id = $('#provider-id').val();
             }
 
-            if (!this.validate(provider)) {
+            if (!this.validate()) {
                 return;
             }
 
@@ -249,7 +256,7 @@
             if (!GeneralFunctions.handleAjaxExceptions(response)) {
                 return;
             }
-            Backend.displayNotification(EALang['provider_saved']);
+            Backend.displayNotification(EALang.provider_saved);
             this.resetForm();
             $('#filter-providers .key').val('');
             this.filter('', response.id, true);
@@ -272,7 +279,7 @@
             if (!GeneralFunctions.handleAjaxExceptions(response)) {
                 return;
             }
-            Backend.displayNotification(EALang['provider_deleted']);
+            Backend.displayNotification(EALang.provider_deleted);
             this.resetForm();
             this.filter($('#filter-providers .key').val());
         }.bind(this), 'json').fail(GeneralFunctions.ajaxFailureHandler);
@@ -281,55 +288,54 @@
     /**
      * Validates a provider record.
      *
-     * @param {Object} provider Contains the admin data to be validated.
-     *
      * @return {Boolean} Returns the validation result.
      */
-    ProvidersHelper.prototype.validate = function(provider) {
-        $('#providers .required').css('border', '');
-        $('#provider-password, #provider-password-confirm').css('border', '');
+    ProvidersHelper.prototype.validate = function() {
+        $('#providers .has-error').removeClass('has-error');
 
         try {
             // Validate required fields.
             var missingRequired = false;
             $('#providers .required').each(function() {
                 if ($(this).val() == '' || $(this).val() == undefined) {
-                    $(this).css('border', '2px solid red');
+                    $(this).closest('.form-group').addClass('has-error');
                     missingRequired = true;
                 }
             });
             if (missingRequired) {
-                throw EALang['fields_are_required'];
+                throw EALang.fields_are_required;
             }
 
             // Validate passwords.
             if ($('#provider-password').val() != $('#provider-password-confirm').val()) {
-                $('#provider-password, #provider-password-confirm').css('border', '2px solid red');
-                throw EALang['passwords_mismatch'];
+                $('#provider-password, #provider-password-confirm').closest('.form-group').addClass('has-error');
+                throw EALang.passwords_mismatch;
             }
 
             if ($('#provider-password').val().length < BackendUsers.MIN_PASSWORD_LENGTH
                     && $('#provider-password').val() != '') {
-                $('#provider-password, #provider-password-confirm').css('border', '2px solid red');
-                throw EALang['password_length_notice'].replace('$number', BackendUsers.MIN_PASSWORD_LENGTH);
+                $('#provider-password, #provider-password-confirm').closest('.form-group').addClass('has-error');
+                throw EALang.password_length_notice.replace('$number', BackendUsers.MIN_PASSWORD_LENGTH);
             }
 
             // Validate user email.
             if (!GeneralFunctions.validateEmail($('#provider-email').val())) {
-                $('#provider-email').css('border', '2px solid red');
-                throw EALang['invalid_email'];
+                $('#provider-email').closest('.form-group').addClass('has-error');
+                throw EALang.invalid_email;
             }
 
             // Check if username exists
             if ($('#provider-username').attr('already-exists') ==  'true') {
-                $('#provider-username').css('border', '2px solid red');
-                throw EALang['username_already_exists'];
+                $('#provider-username').closest('.form-group').addClass('has-error');
+                throw EALang.username_already_exists;
             }
 
             return true;
-        } catch(exc) {
-            $('#providers .form-message').text(exc);
-            $('#providers .form-message').show();
+        } catch(message) {
+            $('#providers .form-message')
+                .addClass('alert-danger')
+                .text(message)
+                .show();
             return false;
         }
     };
@@ -350,19 +356,17 @@
         $('#providers .form-message').hide();
         $('#provider-notifications').removeClass('active');
         $('#provider-notifications').prop('disabled', true);
-        $('#provider-services input[type="checkbox"]').prop('disabled', true);
-        $('#providers .required').css('border', '');
-        $('#provider-password, #provider-password-confirm').css('border', '');
+        $('#provider-services input:checkbox').prop('disabled', true);
         $('#providers .add-break, #reset-working-plan').prop('disabled', true);
         BackendUsers.wp.timepickers(true);
-        $('#providers .working-plan input[type="text"]').timepicker('destroy');
-        $('#providers .working-plan input[type="checkbox"]').prop('disabled', true);
+        $('#providers .working-plan input:text').timepicker('destroy');
+        $('#providers .working-plan input:checkbox').prop('disabled', true);
         $('.breaks').find('.edit-break, .delete-break').prop('disabled', true);
 
         $('#edit-provider, #delete-provider').prop('disabled', true);
         $('#providers .record-details').find('input, textarea').val('');
-        $('#providers input[type="checkbox"]').prop('checked', false);
-        $('#provider-services input[type="checkbox"]').prop('checked', false);
+        $('#providers input:checkbox').prop('checked', false);
+        $('#provider-services input:checkbox').prop('checked', false);
         $('#provider-services a').remove();
         $('#providers .breaks tbody').empty();
     };
@@ -403,9 +407,9 @@
             .append(linkHtml);
 
         $('#provider-services a').remove();
-        $('#provider-services input[type="checkbox"]').prop('checked', false);
+        $('#provider-services input:checkbox').prop('checked', false);
         $.each(provider.services, function(index, serviceId) {
-            $('#provider-services input[type="checkbox"]').each(function() {
+            $('#provider-services input:checkbox').each(function() {
                 if ($(this).attr('data-id') == serviceId) {
                     $(this).prop('checked', true);
                     // Add dedicated service-provider link.
@@ -447,16 +451,14 @@
 
             this.filterResults = response;
 
-            $('#filter-providers .results').data('jsp').destroy();
             $('#filter-providers .results').html('');
             $.each(response, function(index, provider) {
                 var html = this.getFilterHtml(provider);
                 $('#filter-providers .results').append(html);
             }.bind(this));
-            $('#filter-providers .results').jScrollPane({ mouseWheelSpeed: 70 });
 
             if (response.length == 0) {
-                $('#filter-providers .results').html('<em>' + EALang['no_records_found'] + '</em>')
+                $('#filter-providers .results').html('<em>' + EALang.no_records_found + '</em>')
             }
 
             if (selectId != undefined) {
@@ -498,13 +500,13 @@
      */
     ProvidersHelper.prototype.editableBreakDay = function($selector) {
         var weekDays = {};
-        weekDays[EALang['monday']] = 'Monday';
-        weekDays[EALang['tuesday']] = 'Tuesday';
-        weekDays[EALang['wednesday']] = 'Wednesday';
-        weekDays[EALang['thursday']] = 'Thursday';
-        weekDays[EALang['friday']] = 'Friday';
-        weekDays[EALang['saturday']] = 'Saturday';
-        weekDays[EALang['sunday']] = 'Sunday';
+        weekDays[EALang.monday] = 'Monday';
+        weekDays[EALang.tuesday] = 'Tuesday';
+        weekDays[EALang.wednesday] = 'Wednesday';
+        weekDays[EALang.thursday] = 'Thursday';
+        weekDays[EALang.friday] = 'Friday';
+        weekDays[EALang.saturday] = 'Saturday';
+        weekDays[EALang.sunday] = 'Sunday';
 
 
         $selector.editable(function(value, settings) {

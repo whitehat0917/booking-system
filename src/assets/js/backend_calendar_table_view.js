@@ -3,7 +3,7 @@
  *
  * @package     EasyAppointments
  * @author      A.Tselegidis <alextselegidis@gmail.com>
- * @copyright   Copyright (c) 2013 - 2016, Alex Tselegidis
+ * @copyright   Copyright (c) 2013 - 2017, Alex Tselegidis
  * @license     http://opensource.org/licenses/GPL-3.0 - GPLv3
  * @link        http://easyappointments.org
  * @since       v1.2.0
@@ -165,18 +165,18 @@ window.BackendCalendarTableView = window.BackendCalendarTableView || {};
                             + '.popover-content strong {min-width: 80px; display:inline-block;}'
                             + '.popover-content button {margin-right: 10px;}'
                             + '</style>' +
-                        '<strong>' + EALang['start'] + '</strong> '
+                        '<strong>' + EALang.start + '</strong> '
                             + GeneralFunctions.formatDate(entry.start_datetime, GlobalVariables.dateFormat, true)
                             + '<br>' +
-                        '<strong>' + EALang['end'] + '</strong> '
+                        '<strong>' + EALang.end + '</strong> '
                             + GeneralFunctions.formatDate(entry.end_datetime, GlobalVariables.dateFormat, true)
                             + '<br>'
                             + notes
                             + '<hr>' +
                         '<center>' +
-                            '<button class="edit-popover btn btn-primary">' + EALang['edit'] + '</button>' +
-                            '<button class="delete-popover btn btn-danger">' + EALang['delete'] + '</button>' +
-                            '<button class="close-popover btn btn-default" data-po=' + event.target + '>' + EALang['close'] + '</button>' +
+                            '<button class="edit-popover btn btn-primary">' + EALang.edit + '</button>' +
+                            '<button class="delete-popover btn btn-danger">' + EALang.delete + '</button>' +
+                            '<button class="close-popover btn btn-default" data-po=' + event.target + '>' + EALang.close + '</button>' +
                         '</center>';
             } else {
                 html =
@@ -184,31 +184,31 @@ window.BackendCalendarTableView = window.BackendCalendarTableView || {};
                             + '.popover-content strong {min-width: 80px; display:inline-block;}'
                             + '.popover-content button {margin-right: 10px;}'
                             + '</style>' +
-                        '<strong>' + EALang['start'] + '</strong> '
+                        '<strong>' + EALang.start + '</strong> '
                             + GeneralFunctions.formatDate(entry.start_datetime, GlobalVariables.dateFormat, true)
                             + '<br>' +
-                        '<strong>' + EALang['end'] + '</strong> '
+                        '<strong>' + EALang.end + '</strong> '
                             + GeneralFunctions.formatDate(entry.end_datetime, GlobalVariables.dateFormat, true)
                             + '<br>' +
-                        '<strong>' + EALang['service'] + '</strong> '
+                        '<strong>' + EALang.service + '</strong> '
                             + entry.service.name
                             + '<br>' +
-                        '<strong>' + EALang['provider'] + '</strong> '
+                        '<strong>' + EALang.provider + '</strong> '
                             + entry.provider.first_name + ' '
                             + entry.provider.last_name
                             + '<br>' +
-                        '<strong>' + EALang['customer'] + '</strong> '
+                        '<strong>' + EALang.customer + '</strong> '
                             + entry.customer.first_name + ' '
                             + entry.customer.last_name
                             + '<hr>' +
                         '<center>' +
-                            '<button class="edit-popover btn btn-primary">' + EALang['edit'] + '</button>' +
-                            '<button class="delete-popover btn btn-danger">' + EALang['delete'] + '</button>' +
-                            '<button class="close-popover btn btn-default" data-po=' + event.target + '>' + EALang['close'] + '</button>' +
+                            '<button class="edit-popover btn btn-primary">' + EALang.edit + '</button>' +
+                            '<button class="delete-popover btn btn-danger">' + EALang.delete + '</button>' +
+                            '<button class="close-popover btn btn-default" data-po=' + event.target + '>' + EALang.close + '</button>' +
                         '</center>';
             }
 
-            var title = entry.is_unavailable !== '0' ? EALang['unavailable'] : entry.service.name + ' - ' 
+            var title = entry.is_unavailable !== '0' ? EALang.unavailable : entry.service.name + ' - '
                     + entry.customer.first_name + ' ' + entry.customer.last_name;
 
             $(event.target).popover({
@@ -260,31 +260,31 @@ window.BackendCalendarTableView = window.BackendCalendarTableView || {};
                 BackendCalendarAppointmentsModal.resetAppointmentDialog();
 
                 // Apply appointment data and show modal dialog.
-                $dialog.find('.modal-header h3').text(EALang['edit_appointment_title']);
-                $dialog.find('#appointment-id').val(appointment['id']);
-                $dialog.find('#select-service').val(appointment['id_services']).trigger('change');
-                $dialog.find('#select-provider').val(appointment['id_users_provider']);
+                $dialog.find('.modal-header h3').text(EALang.edit_appointment_title);
+                $dialog.find('#appointment-id').val(appointment.id);
+                $dialog.find('#select-service').val(appointment.id_services).trigger('change');
+                $dialog.find('#select-provider').val(appointment.id_users_provider);
 
                 // Set the start and end datetime of the appointment.
-                var startDatetime = Date.parseExact(appointment['start_datetime'],
+                var startDatetime = Date.parseExact(appointment.start_datetime,
                         'yyyy-MM-dd HH:mm:ss');
                 $dialog.find('#start-datetime').datetimepicker('setDate', startDatetime);
 
-                var endDatetime = Date.parseExact(appointment['end_datetime'],
+                var endDatetime = Date.parseExact(appointment.end_datetime,
                         'yyyy-MM-dd HH:mm:ss');
                 $dialog.find('#end-datetime').datetimepicker('setDate', endDatetime);
 
-                var customer = appointment['customer'];
-                $dialog.find('#customer-id').val(appointment['id_users_customer']);
-                $dialog.find('#first-name').val(customer['first_name']);
-                $dialog.find('#last-name').val(customer['last_name']);
-                $dialog.find('#email').val(customer['email']);
-                $dialog.find('#phone-number').val(customer['phone_number']);
-                $dialog.find('#address').val(customer['address']);
-                $dialog.find('#city').val(customer['city']);
-                $dialog.find('#zip-code').val(customer['zip_code']);
-                $dialog.find('#appointment-notes').val(appointment['notes']);
-                $dialog.find('#customer-notes').val(customer['notes']);
+                var customer = appointment.customer;
+                $dialog.find('#customer-id').val(appointment.id_users_customer);
+                $dialog.find('#first-name').val(customer.first_name);
+                $dialog.find('#last-name').val(customer.last_name);
+                $dialog.find('#email').val(customer.email);
+                $dialog.find('#phone-number').val(customer.phone_number);
+                $dialog.find('#address').val(customer.address);
+                $dialog.find('#city').val(customer.city);
+                $dialog.find('#zip-code').val(customer.zip_code);
+                $dialog.find('#appointment-notes').val(appointment.notes);
+                $dialog.find('#customer-notes').val(customer.notes);
             } else {
                 var unavailable = lastFocusedEventData;
 
@@ -311,63 +311,78 @@ window.BackendCalendarTableView = window.BackendCalendarTableView || {};
         /**
          * Event: Popover Delete Button "Click"
          *
-         * Displays a prompt on whether the user wants the appoinmtent to be deleted. If he confirms the
+         * Displays a prompt on whether the user wants the appointment to be deleted. If he confirms the
          * deletion then an ajax call is made to the server and deletes the appointment from the database.
          */
         $calendar.on('click', '.delete-popover', function() {
             $(this).parents().eq(2).popover('destroy'); // Hide the popover
 
             if (lastFocusedEventData.is_unavailable == false) {
-                var messageButtons = {};
-                messageButtons['OK'] = function() {
-                    var postUrl = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_delete_appointment';
-                    var postData = {
-                        csrfToken: GlobalVariables.csrfToken,
-                        appointment_id : lastFocusedEventData['id'],
-                        delete_reason: $('#delete-reason').val()
-                    };
+                var buttons = [
+                    {
+                        text: 'OK',
+                        click: function() {
+                            var postUrl = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_delete_appointment';
+                            var postData = {
+                                csrfToken: GlobalVariables.csrfToken,
+                                appointment_id : lastFocusedEventData.id,
+                                delete_reason: $('#delete-reason').val()
+                            };
 
-                    $.post(postUrl, postData, function(response) {
-                        $('#message_box').dialog('close');
+                            $.post(postUrl, postData, function(response) {
+                                $('#message_box').dialog('close');
 
-                        if (response.exceptions) {
-                            response.exceptions = GeneralFunctions.parseExceptions(response.exceptions);
-                            GeneralFunctions.displayMessageBox(GeneralFunctions.EXCEPTIONS_TITLE,
-                                    GeneralFunctions.EXCEPTIONS_MESSAGE);
-                            $('#message_box').append(GeneralFunctions.exceptionsToHtml(response.exceptions));
-                            return;
+                                if (response.exceptions) {
+                                    response.exceptions = GeneralFunctions.parseExceptions(response.exceptions);
+                                    GeneralFunctions.displayMessageBox(GeneralFunctions.EXCEPTIONS_TITLE,
+                                        GeneralFunctions.EXCEPTIONS_MESSAGE);
+                                    $('#message_box').append(GeneralFunctions.exceptionsToHtml(response.exceptions));
+                                    return;
+                                }
+
+                                if (response.warnings) {
+                                    response.warnings = GeneralFunctions.parseExceptions(response.warnings);
+                                    GeneralFunctions.displayMessageBox(GeneralFunctions.WARNINGS_TITLE,
+                                        GeneralFunctions.WARNINGS_MESSAGE);
+                                    $('#message_box').append(GeneralFunctions.exceptionsToHtml(response.warnings));
+                                }
+
+                                // Refresh calendar event items.
+                                $('#select-filter-item').trigger('change');
+                            }, 'json').fail(GeneralFunctions.ajaxFailureHandler);
                         }
+                    },
 
-                        if (response.warnings) {
-                            response.warnings = GeneralFunctions.parseExceptions(response.warnings);
-                            GeneralFunctions.displayMessageBox(GeneralFunctions.WARNINGS_TITLE,
-                                    GeneralFunctions.WARNINGS_MESSAGE);
-                            $('#message_box').append(GeneralFunctions.exceptionsToHtml(response.warnings));
+                    {
+                        text: EALang.cancel,
+                        click: function() {
+                            $('#message_box').dialog('close');
                         }
+                    }
+                ];
 
-                        // Refresh calendar event items.
-                        $('#select-filter-item').trigger('change');
-                    }, 'json').fail(GeneralFunctions.ajaxFailureHandler);
-                };
+                GeneralFunctions.displayMessageBox(EALang.delete_appointment_title,
+                        EALang.write_appointment_removal_reason, buttons);
 
-                messageButtons[EALang['cancel']] = function() {
-                    $('#message_box').dialog('close');
-                };
+                var $formGroup = $('<div/>', {
+                    'class': 'form-group'
+                })
+                    .appendTo('#message_box');
 
-                GeneralFunctions.displayMessageBox(EALang['delete_appointment_title'],
-                        EALang['write_appointment_removal_reason'], messageButtons);
-
-                $('#message_box').append('<textarea id="delete-reason" rows="3"></textarea>');
-                $('#delete-reason').css('width', '100%');
+                $('<textarea/>', {
+                    'id': 'delete-reason',
+                    'class': 'form-control'
+                })
+                    .appendTo($formGroup);
             } else {
                 // Do not display confirmation promt.
-                var postUrl = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_delete_unavailable';
-                var postData = {
+                var url = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_delete_unavailable';
+                var data = {
                     csrfToken: GlobalVariables.csrfToken,
                     unavailable_id : lastFocusedEventData.id
                 };
 
-                $.post(postUrl, postData, function(response) {
+                $.post(url, data, function(response) {
                     $('#message_box').dialog('close');
 
                     if (response.exceptions) {
@@ -401,8 +416,8 @@ window.BackendCalendarTableView = window.BackendCalendarTableView || {};
         $calendarFilter
             .find('select')
             .empty()
-            .append(new Option('1 ' + EALang['day'] , 1))
-            .append(new Option('3 ' + EALang['days'], 3));
+            .append(new Option('1 ' + EALang.day , 1))
+            .append(new Option('3 ' + EALang.days, 3));
         
         var $calendarHeader = $('<div class="calendar-header" />').appendTo('#calendar'); 
 
@@ -590,7 +605,7 @@ window.BackendCalendarTableView = window.BackendCalendarTableView || {};
 
         if (!plan) {
             $providerColumn.append('<div class="not-working">' 
-                    + (provider.first_name + ' ' + provider.last_name).trim() +' <br> ' + EALang['not_working'] 
+                    + (provider.first_name + ' ' + provider.last_name).trim() +' <br> ' + EALang.not_working
                     + '</div>');
             return;
         }
@@ -606,7 +621,7 @@ window.BackendCalendarTableView = window.BackendCalendarTableView || {};
                         '</th>' +
                     '</tr>' + 
                     '<tr>' +
-                        '<th>' + EALang['time'] + '</th>' +
+                        '<th>' + EALang.time + '</th>' +
                     '</tr>' + 
                 '</thead>' +
                 '<tbody></tbody>'
@@ -671,7 +686,7 @@ window.BackendCalendarTableView = window.BackendCalendarTableView || {};
 
             $event.html(            
                 appointment.customer.first_name.charAt(0) + '. ' + appointment.customer.last_name +
-                ' <span class="hour">' + startDate.toString('HH:mm') + '</span> '
+                ' <span class="hour">' + startDate.toString('h:mm tt') + '</span> '
                 + (eventDuration !== parseInt(appointment.service.duration) ? '(' + eventDuration + '\')' : '') 
             );
 
@@ -693,7 +708,7 @@ window.BackendCalendarTableView = window.BackendCalendarTableView || {};
                     $event.appendTo($(tr).prev().find('td').eq(cellIndex));
 
                     // Remove the hour from the event if it is the same as the row. 
-                    if (eventDate.toString('HH:mm') === $(tr).prev().find('td').eq(0).text()) {
+                    if (eventDate.toString('h:mm tt') === $(tr).prev().find('td').eq(0).text()) {
                         $event.find('.hour').remove();
                     }
 
@@ -731,8 +746,8 @@ window.BackendCalendarTableView = window.BackendCalendarTableView || {};
             var eventDuration = Math.round((endDate - eventDate) / 60000);
             var $event = $('<div class="event unavailability" />'); 
 
-            $event.html((unavailability.notes || EALang['unavailable']) + 
-                ' <span class="hour">' + eventDate.toString('HH:mm') + '</span> (' + eventDuration + '\')');
+            $event.html((unavailability.notes || EALang.unavailable) +
+                ' <span class="hour">' + eventDate.toString('h:mm tt') + '</span> (' + eventDuration + '\')');
 
             $event.data(unavailability);
 
@@ -748,7 +763,7 @@ window.BackendCalendarTableView = window.BackendCalendarTableView || {};
                     $event.appendTo($(tr).prev().find('td').eq(1));
 
                     // Remove the hour from the event if it is the same as the row. 
-                    if (eventDate.toString('HH:mm') === $(tr).prev().find('td').eq(0).text()) {
+                    if (eventDate.toString('h:mm tt') === $(tr).prev().find('td').eq(0).text()) {
                         $event.find('.hour').remove();
                     }
 
@@ -782,8 +797,8 @@ window.BackendCalendarTableView = window.BackendCalendarTableView || {};
             var $event = $('<div class="event unavailability break" />'); 
 
             $event.html(
-                EALang['break'] + 
-                ' <span class="hour">' + eventDate.toString('HH:mm') + '</span> (' + eventDuration + '\')');
+                EALang.break +
+                ' <span class="hour">' + eventDate.toString('h:mm tt') + '</span> (' + eventDuration + '\')');
 
             $event.data(entry);
 
@@ -797,7 +812,7 @@ window.BackendCalendarTableView = window.BackendCalendarTableView || {};
 
                 if (eventDate < cellDate) {
                     // Remove the hour from the event if it is the same as the row. 
-                    if (eventDate.toString('HH:mm') === $(tr).prev().find('td').eq(0).text()) {
+                    if (eventDate.toString('h:mm tt') === $(tr).prev().find('td').eq(0).text()) {
                         $event.find('.hour').remove();
                     }
 

@@ -3,7 +3,7 @@
  *
  * @package     EasyAppointments
  * @author      A.Tselegidis <alextselegidis@gmail.com>
- * @copyright   Copyright (c) 2013 - 2016, Alex Tselegidis
+ * @copyright   Copyright (c) 2013 - 2017, Alex Tselegidis
  * @license     http://opensource.org/licenses/GPL-3.0 - GPLv3
  * @link        http://easyappointments.org
  * @since       v1.0.0
@@ -94,7 +94,7 @@
             $('#secretaries .record-details').find('select').prop('disabled', false);
             $('#secretary-password, #secretary-password-confirm').addClass('required');
             $('#secretary-notifications').prop('disabled', false);
-            $('#secretary-providers input[type="checkbox"]').prop('disabled', false);
+            $('#secretary-providers input:checkbox').prop('disabled', false);
         }.bind(this));
 
         /**
@@ -109,7 +109,7 @@
             $('#secretaries .record-details').find('select').prop('disabled', false);
             $('#secretary-password, #secretary-password-confirm').removeClass('required');
             $('#secretary-notifications').prop('disabled', false);
-            $('#secretary-providers input[type="checkbox"]').prop('disabled', false);
+            $('#secretary-providers input:checkbox').prop('disabled', false);
         });
 
         /**
@@ -117,20 +117,25 @@
          */
         $('#secretaries').on('click', '#delete-secretary', function() {
             var secretaryId = $('#secretary-id').val();
-            var messageBtns = {};
+            var buttons = [
+                {
+                    text: EALang.delete,
+                    click: function() {
+                        this.delete(secretaryId);
+                        $('#message_box').dialog('close');
+                    }.bind(this)
+                },
+                {
+                    text: EALang.cancel,
+                    click:  function() {
+                        $('#message_box').dialog('close');
+                    }
+                }
+            ];
 
-            messageBtns[EALang['delete']] = function() {
-                this.delete(secretaryId);
-                $('#message_box').dialog('close');
-            }.bind(this);
-
-            messageBtns[EALang['cancel']] = function() {
-                $('#message_box').dialog('close');
-            };
-
-            GeneralFunctions.displayMessageBox(EALang['delete_secretary'],
-                    EALang['delete_record_prompt'], messageBtns);
-        });
+            GeneralFunctions.displayMessageBox(EALang.delete_secretary,
+                    EALang.delete_record_prompt, buttons);
+        }.bind(this));
 
         /**
          * Event: Save Secretary Button "Click"
@@ -156,7 +161,7 @@
 
             // Include secretary services.
             secretary.providers = [];
-            $('#secretary-providers input[type="checkbox"]').each(function() {
+            $('#secretary-providers input:checkbox').each(function() {
                 if ($(this).prop('checked')) {
                     secretary.providers.push($(this).attr('data-id'));
                 }
@@ -172,7 +177,7 @@
                 secretary.id = $('#secretary-id').val();
             }
 
-            if (!this.validate(secretary)) {
+            if (!this.validate()) {
                 return;
             }
 
@@ -184,7 +189,7 @@
          *
          * Cancel add or edit of an secretary record.
          */
-        $('#secretaries').on('Click', '#cancel-secretary', function() {
+        $('#secretaries').on('click', '#cancel-secretary', function() {
             var id = $('#secretary-id').val();
             this.resetForm();
             if (id != '') {
@@ -210,7 +215,7 @@
             if (!GeneralFunctions.handleAjaxExceptions(response)) {
                 return;
             }
-            Backend.displayNotification(EALang['secretary_saved']);
+            Backend.displayNotification(EALang.secretary_saved);
             this.resetForm();
             $('#filter-secretaries .key').val('');
             this.filter('', response.id, true);
@@ -233,7 +238,7 @@
             if (!GeneralFunctions.handleAjaxExceptions(response)) {
                 return;
             }
-            Backend.displayNotification(EALang['secretary_deleted']);
+            Backend.displayNotification(EALang.secretary_deleted);
             this.resetForm();
             this.filter($('#filter-secretaries .key').val());
         }.bind(this), 'json').fail(GeneralFunctions.ajaxFailureHandler);
@@ -242,20 +247,18 @@
     /**
      * Validates a secretary record.
      *
-     * @param {Object} secretary Contains the admin data to be validated.
-     *
      * @return {Boolean} Returns the validation result.
      */
-    SecretariesHelper.prototype.validate = function(secretary) {
-        $('#secretaries .required').css('border', '');
-        $('#secretary-password, #secretary-password-confirm').css('border', '');
+    SecretariesHelper.prototype.validate = function() {
+        $('#secretaries .has-error').removeClass('has-error');
+        $('#secretaries .form-message').removeClass('alert-danger');
 
         try {
             // Validate required fields.
             var missingRequired = false;
             $('#secretaries .required').each(function() {
                 if ($(this).val() == '' || $(this).val() == undefined) {
-                    $(this).css('border', '2px solid red');
+                    $(this).closest('.form-group').addClass('has-error');
                     missingRequired = true;
                 }
             });
@@ -265,33 +268,35 @@
 
             // Validate passwords.
             if ($('#secretary-password').val() != $('#secretary-password-confirm').val()) {
-                $('#secretary-password, #secretary-password-confirm').css('border', '2px solid red');
+                $('#secretary-password, #secretary-password-confirm').closest('.form-group').addClass('has-error');
                 throw 'Passwords mismatch!';
             }
 
             if ($('#secretary-password').val().length < BackendUsers.MIN_PASSWORD_LENGTH
                     && $('#secretary-password').val() != '') {
-                $('#secretary-password, #secretary-password-confirm').css('border', '2px solid red');
+                $('#secretary-password, #secretary-password-confirm').closest('.form-group').addClass('has-error');
                 throw 'Password must be at least ' + BackendUsers.MIN_PASSWORD_LENGTH
                         + ' characters long.';
             }
 
             // Validate user email.
             if (!GeneralFunctions.validateEmail($('#secretary-email').val())) {
-                $('#secretary-email').css('border', '2px solid red');
+                $('#secretary-email').closest('.form-group').addClass('has-error');
                 throw 'Invalid email address!';
             }
 
             // Check if username exists
             if ($('#secretary-username').attr('already-exists') ==  'true') {
-                $('#secretary-username').css('border', '2px solid red');
+                $('#secretary-username').closest('.form-group').addClass('has-error');
                 throw 'Username already exists.';
             }
 
             return true;
-        } catch(exc) {
-            $('#secretaries .form-message').text(exc);
-            $('#secretaries .form-message').show();
+        } catch(message) {
+            $('#secretaries .form-message')
+                .addClass('alert-danger')
+                .text(message)
+                .show();
             return false;
         }
     };
@@ -309,10 +314,9 @@
         $('#secretaries .form-message').hide();
         $('#secretary-notifications').removeClass('active');
         $('#secretary-notifications').prop('disabled', true);
-        $('#secretary-providers input[type="checkbox"]').prop('checked', false);
-        $('#secretary-providers input[type="checkbox"]').prop('disabled', true);
-        $('#secretaries .required').css('border', '');
-        $('#secretary-password, #secretary-password-confirm').css('border', '');
+        $('#secretary-providers input:checkbox').prop('checked', false);
+        $('#secretary-providers input:checkbox').prop('disabled', true);
+        $('#secretaries .has-error').removeClass('has-error');
 
         $('#filter-secretaries .selected').removeClass('selected');
         $('#filter-secretaries button').prop('disabled', false);
@@ -345,9 +349,9 @@
             $('#secretary-notifications').removeClass('active');
         }
 
-        $('#secretary-providers input[type="checkbox"]').prop('checked', false);
+        $('#secretary-providers input:checkbox').prop('checked', false);
         $.each(secretary.providers, function(index, providerId) {
-            $('#secretary-providers input[type="checkbox"]').each(function() {
+            $('#secretary-providers input:checkbox').each(function() {
                 if ($(this).attr('data-id') == providerId) {
                     $(this).prop('checked', true);
                 }
@@ -379,16 +383,14 @@
 
             this.filterResults = response;
 
-            $('#filter-secretaries .results').data('jsp').destroy();
             $('#filter-secretaries .results').html('');
             $.each(response, function(index, secretary) {
                 var html = this.getFilterHtml(secretary);
                 $('#filter-secretaries .results').append(html);
             }.bind(this));
-            $('#filter-secretaries .results').jScrollPane({ mouseWheelSpeed: 70 });
 
             if (response.length == 0) {
-                $('#filter-secretaries .results').html('<em>' + EALang['no_records_found'] + '</em>')
+                $('#filter-secretaries .results').html('<em>' + EALang.no_records_found + '</em>')
             }
 
             if (selectId != undefined) {

@@ -3,7 +3,7 @@
  *
  * @package     EasyAppointments
  * @author      A.Tselegidis <alextselegidis@gmail.com>
- * @copyright   Copyright (c) 2013 - 2016, Alex Tselegidis
+ * @copyright   Copyright (c) 2013 - 2017, Alex Tselegidis
  * @license     http://opensource.org/licenses/GPL-3.0 - GPLv3
  * @link        http://easyappointments.org
  * @since       v1.0.0
@@ -110,19 +110,19 @@ window.Backend = window.Backend || {};
         if (actions === undefined) {
             actions = [];
             setTimeout(function() {
-                $('#notification').slideUp('slow');
-            }, 7000);
+                $('#notification').fadeIn();
+            }, 5000);
         }
 
         var customActionsHtml = '';
 
         $.each(actions, function(index, action) {
-            var actionId = action['label'].toLowerCase().replace(' ', '-');
+            var actionId = action.label.toLowerCase().replace(' ', '-');
             customActionsHtml += '<button id="' + actionId + '" class="btn btn-default btn-xs">'
-                    + action['label'] + '</button>';
+                    + action.label + '</button>';
 
             $(document).off('click', '#' + actionId);
-            $(document).on('click', '#' + actionId, action['function']);
+            $(document).on('click', '#' + actionId, action.function);
         });
 
         var notificationHtml =
@@ -135,7 +135,7 @@ window.Backend = window.Backend || {};
                 '</div>';
 
         $('#notification').html(notificationHtml);
-        $('#notification').show('blind');
+        $('#notification').show('fade');
     }
 
 })(window.Backend);

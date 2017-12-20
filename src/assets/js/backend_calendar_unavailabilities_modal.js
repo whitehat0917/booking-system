@@ -3,7 +3,7 @@
  *
  * @package     EasyAppointments
  * @author      A.Tselegidis <alextselegidis@gmail.com>
- * @copyright   Copyright (c) 2013 - 2016, Alex Tselegidis
+ * @copyright   Copyright (c) 2013 - 2017, Alex Tselegidis
  * @license     http://opensource.org/licenses/GPL-3.0 - GPLv3
  * @link        http://easyappointments.org
  * @since       v1.2.0
@@ -30,15 +30,18 @@ window.BackendCalendarUnavailabilitiesModal = window.BackendCalendarUnavailabili
          */
         $('#manage-unavailable #save-unavailable').click(function() {
             var $dialog = $('#manage-unavailable');
+            $dialog.find('.has-error').removeClass('has-error');
             var start = $dialog.find('#unavailable-start').datetimepicker('getDate');
             var end = Date.parse($dialog.find('#unavailable-end').datetimepicker('getDate'));
 
             if (start > end) {
                 // Start time is after end time - display message to user.
                 $dialog.find('.modal-message')
-                    .text(EALang['start_date_before_end_error'])
+                    .text(EALang.start_date_before_end_error)
                     .addClass('alert-danger')
                     .removeClass('hidden');
+
+                $dialog.find('#unavailable-start, #unavailable-end').closest('.form-group').addClass('has-error');
                 return;
             }
 
@@ -63,7 +66,7 @@ window.BackendCalendarUnavailabilitiesModal = window.BackendCalendarUnavailabili
                     $('#message_box').append(GeneralFunctions.exceptionsToHtml(response.exceptions));
 
                     $dialog.find('.modal-message')
-                        .text(EALang['unexpected_issues_occurred'])
+                        .text(EALang.unexpected_issues_occurred)
                         .addClass('alert-danger')
                         .removeClass('hidden');
 
@@ -79,7 +82,7 @@ window.BackendCalendarUnavailabilitiesModal = window.BackendCalendarUnavailabili
 
                 // Display success message to the user.
                 $dialog.find('.modal-message')
-                    .text(EALang['unavailable_saved'])
+                    .text(EALang.unavailable_saved)
                     .addClass('alert-success')
                     .removeClass('alert-danger hidden');
 
@@ -95,7 +98,7 @@ window.BackendCalendarUnavailabilitiesModal = window.BackendCalendarUnavailabili
                 GeneralFunctions.displayMessageBox('Communication Error', 'Unfortunately ' +
                         'the operation could not complete due to server communication errors.');
 
-                $dialog.find('.modal-message').txt(EALang['service_communication_error']);
+                $dialog.find('.modal-message').txt(EALang.service_communication_error);
                 $dialog.find('.modal-message').addClass('alert-danger').removeClass('hidden');
             };
 
@@ -136,14 +139,15 @@ window.BackendCalendarUnavailabilitiesModal = window.BackendCalendarUnavailabili
             }
 
             if ($('.calendar-view').length === 0) {
-                $dialog.find('#unavailable-provider').val($('#select-filter-item').val())
-                    .parents('.form-group')
+                $dialog.find('#unavailable-provider')
+                    .val($('#select-filter-item').val())
+                    .closest('.form-group')
                     .hide();
             }
 
             $dialog.find('#unavailable-start').val(GeneralFunctions.formatDate(start, GlobalVariables.dateFormat, true));
             $dialog.find('#unavailable-end').val(GeneralFunctions.formatDate(start.addHours(1), GlobalVariables.dateFormat, true));
-            $dialog.find('.modal-header h3').text(EALang['new_unavailable_title']);
+            $dialog.find('.modal-header h3').text(EALang.new_unavailable_title);
             $dialog.modal('show');
         });
     }
@@ -179,65 +183,67 @@ window.BackendCalendarUnavailabilitiesModal = window.BackendCalendarUnavailabili
 
         $dialog.find('#unavailable-start').datetimepicker({
             dateFormat: dateFormat,
+            timeFormat: 'h:mm TT',
 
             // Translation
-            dayNames: [EALang['sunday'], EALang['monday'], EALang['tuesday'], EALang['wednesday'],
-                    EALang['thursday'], EALang['friday'], EALang['saturday']],
-            dayNamesShort: [EALang['sunday'].substr(0,3), EALang['monday'].substr(0,3),
-                    EALang['tuesday'].substr(0,3), EALang['wednesday'].substr(0,3),
-                    EALang['thursday'].substr(0,3), EALang['friday'].substr(0,3),
-                    EALang['saturday'].substr(0,3)],
-            dayNamesMin: [EALang['sunday'].substr(0,2), EALang['monday'].substr(0,2),
-                    EALang['tuesday'].substr(0,2), EALang['wednesday'].substr(0,2),
-                    EALang['thursday'].substr(0,2), EALang['friday'].substr(0,2),
-                    EALang['saturday'].substr(0,2)],
-            monthNames: [EALang['january'], EALang['february'], EALang['march'], EALang['april'],
-                    EALang['may'], EALang['june'], EALang['july'], EALang['august'], EALang['september'],
-                    EALang['october'], EALang['november'], EALang['december']],
-            prevText: EALang['previous'],
-            nextText: EALang['next'],
-            currentText: EALang['now'],
-            closeText: EALang['close'],
-            timeOnlyTitle: EALang['select_time'],
-            timeText: EALang['time'],
-            hourText: EALang['hour'],
-            minuteText: EALang['minutes'],
-            firstDay: 1
+            dayNames: [EALang.sunday, EALang.monday, EALang.tuesday, EALang.wednesday,
+                    EALang.thursday, EALang.friday, EALang.saturday],
+            dayNamesShort: [EALang.sunday.substr(0,3), EALang.monday.substr(0,3),
+                    EALang.tuesday.substr(0,3), EALang.wednesday.substr(0,3),
+                    EALang.thursday.substr(0,3), EALang.friday.substr(0,3),
+                    EALang.saturday.substr(0,3)],
+            dayNamesMin: [EALang.sunday.substr(0,2), EALang.monday.substr(0,2),
+                    EALang.tuesday.substr(0,2), EALang.wednesday.substr(0,2),
+                    EALang.thursday.substr(0,2), EALang.friday.substr(0,2),
+                    EALang.saturday.substr(0,2)],
+            monthNames: [EALang.january, EALang.february, EALang.march, EALang.april,
+                    EALang.may, EALang.june, EALang.july, EALang.august, EALang.september,
+                    EALang.october, EALang.november, EALang.december],
+            prevText: EALang.previous,
+            nextText: EALang.next,
+            currentText: EALang.now,
+            closeText: EALang.close,
+            timeOnlyTitle: EALang.select_time,
+            timeText: EALang.time,
+            hourText: EALang.hour,
+            minuteText: EALang.minutes,
+            firstDay: 0
         });
         $dialog.find('#unavailable-start').val(start);
 
         $dialog.find('#unavailable-end').datetimepicker({
             dateFormat: dateFormat,
+            timeFormat: 'h:mm TT',
 
             // Translation
-            dayNames: [EALang['sunday'], EALang['monday'], EALang['tuesday'], EALang['wednesday'],
-                    EALang['thursday'], EALang['friday'], EALang['saturday']],
-            dayNamesShort: [EALang['sunday'].substr(0,3), EALang['monday'].substr(0,3),
-                    EALang['tuesday'].substr(0,3), EALang['wednesday'].substr(0,3),
-                    EALang['thursday'].substr(0,3), EALang['friday'].substr(0,3),
-                    EALang['saturday'].substr(0,3)],
-            dayNamesMin: [EALang['sunday'].substr(0,2), EALang['monday'].substr(0,2),
-                    EALang['tuesday'].substr(0,2), EALang['wednesday'].substr(0,2),
-                    EALang['thursday'].substr(0,2), EALang['friday'].substr(0,2),
-                    EALang['saturday'].substr(0,2)],
-            monthNames: [EALang['january'], EALang['february'], EALang['march'], EALang['april'],
-                    EALang['may'], EALang['june'], EALang['july'], EALang['august'], EALang['september'],
-                    EALang['october'], EALang['november'], EALang['december']],
-            prevText: EALang['previous'],
-            nextText: EALang['next'],
-            currentText: EALang['now'],
-            closeText: EALang['close'],
-            timeOnlyTitle: EALang['select_time'],
-            timeText: EALang['time'],
-            hourText: EALang['hour'],
-            minuteText: EALang['minutes'],
-            firstDay: 1
+            dayNames: [EALang.sunday, EALang.monday, EALang.tuesday, EALang.wednesday,
+                    EALang.thursday, EALang.friday, EALang.saturday],
+            dayNamesShort: [EALang.sunday.substr(0,3), EALang.monday.substr(0,3),
+                    EALang.tuesday.substr(0,3), EALang.wednesday.substr(0,3),
+                    EALang.thursday.substr(0,3), EALang.friday.substr(0,3),
+                    EALang.saturday.substr(0,3)],
+            dayNamesMin: [EALang.sunday.substr(0,2), EALang.monday.substr(0,2),
+                    EALang.tuesday.substr(0,2), EALang.wednesday.substr(0,2),
+                    EALang.thursday.substr(0,2), EALang.friday.substr(0,2),
+                    EALang.saturday.substr(0,2)],
+            monthNames: [EALang.january, EALang.february, EALang.march, EALang.april,
+                    EALang.may, EALang.june, EALang.july, EALang.august, EALang.september,
+                    EALang.october, EALang.november, EALang.december],
+            prevText: EALang.previous,
+            nextText: EALang.next,
+            currentText: EALang.now,
+            closeText: EALang.close,
+            timeOnlyTitle: EALang.select_time,
+            timeText: EALang.time,
+            hourText: EALang.hour,
+            minuteText: EALang.minutes,
+            firstDay: 0
         });
         $dialog.find('#unavailable-end').val(end);
 
         // Clear the unavailable notes field.
         $dialog.find('#unavailable-notes').val('');
-    }
+    };
 
     exports.initialize = function() {
         var $unavailabilityProvider = $('#unavailable-provider'); 

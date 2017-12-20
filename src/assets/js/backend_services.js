@@ -3,7 +3,7 @@
  *
  * @package     EasyAppointments
  * @author      A.Tselegidis <alextselegidis@gmail.com>
- * @copyright   Copyright (c) 2013 - 2016, Alex Tselegidis
+ * @copyright   Copyright (c) 2013 - 2017, Alex Tselegidis
  * @license     http://opensource.org/licenses/GPL-3.0 - GPLv3
  * @link        http://easyappointments.org
  * @since       v1.0.0
@@ -45,20 +45,12 @@ window.BackendServices = window.BackendServices || {};
             var option = new Option(category.name, category.id);
             $('#service-category').append(option);
         });
-        $('#service-category').append(new Option('- ' + EALang['no_category'] + ' -', null)).val('null');
-
-        $('#service-duration, #service-attendants-number').spinner({
-            min: 1,
-            disabled: true // default
-        });
+        $('#service-category').append(new Option('- ' + EALang.no_category + ' -', null)).val('null');
 
         // Instantiate helper object (service helper by default).
         helper = servicesHelper;
         helper.resetForm();
         helper.filter('');
-
-        $('#filter-services .results').jScrollPane();
-        $('#filter-categories .results').jScrollPane();
 
         if (bindEventHandlers) {
             _bindEventHandlers();
@@ -76,16 +68,10 @@ window.BackendServices = window.BackendServices || {};
          *
          * Changes the displayed tab.
          */
-        $('.tab').click(function() {
-            $(this).parent().find('.active').removeClass('active');
-            $(this).addClass('active');
-            $('.tab-content').hide();
-
-            if ($(this).hasClass('services-tab')) { // display services tab
-                $('#services').show();
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function() {
+            if ($(this).attr('href') === '#services') {
                 helper = servicesHelper;
-            } else if ($(this).hasClass('categories-tab')) { // display categories tab
-                $('#categories').show();
+            } else if ($(this).attr('href') === '#categories') {
                 helper = categoriesHelper;
             }
 
@@ -105,13 +91,13 @@ window.BackendServices = window.BackendServices || {};
      * Use this method every time a change is made to the service categories db table.
      */
     exports.updateAvailableCategories = function() {
-        var postUrl = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_filter_service_categories';
-        var postData = {
+        var url = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_filter_service_categories';
+        var data = {
             csrfToken: GlobalVariables.csrfToken,
             key: ''
         };
 
-        $.post(postUrl, postData, function(response) {
+        $.post(url, data, function(response) {
             if (!GeneralFunctions.handleAjaxExceptions(response)) {
                 return;
             }
@@ -123,8 +109,7 @@ window.BackendServices = window.BackendServices || {};
                 var option = new Option(category.name, category.id);
                 $select.append(option);
             });
-            $select.append(new Option('- ' + EALang['no_category'] + ' -', null)).val('null');
+            $select.append(new Option('- ' + EALang.no_category + ' -', null)).val('null');
         }, 'json').fail(GeneralFunctions.ajaxFailureHandler);
-    }
-
+    };
 })(window.BackendServices);

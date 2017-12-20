@@ -3,7 +3,7 @@
  *
  * @package     EasyAppointments
  * @author      A.Tselegidis <alextselegidis@gmail.com>
- * @copyright   Copyright (c) 2013 - 2016, Alex Tselegidis
+ * @copyright   Copyright (c) 2013 - 2017, Alex Tselegidis
  * @license     http://opensource.org/licenses/GPL-3.0 - GPLv3
  * @link        http://easyappointments.org
  * @since       v1.0.0
@@ -23,7 +23,7 @@
      */
     function CategoriesHelper() {
         this.filterResults = {};
-    };
+    }
 
     /**
      * Binds the default event handlers of the categories tab.
@@ -107,17 +107,24 @@
         $('#delete-category').click(function() {
             var categoryId = $('#category-id').val();
 
-            var messageBtns = {};
-            messageBtns[EALang['delete']] = function() {
-                instance.delete(categoryId);
-                $('#message_box').dialog('close');
-            };
-            messageBtns[EALang['cancel']] = function() {
-                $('#message_box').dialog('close');
-            };
+            var buttons = [
+                {
+                    text: EALang.delete,
+                    click: function() {
+                        instance.delete(categoryId);
+                        $('#message_box').dialog('close');
+                    }
+                },
+                {
+                    text: EALang.cancel,
+                    click:  function() {
+                        $('#message_box').dialog('close');
+                    }
+                }
+            ];
 
-            GeneralFunctions.displayMessageBox(EALang['delete_category'],
-                    EALang['delete_record_prompt'], messageBtns);
+            GeneralFunctions.displayMessageBox(EALang.delete_category,
+                    EALang.delete_record_prompt, buttons);
         });
 
         /**
@@ -133,7 +140,7 @@
                 category.id = $('#category-id').val();
             }
 
-            if (!instance.validate(category)) {
+            if (!instance.validate()) {
                 return;
             }
 
@@ -174,16 +181,14 @@
 
             this.filterResults = response;
 
-            $('#filter-categories .results').data('jsp').destroy();
             $('#filter-categories .results').html('');
             $.each(response, function(index, category) {
                 var html = this.getFilterHtml(category);
                 $('#filter-categories .results').append(html);
             }.bind(this));
-            $('#filter-categories .results').jScrollPane({ mouseWheelSpeed: 70 });
 
             if (response.length === 0) {
-                $('#filter-categories .results').html('<em>' + EALang['no_records_found'] + '</em>');
+                $('#filter-categories .results').html('<em>' + EALang.no_records_found + '</em>');
             }
 
             if (selectId !== undefined) {
@@ -209,7 +214,7 @@
                 return;
             }
 
-            Backend.displayNotification(EALang['service_category_saved']);
+            Backend.displayNotification(EALang.service_category_saved);
             this.resetForm();
             $('#filter-categories .key').val('');
             this.filter('', response.id, true);
@@ -234,7 +239,7 @@
                 return;
             }
 
-            Backend.displayNotification(EALang['service_category_deleted']);
+            Backend.displayNotification(EALang.service_category_deleted);
 
             this.resetForm();
             this.filter($('#filter-categories .key').val());
@@ -256,27 +261,27 @@
     /**
      * Validate category data before save (insert or update).
      *
-     * @param {Object} category Contains the category data.
+     * @return {Boolean} Returns the validation result.
      */
-    CategoriesHelper.prototype.validate = function(category) {
-        $('#categories .record-details').find('input, textarea').css('border', '');
+    CategoriesHelper.prototype.validate = function() {
+        $('#categories .has-error').removeClass('has-error');
 
         try {
             var missingRequired = false;
 
             $('#categories .required').each(function() {
                 if ($(this).val() === '' || $(this).val() === undefined) {
-                    $(this).css('border', '2px solid red');
+                    $(this).closest('.form-group').addClass('has-error');
                     missingRequired = true;
                 }
             });
 
             if (missingRequired) {
-                throw EALang['fields_are_required'];
+                throw EALang.fields_are_required;
             }
 
             return true;
-        } catch(exc) {
+        } catch(message) {
             return false;
         }
     };
@@ -327,7 +332,7 @@
         $('#filter-categories .selected').removeClass('selected');
 
         $('#filter-categories .category-row').each(function() {
-            if ($(this).attr('data-id') === id) {
+            if ($(this).attr('data-id') == id) {
                 $(this).addClass('selected');
                 return false;
             }
@@ -335,7 +340,7 @@
 
         if (display) {
             $.each(this.filterResults, function(index, category) {
-                if (category.id === id) {
+                if (category.id == id) {
                     this.display(category);
                     $('#edit-category, #delete-category').prop('disabled', false);
                     return false;

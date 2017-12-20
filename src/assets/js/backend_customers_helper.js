@@ -3,7 +3,7 @@
  *
  * @package     EasyAppointments
  * @author      A.Tselegidis <alextselegidis@gmail.com>
- * @copyright   Copyright (c) 2013 - 2016, Alex Tselegidis
+ * @copyright   Copyright (c) 2013 - 2017, Alex Tselegidis
  * @license     http://opensource.org/licenses/GPL-3.0 - GPLv3
  * @link        http://easyappointments.org
  * @since       v1.0.0
@@ -22,7 +22,7 @@
      */
     function CustomersHelper() {
         this.filterResults = {};
-    };
+    }
 
     /**
      * Binds the default event handlers of the backend customers page.
@@ -158,7 +158,9 @@
                 customer.id = $('#customer-id').val();
             }
 
-            if (!instance.validate(customer)) return;
+            if (!instance.validate()) {
+                return;
+            }
 
             instance.save(customer);
         });
@@ -168,19 +170,24 @@
          */
         $('#delete-customer').click(function() {
             var customerId = $('#customer-id').val();
-            var messageBtns = {};
+            var buttons = [
+                {
+                    text: EALang.delete,
+                    click: function() {
+                        instance.delete(customerId);
+                        $('#message_box').dialog('close');
+                    }
+                },
+                {
+                    text: EALang.cancel,
+                    click:  function() {
+                        $('#message_box').dialog('close');
+                    }
+                }
+            ];
 
-            messageBtns[EALang['delete']] = function() {
-                instance.delete(customerId);
-                $('#message_box').dialog('close');
-            };
-
-            messageBtns[EALang['cancel']] = function() {
-                $('#message_box').dialog('close');
-            };
-
-            GeneralFunctions.displayMessageBox(EALang['delete_customer'],
-                    EALang['delete_record_prompt'], messageBtns);
+            GeneralFunctions.displayMessageBox(EALang.delete_customer,
+                    EALang.delete_record_prompt, buttons);
         });
     };
 
@@ -201,7 +208,7 @@
                 return;
             }
 
-            Backend.displayNotification(EALang['customer_saved']);
+            Backend.displayNotification(EALang.customer_saved);
             this.resetForm();
             $('#filter-customers .key').val('');
             this.filter('', response.id, true);
@@ -225,7 +232,7 @@
                 return;
             }
 
-            Backend.displayNotification(EALang['customer_deleted']);
+            Backend.displayNotification(EALang.customer_deleted);
             this.resetForm();
             this.filter($('#filter-customers .key').val());
         }.bind(this), 'json').fail(GeneralFunctions.ajaxFailureHandler);
@@ -233,12 +240,12 @@
 
     /**
      * Validate customer data before save (insert or update).
-     *
-     * @param {Object} customer Contains the customer data.
      */
-    CustomersHelper.prototype.validate = function(customer) {
-        $('#form-message').hide();
-        $('.required').css('border', '');
+    CustomersHelper.prototype.validate = function() {
+        $('#form-message')
+            .removeClass('alert-danger')
+            .hide();
+        $('.has-error').removeClass('has-error');
 
         try {
             // Validate required fields.
@@ -246,25 +253,27 @@
 
             $('.required').each(function() {
                 if ($(this).val() == '') {
-                    $(this).css('border', '2px solid red');
+                    $(this).closest('.form-group').addClass('has-error');
                     missingRequired = true;
                 }
             });
 
             if (missingRequired) {
-                throw EALang['fields_are_required'];
+                throw EALang.fields_are_required;
             }
 
             // Validate email address.
             if (!GeneralFunctions.validateEmail($('#email').val())) {
-                $('#email').css('border', '2px solid red');
-                throw EALang['invalid_email'];
+                $('#email').closest('.form-group').addClass('has-error');
+                throw EALang.invalid_email;
             }
 
             return true;
-
-        } catch(exc) {
-            $('#form-message').text(exc).show();
+        } catch(message) {
+            $('#form-message')
+                .addClass('alert-danger')
+                .text(message)
+                .show();
             return false;
         }
     };
@@ -276,13 +285,13 @@
         $('.record-details').find('input, textarea').val('');
         $('.record-details').find('input, textarea').prop('readonly', true);
 
-        $('#customer-appointments').html('');
-        $('#appointment-details').html('');
+        $('#customer-appointments').empty();
+        $('#appointment-details').toggleClass('hidden', true).empty();
         $('#edit-customer, #delete-customer').prop('disabled', true);
         $('#add-edit-delete-group').show();
         $('#save-cancel-group').hide();
 
-        $('.record-details .required').css('border', '');
+        $('.record-details .has-error').removeClass('has-error');
         $('.record-details #form-message').hide();
 
         $('#filter-customers button').prop('disabled', false);
@@ -306,7 +315,6 @@
         $('#zip-code').val(customer.zip_code);
         $('#notes').val(customer.notes);
 
-        $('#customer-appointments').data('jsp').destroy();
         $('#customer-appointments').empty();
         $.each(customer.appointments, function(index, appointment) {
             var start = GeneralFunctions.formatDate(Date.parse(appointment.start_datetime), GlobalVariables.dateFormat, true);
@@ -319,7 +327,6 @@
                     '</div>';
             $('#customer-appointments').append(html);
         });
-        $('#customer-appointments').jScrollPane({ mouseWheelSpeed: 70 });
 
         $('#appointment-details').empty();
     };
@@ -348,16 +355,13 @@
 
             this.filterResults = response;
 
-            $('#filter-customers .results').data('jsp').destroy();
             $('#filter-customers .results').html('');
             $.each(response, function(index, customer) {
                var html = this.getFilterHtml(customer);
                $('#filter-customers .results').append(html);
            }.bind(this));
-            $('#filter-customers .results').jScrollPane({ mouseWheelSpeed: 70 });
-
             if (response.length == 0) {
-                $('#filter-customers .results').html('<em>' + EALang['no_records_found'] + '</em>');
+                $('#filter-customers .results').html('<em>' + EALang.no_records_found + '</em>');
             }
 
             if (selectId != undefined) {
@@ -439,7 +443,7 @@
                     start + ' - ' + end + '<br>' +
                 '</div>';
 
-        $('#appointment-details').html(html);
+        $('#appointment-details').html(html).removeClass('hidden');
     };
 
     window.CustomersHelper = CustomersHelper;

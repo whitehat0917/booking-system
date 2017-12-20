@@ -3,7 +3,7 @@
  *
  * @package     EasyAppointments
  * @author      A.Tselegidis <alextselegidis@gmail.com>
- * @copyright   Copyright (c) 2013 - 2016, Alex Tselegidis
+ * @copyright   Copyright (c) 2013 - 2017, Alex Tselegidis
  * @license     http://opensource.org/licenses/GPL-3.0 - GPLv3
  * @link        http://easyappointments.org
  * @since       v1.0.0
@@ -25,10 +25,10 @@ window.GeneralFunctions = window.GeneralFunctions || {};
     /**
      * General Functions Constants
      */
-    exports.EXCEPTIONS_TITLE = EALang['unexpected_issues'];
-    exports.EXCEPTIONS_MESSAGE = EALang['unexpected_issues_message'];
-    exports.WARNINGS_TITLE = EALang['unexpected_warnings'];
-    exports.WARNINGS_MESSAGE = EALang['unexpected_warnings_message'];
+    exports.EXCEPTIONS_TITLE = EALang.unexpected_issues;
+    exports.EXCEPTIONS_MESSAGE = EALang.unexpected_issues_message;
+    exports.WARNINGS_TITLE = EALang.unexpected_warnings;
+    exports.WARNINGS_MESSAGE = EALang.unexpected_warnings_message;
 
     /**
      * This functions displays a message box in the admin array. It is useful when user
@@ -36,9 +36,9 @@ window.GeneralFunctions = window.GeneralFunctions || {};
      *
      * @param {String} title The title of the message box.
      * @param {String} message The message of the dialog.
-     * @param {Array} messageButtons Contains the dialog buttons along with their functions.
+     * @param {Array} buttons Contains the dialog buttons along with their functions.
      */
-    exports.displayMessageBox = function(title, message, messageButtons) {
+    exports.displayMessageBox = function(title, message, buttons) {
         // Check arguments integrity.
         if (title == undefined || title == '') {
             title = '<No Title Given>';
@@ -48,11 +48,16 @@ window.GeneralFunctions = window.GeneralFunctions || {};
             message = '<No Message Given>';
         }
 
-        if (messageButtons == undefined) {
-            messageButtons = {};
-            messageButtons[EALang['close']] = function() {
-                $('#message_box').dialog('close');
-            };
+        if (buttons == undefined) {
+            buttons = [
+                {
+                    text: EALang.close,
+                    click: function () {
+                        $('#message_box').dialog('close');
+
+                    }
+                }
+            ];
         }
 
         // Destroy previous dialog instances.
@@ -73,7 +78,7 @@ window.GeneralFunctions = window.GeneralFunctions || {};
             width: 'auto',
             height: 'auto',
             resizable: false,
-            buttons: messageButtons,
+            buttons: buttons,
             closeOnEscape: true
         });
 
@@ -234,7 +239,7 @@ window.GeneralFunctions = window.GeneralFunctions || {};
                         '<div class="accordion-heading">' +
                             '<a class="accordion-toggle" data-toggle="collapse" ' +
                                     'data-parent="#error-accordion" href="#error-technical">' +
-                                EALang['details'] +
+                                EALang.details +
                             '</a>' +
                         '</div>';
 
@@ -242,7 +247,7 @@ window.GeneralFunctions = window.GeneralFunctions || {};
             html +=
                     '<div id="error-technical" class="accordion-body collapse">' +
                         '<div class="accordion-inner">' +
-                            '<pre>' + exception['message'] + '</pre>' +
+                            '<pre>' + exception.message + '</pre>' +
                         '</div>' +
                     '</div>';
         });
@@ -375,7 +380,7 @@ window.GeneralFunctions = window.GeneralFunctions || {};
     exports.ajaxFailureHandler = function(jqxhr, textStatus, errorThrown) {
         var exceptions = [
             {
-                message: 'AJAX Error: ' + errorThrown
+                message: 'AJAX Error: ' + errorThrown  + $(jqxhr.responseText).text()
             }
         ];
         GeneralFunctions.displayMessageBox(GeneralFunctions.EXCEPTIONS_TITLE, GeneralFunctions.EXCEPTIONS_MESSAGE);
@@ -405,7 +410,7 @@ window.GeneralFunctions = window.GeneralFunctions || {};
      */
     exports.formatDate = function(date, dateFormatSetting, addHours) {
         var format, result;
-        var hours = addHours ? ' HH:mm' : '';
+        var hours = addHours ? ' h:mm tt' : '';
 
         switch(dateFormatSetting) {
             case 'DMY':

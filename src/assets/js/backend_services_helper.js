@@ -3,7 +3,7 @@
  *
  * @package     EasyAppointments
  * @author      A.Tselegidis <alextselegidis@gmail.com>
- * @copyright   Copyright (c) 2013 - 2016, Alex Tselegidis
+ * @copyright   Copyright (c) 2013 - 2017, Alex Tselegidis
  * @license     http://opensource.org/licenses/GPL-3.0 - GPLv3
  * @link        http://easyappointments.org
  * @since       v1.0.0
@@ -22,7 +22,7 @@
      */
     function ServicesHelper() {
         this.filterResults = {};
-    };
+    }
 
     ServicesHelper.prototype.bindEventHandlers = function() {
         var instance = this;
@@ -93,7 +93,6 @@
             $('#services .save-cancel-group').show();
             $('#services .record-details').find('input, textarea').prop('readonly', false);
             $('#services .record-details').find('select').prop('disabled', false);
-            $('#service-duration, #service-attendants-number').spinner('enable');
 
             $('#filter-services button').prop('disabled', true);
             $('#filter-services .results').css('color', '#AAA');
@@ -136,7 +135,7 @@
                 service.id = $('#service-id').val();
             }
 
-            if (!instance.validate(service)) {
+            if (!instance.validate()) {
                 return;
             }
 
@@ -151,7 +150,6 @@
             $('#services .save-cancel-group').show();
             $('#services .record-details').find('input, textarea').prop('readonly', false);
             $('#services .record-details select').prop('disabled', false);
-            $('#service-duration, #service-attendants-number').spinner('enable');
 
             $('#filter-services button').prop('disabled', true);
             $('#filter-services .results').css('color', '#AAA');
@@ -162,19 +160,24 @@
          */
         $('#delete-service').click(function() {
             var serviceId = $('#service-id').val();
-            var messageBtns = {};
+            var buttons = [
+                {
+                    text: EALang.delete,
+                    click: function() {
+                        instance.delete(serviceId);
+                        $('#message_box').dialog('close');
+                    }
+                },
+                {
+                    text: EALang.cancel,
+                    click:  function() {
+                        $('#message_box').dialog('close');
+                    }
+                }
+            ];
 
-            messageBtns[EALang['delete']] = function() {
-                instance.delete(serviceId);
-                $('#message_box').dialog('close');
-            };
-
-            messageBtns[EALang['cancel']] = function() {
-                $('#message_box').dialog('close');
-            };
-
-            GeneralFunctions.displayMessageBox(EALang['delete_service'],
-                    EALang['delete_record_prompt'], messageBtns);
+            GeneralFunctions.displayMessageBox(EALang.delete_service,
+                    EALang.delete_record_prompt, buttons);
         });
     };
 
@@ -196,7 +199,7 @@
                 return;
             }
 
-            Backend.displayNotification(EALang['service_saved']);
+            Backend.displayNotification(EALang.service_saved);
             this.resetForm();
             $('#filter-services .key').val('');
             this.filter('', response.id, true);
@@ -220,7 +223,7 @@
                 return;
             }
 
-            Backend.displayNotification(EALang['service_deleted']);
+            Backend.displayNotification(EALang.service_deleted);
 
             this.resetForm();
             this.filter($('#filter-services .key').val());
@@ -230,12 +233,10 @@
     /**
      * Validates a service record.
      *
-     * @param {Object} service Contains the service data.
-     *
      * @return {Boolean} Returns the validation result.
      */
-    ServicesHelper.prototype.validate = function(service) {
-        $('#services .required').css('border', '');
+    ServicesHelper.prototype.validate = function() {
+        $('#services .has-error').removeClass('has-error');
 
         try {
             // validate required fields.
@@ -243,13 +244,13 @@
 
             $('#services .required').each(function() {
                 if ($(this).val() == '' || $(this).val() == undefined) {
-                    $(this).css('border', '2px solid red');
+                    $(this).closest('.form-group').addClass('has-error');
                     missingRequired = true;
                 }
             });
 
             if (missingRequired) {
-                throw EALang['fields_are_required'];
+                throw EALang.fields_are_required;
             }
 
             return true;
@@ -269,7 +270,6 @@
         $('#edit-service, #delete-service').prop('disabled', true);
         $('#services .record-details').find('input, textarea').prop('readonly', true);
         $('#services .record-details').find('select').prop('disabled', true);
-        $('#service-duration, #service-attendants-number').spinner('disable');
 
         $('#filter-services .selected').removeClass('selected');
         $('#filter-services button').prop('disabled', false);
@@ -319,16 +319,14 @@
 
             this.filterResults = response;
 
-            $('#filter-services .results').data('jsp').destroy();
             $('#filter-services .results').html('');
             $.each(response, function(index, service) {
                 var html = ServicesHelper.prototype.getFilterHtml(service);
                 $('#filter-services .results').append(html);
             });
-            $('#filter-services .results').jScrollPane({ mouseWheelSpeed: 70 });
 
             if (response.length === 0) {
-                $('#filter-services .results').html('<em>' + EALang['no_records_found'] + '</em>');
+                $('#filter-services .results').html('<em>' + EALang.no_records_found + '</em>');
             }
 
             if (selectId !== undefined) {
@@ -370,7 +368,7 @@
         $('#filter-services .selected').removeClass('selected');
 
         $('#filter-services .service-row').each(function() {
-            if ($(this).attr('data-id') === id) {
+            if ($(this).attr('data-id') == id) {
                 $(this).addClass('selected');
                 return false;
             }
@@ -378,7 +376,7 @@
 
         if (display) {
             $.each(this.filterResults, function(index, service) {
-                if (service.id === id) {
+                if (service.id == id) {
                     this.display(service);
                     $('#edit-service, #delete-service').prop('disabled', false);
                     return false;
