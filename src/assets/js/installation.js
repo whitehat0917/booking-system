@@ -3,18 +3,18 @@
  *
  * @package     EasyAppointments
  * @author      A.Tselegidis <alextselegidis@gmail.com>
- * @copyright   Copyright (c) 2013 - 2018, Alex Tselegidis
+ * @copyright   Copyright (c) 2013 - 2017, Alex Tselegidis
  * @license     http://opensource.org/licenses/GPL-3.0 - GPLv3
  * @link        http://easyappointments.org
  * @since       v1.0.0
  * ---------------------------------------------------------------------------- */
 
-$(function () {
+$(document).ready(function () {
     'use strict';
 
     var MIN_PASSWORD_LENGTH = 7;
-
-    var $alert = $('.alert');
+    var AJAX_SUCCESS = 'SUCCESS';
+    var AJAX_FAILURE = 'FAILURE';
 
     $(document).ajaxStart(function () {
         $('#loading').removeClass('hidden');
@@ -32,34 +32,45 @@ $(function () {
             return;
         }
 
-        var url = GlobalVariables.baseUrl + '/index.php/installation/ajax_install';
-        var data = {
+        var postUrl = GlobalVariables.baseUrl + '/index.php/installation/ajax_install';
+        var postData = {
             csrfToken: GlobalVariables.csrfToken,
-            admin: getAdminData(),
-            company: getCompanyData()
+            admin: JSON.stringify(getAdminData()),
+            company: JSON.stringify(getCompanyData())
         };
 
         $.ajax({
-            url: url,
+            url: postUrl,
             type: 'POST',
-            data: data,
-            dataType: 'json'
-        })
-            .done(function (response) {
+            data: postData,
+            dataType: 'json',
+            success: function (response) {
                 if (!GeneralFunctions.handleAjaxExceptions(response)) {
                     return;
                 }
 
-                $alert
-                    .text('Easy!Appointments has been successfully installed!')
-                    .addClass('alert-success')
-                    .show();
-
+                $('.alert').text('Easy!Appointments has been successfully installed!');
+                $('.alert').addClass('alert-success');
+                $('.alert').show();
                 setTimeout(function () {
                     window.location.href = GlobalVariables.baseUrl + '/index.php/backend';
                 }, 1000);
-            })
-            .fail(GeneralFunctions.ajaxFailureHandler);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                // Treat the error the same way as php exceptions.
+                var exc = {
+                    exceptions: [
+                        JSON.stringify({
+                            message: 'The installation could not be completed due to an ' +
+                            'unexpected issue. Please check the browser\'s console for ' +
+                            'more information.'
+                        })
+                    ]
+                };
+                GeneralFunctions.handleAjaxExceptions(exc);
+                console.log(exc.exceptions[0].message, jqXHR, textStatus, errorThrown);
+            }
+        });
     });
 
     /**
@@ -71,7 +82,7 @@ $(function () {
      */
     function validate() {
         try {
-            $alert.hide();
+            $('.alert').hide();
             $('input').closest('.form-group').removeClass('has-error');
 
             // Check for empty fields.
@@ -112,11 +123,9 @@ $(function () {
             }
 
             return true;
-        } catch (error) {
-            $alert
-                .text(error)
-                .show();
-
+        } catch (exc) {
+            $('.alert').text(exc);
+            $('.alert').show();
             return false;
         }
     }
