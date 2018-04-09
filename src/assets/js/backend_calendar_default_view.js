@@ -3,7 +3,7 @@
  *
  * @package     EasyAppointments
  * @author      A.Tselegidis <alextselegidis@gmail.com>
- * @copyright   Copyright (c) 2013 - 2017, Alex Tselegidis
+ * @copyright   Copyright (c) 2013 - 2018, Alex Tselegidis
  * @license     http://opensource.org/licenses/GPL-3.0 - GPLv3
  * @link        http://easyappointments.org
  * @since       v1.2.0
@@ -789,6 +789,16 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
             $calendar.fullCalendar('removeEvents');
             $calendar.fullCalendar('addEventSource', calendarEvents);
 
+            var weekDays = [
+                'sunday', 
+                'monday', 
+                'tuesday', 
+                'wednesday', 
+                'thursday', 
+                'friday', 
+                'saturday' 
+            ];
+
             // :: ADD PROVIDER'S UNAVAILABLE TIME PERIODS
             var calendarView = $calendar.fullCalendar('getView').name;
 
@@ -800,7 +810,7 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
 
                         switch (calendarView) {
                             case 'agendaDay':
-                                var selectedDayName = $calendar.fullCalendar('getView').start.format('dddd').toLowerCase();
+                                var selectedDayName = weekDays[$calendar.fullCalendar('getView').start.format('d')];
 
                                 // Add custom unavailable periods.
                                 $.each(response.unavailables, function (index, unavailable) {
@@ -1072,8 +1082,8 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
                 slotTimeFormat = 'H(:mm)';
                 break;
             case 'regular':
-                timeFormat = 'h:mm A';
-                slotTimeFormat = 'h(:mm) A';
+                timeFormat = 'h:mm a';
+                slotTimeFormat = 'h(:mm) a';
                 break;
             default:
                 throw new Error('Invalid time format setting provided!', GlobalVariables.timeFormat);
